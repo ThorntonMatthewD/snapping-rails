@@ -19,7 +19,7 @@ const style = {
   };
 
 
-const MarkerModal = ({open, handleClose}) => {
+const MarkerModal = ({ open, handleClose, markerLocation }) => {
     const [type, setType] = useState('');
 
     return (
@@ -45,11 +45,11 @@ const MarkerModal = ({open, handleClose}) => {
                   noValidate
                   autoComplete="off"
                 >
-                  <TextField id="outlined-basic" label="Entry Name" variant="outlined" />
+                  <TextField id="outlined-basic" label="Title" variant="outlined" />
                   <TextField id="outlined-basic" label="Description" variant="outlined" />
                   <TextField id="outlined-basic" label="Media Link" variant="outlined" />
-                  <TextField id="outlined-basic" label="Latitude" variant="outlined" />
-                  <TextField id="outlined-basic" label="Longitude" variant="outlined" />
+                  <TextField id="outlined-basic" label="Latitude" variant="outlined" defaultValue={ markerLocation.lat } disabled/>
+                  <TextField id="outlined-basic" label="Longitude" variant="outlined" defaultValue={ markerLocation.lng } disabled/>
 
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Marker Type</InputLabel>
@@ -58,13 +58,13 @@ const MarkerModal = ({open, handleClose}) => {
                         id="demo-simple-select"
                         value={type}
                         label="Type of Marker"
-                        onChange={setType}
+                        onChange={(e) => {setType(e.target.value)}}
                     >
-                        <MenuItem value={"photo"} sx={{color: 'white'}}>Photo</MenuItem>
-                        <MenuItem value={"video"} sx={{color: 'white'}}>Video</MenuItem>
-                        <MenuItem value={"history"} sx={{color: 'white'}}>Museum/History</MenuItem>
-                        <MenuItem value={"event"} sx={{color: 'white'}}>Event</MenuItem>
-                        <MenuItem value={"group"} sx={{color: 'white'}}>Club/Business</MenuItem>
+                        <MenuItem value={'photo'} sx={{color: 'white'}}>Photo</MenuItem>
+                        <MenuItem value={'video'} sx={{color: 'white'}}>Video</MenuItem>
+                        <MenuItem value={'history'} sx={{color: 'white'}}>Museum/History</MenuItem>
+                        <MenuItem value={'event'} sx={{color: 'white'}}>Event</MenuItem>
+                        <MenuItem value={'group'} sx={{color: 'white'}}>Club/Business</MenuItem>
                     </Select>
                   </FormControl>
 

@@ -1,7 +1,7 @@
 import '../Assets/Styles/Railmap.css';
 
 import * as React from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents} from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup} from 'react-leaflet'
 import { Alert, Collapse, Box, Typography, Backdrop, CircularProgress } from '@mui/material'
 import { useState } from 'react';
 
@@ -15,6 +15,8 @@ const Railmap = () => {
     const {data: markers, error, isPending} = useFetch('http://localhost:5000/markers');
 
     const [draggableMarker, setDraggableMaker] = useState(false);
+    const [draggableMarkerLocation, setDraggableMarkerLocation] = useState([]);
+
     const [map, setMap] = useState(null);
     
     const [modalOpen, setModalOpen] = useState(false);
@@ -86,12 +88,12 @@ const Railmap = () => {
                     </Marker>
                 ))}
 
-                {draggableMarker && <DraggableMarker center={ getMapCenter()} /> }
+                {draggableMarker && <DraggableMarker center={ getMapCenter() } onFinalPlacement={ handleModalOpen } updateLocation = { setDraggableMarkerLocation } /> }
                 
                 <AddMarkerFab onFabClick={ () => {setDraggableMaker(true)} }/>
             </MapContainer>
 
-            <MarkerModal open={ modalOpen } handleClose={ handleModalClose } />
+            <MarkerModal open={ modalOpen } handleClose={ handleModalClose } markerLocation = { draggableMarkerLocation }/>
         </div>
     );
 }

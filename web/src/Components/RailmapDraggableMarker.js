@@ -1,8 +1,9 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { Marker, Popup } from 'react-leaflet'
 import * as L from 'leaflet'
+import { Button } from '@mui/material'
 
-const DraggableMarker = ({ center }) => {
+const DraggableMarker = ({ center, onFinalPlacement, updateLocation }) => {
     const [draggable, setDraggable] = useState(true)
     const [position, setPosition] = useState(center)
     const markerRef = useRef(null)
@@ -17,8 +18,13 @@ const DraggableMarker = ({ center }) => {
       }),
       [],
     )
-    const toggleDraggable = useCallback(() => {
-      setDraggable((d) => !d)
+    const finalizePlacement = () => {
+      disableDraggable()
+      updateLocation(position)
+      onFinalPlacement()
+    }
+    const disableDraggable = useCallback(() => {
+      setDraggable((d) => false)
     }, [])
 
     const LeafIcon = L.Icon.extend({
@@ -26,8 +32,13 @@ const DraggableMarker = ({ center }) => {
       });
 
     const draggableIcon = new LeafIcon({
-        iconUrl:
-        "https://icon-library.com/images/steam-locomotive-icon/steam-locomotive-icon-4.jpg"
+        iconUrl: "https://raw.githubusercontent.com/ThorntonMatthewD/snapping-rails/draggable-marker/web/src/Assets/Images/sl-icon.png",
+        shadowUrl: "https://raw.githubusercontent.com/ThorntonMatthewD/snapping-rails/draggable-marker/web/src/Assets/Images/sl-icon-shadow.png",
+        iconSize: [64, 64],
+        shadowSize: [64, 64],
+        iconAnchor: [22,58],
+        shadowAnchor: [10, 45],
+        popupAnchor: [10, -48]
     });
   
     return (
@@ -39,13 +50,11 @@ const DraggableMarker = ({ center }) => {
         position={position}
         icon={draggableIcon}
         ref={markerRef}>
-        <Popup minWidth={90}>
-          <span onClick={toggleDraggable}>
-            {draggable
-              ? 'Choo choo!'
-              : 'Click here to make marker draggable'}
+        { draggable &&<Popup minWidth={90}>
+          <span>
+            <div>Is this where you want your marker?<br/><Button variant="contained" onClick={finalizePlacement}>Confirm</Button></div>
           </span>
-        </Popup>
+        </Popup> }
       </Marker>
     )
 }
