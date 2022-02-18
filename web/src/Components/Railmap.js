@@ -1,22 +1,29 @@
 import '../Assets/Styles/Railmap.css';
 
 import * as React from 'react';
-import { MapContainer, TileLayer, Marker, Popup} from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents} from 'react-leaflet'
 import { Alert, Collapse, Box, Typography, Backdrop, CircularProgress } from '@mui/material'
 import { useState } from 'react';
 
 import useFetch from '../Hooks/useFetch'
 import AddMarkerFab from './AddMarkerFab';
+import DraggableMarker from './RailmapDraggableMarker';
 import MarkerModal from './MarkerModal';
 
 const Railmap = () => {
 
     const {data: markers, error, isPending} = useFetch('http://localhost:5000/markers');
-    const [draggableMarker, setDraggableMaker] = useState(null);
+
+    const [draggableMarker, setDraggableMaker] = useState(false);
+    const [map, setMap] = useState(null);
     
     const [modalOpen, setModalOpen] = useState(false);
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
+
+    const getMapCenter = () => {
+        return map.getCenter();
+    }
 
     return (
         <div className="map-wrapper">
@@ -45,8 +52,8 @@ const Railmap = () => {
                 </Alert>
             </Collapse>
 
+            <MapContainer center={[34.858377, -82.413944]} zoom={13} whenCreated={(e) => setMap(e)}>
 
-            <MapContainer center={[34.858377, -82.413944]} zoom={13}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -78,8 +85,10 @@ const Railmap = () => {
                         </Popup>
                     </Marker>
                 ))}
+
+                {draggableMarker && <DraggableMarker center={ getMapCenter()} /> }
                 
-                <AddMarkerFab onFabClick={ handleModalOpen }/>
+                <AddMarkerFab onFabClick={ () => {setDraggableMaker(true)} }/>
             </MapContainer>
 
             <MarkerModal open={ modalOpen } handleClose={ handleModalClose } />
