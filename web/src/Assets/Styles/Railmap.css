@@ -1,0 +1,21 @@
+.map-wrapper {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.leaflet-container {
+    max-width: 1536px;
+    height: 90vh;
+    width: 90vw;
+    z-index: 1;
+    position: relative;
+}
+
+.leaflet-bottom {
+    pointer-events: auto;
+}
+
+#marker-modal {
+    text-align: center;
+}
