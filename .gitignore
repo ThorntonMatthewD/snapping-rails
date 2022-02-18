@@ -1,0 +1,6 @@
+#React
+web/node_modules
+web/data
+
+#FastAPI
+api/env
