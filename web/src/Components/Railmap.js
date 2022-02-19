@@ -64,7 +64,9 @@ const Railmap = () => {
                 style={{
                     position: 'absolute',
                     zIndex: 100,
-                    marginTop: 10
+                    marginTop: 10,
+                    bottom: '12%',
+                    maxWidth: '80vw'
                 }}
             >
                 <Alert
@@ -72,6 +74,23 @@ const Railmap = () => {
                 sx={{ mb: 2 }}
                 >
                     Map markers could not be loaded. Please refresh to try again, or come back later.
+                </Alert>
+            </Collapse>
+
+            <Collapse
+                in={draggableMarker === true}
+                style={{
+                    position: 'absolute',
+                    zIndex: 100,
+                    bottom: '12%',
+                    maxWidth: '80vw'
+                }}
+            >
+                <Alert
+                severity="success"
+                sx={{ mb: 2 }}
+                >
+                    Edit Mode: Drag the train to where you'd like to place a marker.
                 </Alert>
             </Collapse>
 
@@ -109,7 +128,13 @@ const Railmap = () => {
                     </Marker>
                 ))}
 
-                {draggableMarker && <DraggableMarker center={ getMapCenter() } onFinalPlacement={ handleModalOpen } updateLocation = { setDraggableMarkerLocation } /> }
+                {draggableMarker && 
+                    <DraggableMarker center={ getMapCenter() } 
+                        onFinalPlacement={ handleModalOpen } 
+                        updateLocation={ setDraggableMarkerLocation } 
+                        setMarkerVisibility={ setDraggableMaker }
+                    /> 
+                }
                 
                 <AddMarkerFab onFabClick={ () => {setDraggableMaker(true)} }/>
             </MapContainer>
