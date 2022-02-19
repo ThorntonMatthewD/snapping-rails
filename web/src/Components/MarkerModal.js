@@ -87,8 +87,6 @@ const MarkerModal = ({ open, handleClose, markerLocation, refreshMap }) => {
                   <TextField id="outlined-basic" label="Title" variant="outlined" onChange={(e) => { setTitle(e.target.value) }} required />
                   <TextField id="outlined-basic" label="Description" variant="outlined" onChange={(e) => { setDescription(e.target.value) }} required />
                   <TextField id="outlined-basic" label="Media Link" variant="outlined" onChange={(e) => { setMediaURL(e.target.value) }} required />
-                  <TextField id="outlined-basic" label="Latitude" variant="outlined" defaultValue={ markerLocation.lat } disabled required/>
-                  <TextField id="outlined-basic" label="Longitude" variant="outlined" defaultValue={ markerLocation.lng } disabled required/>
 
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Marker Type</InputLabel>
