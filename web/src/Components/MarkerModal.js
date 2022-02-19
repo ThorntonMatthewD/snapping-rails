@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import { TextField, FormControlLabel, Checkbox, Button } from '@mui/material';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { createSearchParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react';
@@ -19,16 +20,53 @@ const style = {
   };
 
 
-const MarkerModal = ({ open, handleClose, markerLocation }) => {
+const MarkerModal = ({ open, handleClose, markerLocation, refreshMap }) => {
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [mediaURL, setMediaURL] = useState(null);
     const [type, setType] = useState('');
+
+    const handleSubmit = (e) => {
+        console.log("Submitting!")
+        e.preventDefault();
+        const newMarker = { 
+            "author_id": 1,
+            "created_at": { getSubmitTime },
+            "lat": markerLocation.lat,
+            "long": markerLocation.lng,
+            "title": title,
+            "media_url": mediaURL,
+            "img_url": "https://i3.ytimg.com/vi/cNDvo4n2ZOo/hqdefault.jpg",
+            "description": description
+         };
+    
+        fetch('http://localhost:5000/markers/', {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newMarker)
+        }).then(() => {
+            handleClose();
+
+            const params = {
+                lat: markerLocation.lat,
+                lng: markerLocation.lng 
+            }
+
+            window.location.href = `/?${createSearchParams(params)}`;
+        })
+      }
+
+    const getSubmitTime = () => {
+        return Math.floor(Date.now() / 1000);
+    }
 
     return (
         
         <Modal
             open={open}
             onClose={handleClose}
-            aria-labelledby="modal-title"
-            aria-describedby="modal-description"
+            aria-labelledby="Add Rail Marker"
+            aria-describedby="Add details about the marker you wish to add."
         >
             <Box sx={style} id="marker-modal">
                 <Typography id="modal-title" variant="h6" component="h2" color="primary">
@@ -44,12 +82,13 @@ const MarkerModal = ({ open, handleClose, markerLocation }) => {
                   }}
                   noValidate
                   autoComplete="off"
+                  onSubmit={ handleSubmit }
                 >
-                  <TextField id="outlined-basic" label="Title" variant="outlined" />
-                  <TextField id="outlined-basic" label="Description" variant="outlined" />
-                  <TextField id="outlined-basic" label="Media Link" variant="outlined" />
-                  <TextField id="outlined-basic" label="Latitude" variant="outlined" defaultValue={ markerLocation.lat } disabled/>
-                  <TextField id="outlined-basic" label="Longitude" variant="outlined" defaultValue={ markerLocation.lng } disabled/>
+                  <TextField id="outlined-basic" label="Title" variant="outlined" onChange={(e) => { setTitle(e.target.value) }} required />
+                  <TextField id="outlined-basic" label="Description" variant="outlined" onChange={(e) => { setDescription(e.target.value) }} required />
+                  <TextField id="outlined-basic" label="Media Link" variant="outlined" onChange={(e) => { setMediaURL(e.target.value) }} required />
+                  <TextField id="outlined-basic" label="Latitude" variant="outlined" defaultValue={ markerLocation.lat } disabled required/>
+                  <TextField id="outlined-basic" label="Longitude" variant="outlined" defaultValue={ markerLocation.lng } disabled required/>
 
                   <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Marker Type</InputLabel>
@@ -59,6 +98,7 @@ const MarkerModal = ({ open, handleClose, markerLocation }) => {
                         value={type}
                         label="Type of Marker"
                         onChange={(e) => {setType(e.target.value)}}
+                        required
                     >
                         <MenuItem value={'photo'} sx={{color: 'white'}}>Photo</MenuItem>
                         <MenuItem value={'video'} sx={{color: 'white'}}>Video</MenuItem>
@@ -68,8 +108,8 @@ const MarkerModal = ({ open, handleClose, markerLocation }) => {
                     </Select>
                   </FormControl>
 
-                  <FormControlLabel control={<Checkbox />} style={{label: 'white'}} label="Agree to Our Terms of Use" />
-                  <Button variant="contained">Submit Marker</Button>
+                  <FormControlLabel control={<Checkbox />} label="Agree to Our Terms of Use" />
+                  <Button type="submit" variant="contained">Submit Marker</Button>
                 </Box>
             </Box>
         </Modal>

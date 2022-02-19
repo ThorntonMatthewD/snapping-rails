@@ -4,6 +4,7 @@ import * as React from 'react';
 import { MapContainer, TileLayer, Marker, Popup} from 'react-leaflet'
 import { Alert, Collapse, Box, Typography, Backdrop, CircularProgress } from '@mui/material'
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import useFetch from '../Hooks/useFetch'
 import AddMarkerFab from './AddMarkerFab';
@@ -12,7 +13,9 @@ import MarkerModal from './MarkerModal';
 
 const Railmap = () => {
 
-    const {data: markers, error, isPending} = useFetch('http://localhost:5000/markers');
+    let {data: markers, error, isPending} = useFetch('http://localhost:5000/markers');
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const [draggableMarker, setDraggableMaker] = useState(false);
     const [draggableMarkerLocation, setDraggableMarkerLocation] = useState([]);
@@ -26,6 +29,24 @@ const Railmap = () => {
     const getMapCenter = () => {
         return map.getCenter();
     }
+
+    const goToLastLocation = (railmap) => {
+
+        let lastLocation = [searchParams.get("lat"), searchParams.get("lng")]
+        lastLocation = lastLocation.map(parseFloat);
+
+        if (lastLocation.includes(null) || lastLocation.includes(NaN)) {
+            return;
+        }
+
+        if(lastLocation.length === 2) {
+            //TODO Check for GPS bounds
+            railmap.flyTo(lastLocation)
+        }
+
+        return;
+    }
+
 
     return (
         <div className="map-wrapper">
@@ -54,7 +75,7 @@ const Railmap = () => {
                 </Alert>
             </Collapse>
 
-            <MapContainer center={[34.858377, -82.413944]} zoom={13} whenCreated={(e) => setMap(e)}>
+            <MapContainer center={ [34.858377, -82.413944] } zoom={ 13 } whenCreated={ (e) => setMap(e) } whenReady={(e) => goToLastLocation(e.target) } >
 
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -62,7 +83,7 @@ const Railmap = () => {
                 />
 
                 {markers && markers.map( marker => (
-                        <Marker key={marker.id} position={[marker.lat, marker.long]}>
+                        <Marker key={ marker.id } position={ [marker.lat, marker.long] }>
                         <Popup>
                             <Typography>
                                 {marker.title}
@@ -79,7 +100,7 @@ const Railmap = () => {
                                         mr: 2,
                                         alignContent: 'center'
                                     }}
-                                    alt={marker.img_alt_text}
+                                    alt={marker.description}
                                     src={marker.img_url}  
                                 />
                             </a>
@@ -93,7 +114,7 @@ const Railmap = () => {
                 <AddMarkerFab onFabClick={ () => {setDraggableMaker(true)} }/>
             </MapContainer>
 
-            <MarkerModal open={ modalOpen } handleClose={ handleModalClose } markerLocation = { draggableMarkerLocation }/>
+            <MarkerModal open={ modalOpen } handleClose={ handleModalClose } markerLocation = { draggableMarkerLocation } />
         </div>
     );
 }
