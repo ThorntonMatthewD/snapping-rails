@@ -3,8 +3,8 @@ import { Marker, Popup } from 'react-leaflet'
 import * as L from 'leaflet'
 import { Button } from '@mui/material'
 
-const DraggableMarker = ({ center, onFinalPlacement, updateLocation }) => {
-    const [draggable, setDraggable] = useState(true)
+const DraggableMarker = ({ center, onFinalPlacement, updateLocation, setMarkerVisibility }) => {
+    const [beenClicked, setBeenClicked] = useState(false);
     const [position, setPosition] = useState(center)
     const markerRef = useRef(null)
     const eventHandlers = useMemo(
@@ -19,13 +19,17 @@ const DraggableMarker = ({ center, onFinalPlacement, updateLocation }) => {
       [],
     )
     const finalizePlacement = () => {
-      disableDraggable()
-      updateLocation(position)
-      onFinalPlacement()
+      updateLocation(position);
+      onFinalPlacement();
     }
-    const disableDraggable = useCallback(() => {
-      setDraggable((d) => false)
+
+    const onMarkerInteraction = useCallback(() => {
+      setBeenClicked((d) => true)
     }, [])
+
+    const disableMarker = () => {
+      setMarkerVisibility(false);
+    }
 
     const LeafIcon = L.Icon.extend({
         options: {}
@@ -43,18 +47,31 @@ const DraggableMarker = ({ center, onFinalPlacement, updateLocation }) => {
   
     return (
       <Marker
-        iconUrl='https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png'
-        shadowUrl='https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png'
-        draggable={draggable}
+        draggable={true}
         eventHandlers={eventHandlers}
         position={position}
         icon={draggableIcon}
-        ref={markerRef}>
-        { draggable &&<Popup minWidth={90}>
-          <span>
-            <div>Is this where you want your marker?<br/><Button variant="contained" onClick={finalizePlacement}>Confirm</Button></div>
-          </span>
-        </Popup> }
+        onClick={onMarkerInteraction}
+        ref={markerRef}
+        >
+          <Popup minWidth={90}>
+            <span className="dragMarkContainer">
+              {!beenClicked ? 
+                  (
+                    <div><h2>Is this where you want your marker?</h2><br/>
+                    <h3>You can keep dragging the marker until you hit 'Confirm Placement'. Hit 'Remove Marker' to delete it.</h3><br/>
+                      <Button className="dragMarkBtn" variant="contained" onClick={ finalizePlacement } color="success">Confirm Placement</Button>
+                      <Button className="dragMarkBtn" variant="contained" onClick={ disableMarker } color="error">Remove Marker</Button>
+                    </div>
+                  ) : 
+                  (
+                    <div>
+                      <h3>Drag this locomotive where you want to place a marker.</h3>
+                    </div>
+                  )
+              }
+            </span>
+          </Popup>
       </Marker>
     )
 }
