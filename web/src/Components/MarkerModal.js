@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import { TextField, FormControlLabel, Checkbox, Button } from '@mui/material';
 import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { createSearchParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react';
@@ -46,13 +45,7 @@ const MarkerModal = ({ open, handleClose, markerLocation, refreshMap }) => {
           body: JSON.stringify(newMarker)
         }).then(() => {
             handleClose();
-
-            const params = {
-                lat: markerLocation.lat,
-                lng: markerLocation.lng 
-            }
-
-            window.location.href = `/?${createSearchParams(params)}`;
+            refreshMap();
         })
       }
 

@@ -13,7 +13,8 @@ import MarkerModal from './MarkerModal';
 
 const Railmap = () => {
 
-    let {data: markers, error, isPending} = useFetch('http://localhost:5000/markers');
+    const [refetchData, setRefetchData] = useState(false);
+    let {data: markers, error, isPending} = useFetch('http://localhost:5000/markers', refetchData);
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -21,7 +22,7 @@ const Railmap = () => {
     const [draggableMarkerLocation, setDraggableMarkerLocation] = useState([]);
 
     const [map, setMap] = useState(null);
-    
+
     const [modalOpen, setModalOpen] = useState(false);
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
@@ -30,7 +31,12 @@ const Railmap = () => {
         return map.getCenter();
     }
 
-    const goToLastLocation = (railmap) => {
+    const finalizeNewMarker = () => {
+        setDraggableMaker(false);
+        setRefetchData(!refetchData);
+    }
+
+    const goToParamsLocation = (railmap) => {
 
         let lastLocation = [searchParams.get("lat"), searchParams.get("lng")]
         lastLocation = lastLocation.map(parseFloat);
@@ -98,7 +104,7 @@ const Railmap = () => {
                 center={ [34.858377, -82.413944] } 
                 zoom={ 13 } 
                 whenCreated={ (e) => setMap(e) } 
-                whenReady={(e) => goToLastLocation(e.target) }
+                whenReady={(e) => goToParamsLocation(e.target) }
                 maxBounds={ [[-90, -180],[90, 180]] }
             >
 
@@ -146,7 +152,7 @@ const Railmap = () => {
                 <AddMarkerFab onFabClick={ () => {setDraggableMaker(true)} }/>
             </MapContainer>
 
-            <MarkerModal open={ modalOpen } handleClose={ handleModalClose } markerLocation = { draggableMarkerLocation } />
+            <MarkerModal open={ modalOpen } handleClose={ handleModalClose } markerLocation={ draggableMarkerLocation } refreshMap={finalizeNewMarker} />
         </div>
     );
 }
