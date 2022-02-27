@@ -49,7 +49,7 @@ const DraggableMarker = ({ center, onFinalPlacement, updateLocation, setMarkerVi
       <Marker
         draggable={true}
         eventHandlers={eventHandlers}
-        position={position}
+        position={position.wrap()}
         icon={draggableIcon}
         onClick={onMarkerInteraction}
         ref={markerRef}

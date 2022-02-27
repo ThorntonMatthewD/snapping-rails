@@ -94,9 +94,16 @@ const Railmap = () => {
                 </Alert>
             </Collapse>
 
-            <MapContainer center={ [34.858377, -82.413944] } zoom={ 13 } whenCreated={ (e) => setMap(e) } whenReady={(e) => goToLastLocation(e.target) } >
+            <MapContainer 
+                center={ [34.858377, -82.413944] } 
+                zoom={ 13 } 
+                whenCreated={ (e) => setMap(e) } 
+                whenReady={(e) => goToLastLocation(e.target) }
+                maxBounds={ [[-90, -180],[90, 180]] }
+            >
 
                 <TileLayer
+                    noWrap={true}
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
