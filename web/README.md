@@ -1,3 +1,11 @@
+# Snapping Rails - The Frontend
+
+`npm install && npm start` to launch the web site.
+
+`npx json-server --watch data/db.json --port 5000` to run the fake backend.
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
