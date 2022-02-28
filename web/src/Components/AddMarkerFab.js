@@ -29,4 +29,4 @@ const AddMarkerFab = ({ onFabClick }) => {
   );
 }
 
-export default AddMarkerFab
+export default AddMarkerFab;
