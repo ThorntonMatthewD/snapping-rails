@@ -1,4 +1,4 @@
-from config import app
+from src.config import app
 
 @app.get("/")
 async def root():

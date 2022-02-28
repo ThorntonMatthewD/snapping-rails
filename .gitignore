@@ -4,3 +4,7 @@ web/data
 
 #FastAPI
 api/env
+api/.env
+api/src/__pycache__
+
+
