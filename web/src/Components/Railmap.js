@@ -46,7 +46,6 @@ const Railmap = () => {
         }
 
         if(lastLocation.length === 2) {
-            //TODO Check for GPS bounds
             railmap.flyTo(lastLocation)
         }
 
