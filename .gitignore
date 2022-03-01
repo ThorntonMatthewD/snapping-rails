@@ -3,4 +3,9 @@ web/node_modules
 web/data
 
 #FastAPI
+*.pyc
 api/env
+api/src/.env
+api/src/__pycache__
+
+

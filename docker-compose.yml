@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    container_name: snapping-rails-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgress
+      - POSTGRES_DB=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - snapping-net
+volumes: 
+  pgdata:
+
+networks:
+  snapping-net:
+    external: true
