@@ -3,6 +3,8 @@ from pydantic import BaseModel, validator, PastDate, HttpUrl
 from typing import List
 
 from src.config import oauth2_scheme
+from auth import User, get_current_active_user
+
 from src.database.database import SNAPPING_RAILS_ENGINE as db
 from src.database import models
 from src.database.functions import SqlalchemyResult
@@ -32,21 +34,30 @@ class Marker(BaseModel):
         return v
 
 
-@router.get("/markers")
+@router.get("/markers", tags=["Map"])
 async def get_railmap_markers():
     pass
 
 
-@router.post("/markers", status_code=status.HTTP_201_CREATED)
-async def add_railmap_markers(markers: List[Marker]):
+@router.post("/markers", status_code=status.HTTP_201_CREATED, tags=["Map"])
+async def add_railmap_markers(
+    markers: List[Marker],
+    current_user: User = Depends(get_current_active_user)
+):
     pass
 
 
-@router.put("/markers")
-async def update_railmap_markers(markers: List[Marker]):
+@router.put("/markers", tags=["Map"])
+async def update_railmap_markers(
+    markers: List[Marker], 
+    current_user: User = Depends(get_current_active_user)
+):
     pass
 
 
-@router.delete("/markers")
-async def register_new_user(markers: List[Marker]):
+@router.delete("/markers", tags=["Map"])
+async def register_new_user(
+    markers: List[Marker], 
+    current_user: User = Depends(get_current_active_user)
+):
     pass
