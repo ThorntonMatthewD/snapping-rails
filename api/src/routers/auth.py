@@ -5,6 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.sql.expression import insert, select, update
 from jose import JWTError, jwt
 from pydantic import BaseModel, validator, EmailStr
+from typing import Optional
 
 from src.config import oauth2_scheme, pwd_context
 from src.config import AUTH_SECRET_KEY, AUTH_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
@@ -26,6 +27,7 @@ class TokenData(BaseModel):
 
 
 class User(BaseModel):
+    id: Optional[int]
     username: str
     email: EmailStr
     disabled: bool | None = False
