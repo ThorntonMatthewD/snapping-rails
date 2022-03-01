@@ -1,9 +1,5 @@
 version: "3"
 
-networks:
-  snapping-net:
-    external: true
-
 services:
   db:
     image: postgres
@@ -20,3 +16,7 @@ services:
       - snapping-net
 volumes: 
   pgdata:
+
+networks:
+  snapping-net:
+    external: true
