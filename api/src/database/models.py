@@ -6,7 +6,7 @@ metadata = Base.metadata
 
 
 class Marker(Base):
-    __tablename__ = 'markers'
+    __tablename__ = "markers"
 
     id = Column(BigInteger, primary_key=True, server_default=text("nextval('markers_id_seq'::regclass)"))
     created_at = Column(DateTime, nullable=False)
@@ -16,12 +16,11 @@ class Marker(Base):
     img_url = Column(String, nullable=False)
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    type = Column(SmallInteger, nullable=False)
     ingested_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
 
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = Column(BigInteger, primary_key=True, server_default=text("nextval('users_id_seq'::regclass)"))
     username = Column(String, nullable=False)

@@ -142,9 +142,14 @@ async def read_own_items(current_user: User = Depends(get_current_active_user)):
 
 @router.post("/register")
 async def register_new_user(new_user: NewUser):
-    #validate input
+    register_user = {
+        "username": new_user.username,
+        "email": new_user.email,
+        "hashed_password": pwd_context.hash(new_user.password),
+    }
 
-    print(new_user)
+    async with db.session() as session:
+        session.add(models.User(**register_user))
+        await session.commit()
 
-    return {"message": f"hello, {new_user.username}"}
-
+    return {"message": f"Welcome, {new_user.username}!"}
