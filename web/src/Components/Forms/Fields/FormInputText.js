@@ -2,7 +2,7 @@ import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField } from '@mui/material';
 
-const FormInputText = ({ name, control, label }) => {
+const FormInputText = ({ name, control, label, password}) => {
   return (
     <Controller
       name={name}
@@ -21,6 +21,7 @@ const FormInputText = ({ name, control, label }) => {
           fullWidth
           label={label}
           variant="outlined"
+          type={password ? "password" : null}
         />
       )}
     />

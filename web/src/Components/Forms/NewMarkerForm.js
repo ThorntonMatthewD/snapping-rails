@@ -77,13 +77,11 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
       console.log("Submitting!")
 
       const newMarker = { 
-          "author_id": 1, //TODO Get this from auth
           "created_at": data.createdAt,
           "lat": data.latitude,
           "long": data.longitude,
           "title": data.markerTitle,
           "media_url": data.mediaURL,
-          "img_url": "https://i3.ytimg.com/vi/cNDvo4n2ZOo/hqdefault.jpg",
           "description": data.markerDescription,
           "marker_type": data.markerType
        };
