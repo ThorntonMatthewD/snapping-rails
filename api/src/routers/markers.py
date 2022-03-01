@@ -1,10 +1,10 @@
+from datetime import datetime, timezone
+
 from fastapi import Depends, HTTPException, status, APIRouter
-from pydantic import BaseModel, validator, PastDate, HttpUrl
+from pydantic import BaseModel, validator, HttpUrl
 from typing import List
 
-from src.config import oauth2_scheme
 from src.routers.auth import User, get_current_active_user
-
 from src.database.database import SNAPPING_RAILS_ENGINE as db
 from src.database import models
 from src.database.functions import SqlalchemyResult
@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 class Marker(BaseModel):
-    created_at: PastDate
+    created_at: datetime
     lat: float
     long: float
     media_url: HttpUrl
@@ -31,6 +31,12 @@ class Marker(BaseModel):
     def validate_long_bounds(cls, v):
         if v < -180 or v > 180:
             raise ValueError("Longitude value isn't valid")
+        return v
+
+    @validator('created_at')
+    def validate_created_at_time(cls, v):
+        if v > datetime.now(timezone.utc):
+            raise ValueError("You are posting from the future... Curious.")
         return v
 
 
