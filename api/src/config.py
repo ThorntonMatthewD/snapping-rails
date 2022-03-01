@@ -20,13 +20,14 @@ ACCESS_TOKEN_EXPIRE_MINUTES = float(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES'
 
 app = FastAPI()
 
+
 #CORS Setup
 origins = [
     "http://snappingrails.com/",
     "https://snappingrails.com/",
     "http://www.snappingrails.com/",
     "https://www.snappingrails.com/",
-    "http://localhost",
+    "http://localhost:3000",
     "http://localhost:8080",
 ]
 

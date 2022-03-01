@@ -2,9 +2,10 @@ from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.sql.expression import insert, select, update
+from sqlalchemy.sql.expression import select
 from jose import JWTError, jwt
 from pydantic import BaseModel, validator, EmailStr
+from typing import Optional
 
 from src.config import oauth2_scheme, pwd_context
 from src.config import AUTH_SECRET_KEY, AUTH_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
@@ -26,6 +27,7 @@ class TokenData(BaseModel):
 
 
 class User(BaseModel):
+    id: Optional[int]
     username: str
     email: EmailStr
     disabled: bool | None = False
@@ -47,8 +49,7 @@ class NewUser(User):
 
         assert u.isalnum(), "No special characters are allowed in username"
 
-        return u   
-
+        return u
 
     @validator('password2')
     def passwords_match(cls, v, values, **kwargs):
@@ -71,7 +72,12 @@ async def get_user(username: str):
     async with db.session() as session:
         data = await session.execute(sql)
 
-    user_dict = SqlalchemyResult(data).rows2dict()[0]
+    result = SqlalchemyResult(data).rows2dict()
+
+    if len(result) == 0:
+        raise HTTPException(404, "User not found")
+    else:
+        user_dict = result[0]
 
     return UserInDB(**user_dict)
 
@@ -114,7 +120,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     if user is None:
         raise credentials_exception
     return user
-
 
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
