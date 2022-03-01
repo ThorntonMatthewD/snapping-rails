@@ -56,8 +56,10 @@ async def update_railmap_markers(
 
 
 @router.delete("/markers", tags=["Map"])
-async def register_new_user(
+async def delete_railmap_markers(
     markers: List[Marker], 
     current_user: User = Depends(get_current_active_user)
 ):
+    #Confirm user doing the deleting owns the markers for now
+    #Admins/Mods will also be able to do this in the future.
     pass
