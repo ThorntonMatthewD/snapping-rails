@@ -1,3 +1,5 @@
+from multiprocessing.sharedctypes import Value
+import re
 from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException, status, APIRouter
@@ -43,13 +45,24 @@ class NewUser(User):
     password2: str #for confirmation
 
     @validator('username')
-    def user_validation(cls, u):
-        if len(u) <= 0 or len(u) > 16:
-            raise ValueError('Username must be between 1-16 characters')
+    def user_validation(cls, v):
+        if len(v) <= 0 or len(v) > 16:
+            raise ValueError("Username must be between 1-16 characters")
 
-        assert u.isalnum(), "No special characters are allowed in username"
+        assert v.isalnum(), "No special characters are allowed in username"
+        return v
 
-        return u
+    @validator('password')
+    def password_strength_check(cls, v):
+        if len(v) < 8:
+            raise ValueError("Your password needs to be at least 8 characters.")
+        elif len(v) > 32:
+            raise ValueError("Your password cannot be longer than 32 characters.")
+        elif re.search(r"\d", v) is None:
+            raise ValueError("You need at least one digit in your password.")
+        elif re.search(r"[ !#$%&'()*+,-./[\\\]^_`{|}~"+r'"]', v) is None:
+            raise ValueError("You need at least one special character in your password.")
+        return v
 
     @validator('password2')
     def passwords_match(cls, v, values, **kwargs):
