@@ -1,8 +1,8 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 
-from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi import Depends, HTTPException, status, APIRouter, Query
 from pydantic import BaseModel, validator, HttpUrl
-from typing import List
+from typing import List, Optional
 
 from src.routers.auth import User, get_current_active_user
 from src.database.database import SNAPPING_RAILS_ENGINE as db
@@ -41,7 +41,12 @@ class Marker(BaseModel):
 
 
 @router.get("/markers", tags=["Map"])
-async def get_railmap_markers():
+async def get_railmap_markers(
+    marker_type:    Optional[int] = Query(None, ge=1, le=5),
+    newer_than:     Optional[date] = None,
+    older_than:     Optional[date] = None,
+    limit:          Optional[int] = Query(None, ge=1, le=1000)
+):
     pass
 
 
