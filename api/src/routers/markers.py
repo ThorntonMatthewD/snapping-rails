@@ -16,6 +16,7 @@ router = APIRouter()
 
 
 class Marker(BaseModel):
+    id: Optional[int]
     created_at: datetime
     lat: str
     long: str
@@ -115,7 +116,18 @@ async def update_railmap_markers(
     marker: Marker, 
     current_user: User = Depends(get_current_active_user)
 ):
-    pass
+    #TODO Allow for admins to update anything
+    async with db.session() as session:
+        result = session.update(models.Marker) \
+            .where(models.Marker.id == marker.id and models.Marker.author_id == current_user.id) \
+            .values(marker)
+
+        await session.commit()
+
+    if result.rowcount > 0:
+        return {"message": "Marker updated successfully."}
+    else:
+        raise HTTPException(401, "Either this marker doesn't exist, or you do not own it.")
 
 
 @router.delete("/markers", tags=["Map"])
@@ -123,6 +135,15 @@ async def delete_railmap_markers(
     marker: Marker, 
     current_user: User = Depends(get_current_active_user)
 ):
-    #Confirm user doing the deleting own the markers for now
-    #Admins/Mods will also be able to do this in the future.
-    pass
+    #TODO Allow for admins to delete anything
+    async with db.session() as session:
+        result = session.delete(models.Marker) \
+            .where(models.Marker.id == marker.id and models.Marker.author_id == current_user.id) \
+            .values(marker)
+
+        await session.commit()
+
+    if result.rowcount > 0:
+        return {"message": "Marker deleted successfully."}
+    else:
+        raise HTTPException(401, "Either this marker doesn't exist, or you do not own it.")
