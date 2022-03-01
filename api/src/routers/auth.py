@@ -43,13 +43,20 @@ class NewUser(User):
     password2: str #for confirmation
 
     @validator('username')
-    def user_validation(cls, u):
-        if len(u) <= 0 or len(u) > 16:
-            raise ValueError('Username must be between 1-16 characters')
+    def user_validation(cls, v):
+        if len(v) <= 0 or len(v) > 16:
+            raise ValueError("Username must be between 1-16 characters")
 
-        assert u.isalnum(), "No special characters are allowed in username"
+        assert v.isalnum(), "No special characters are allowed in username"
+        return v
 
-        return u
+    @validator('password')
+    def password_strength_check(cls, v):
+        if v < 8:
+            raise ValueError("Your password needs to be at least 8 characters.")
+        elif v > 32:
+            raise ValueError("Your password cannot be longer than 32 characters.")
+        return v
 
     @validator('password2')
     def passwords_match(cls, v, values, **kwargs):
