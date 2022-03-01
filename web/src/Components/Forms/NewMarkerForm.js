@@ -88,7 +88,7 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
           "marker_type": data.markerType
        };
   
-      fetch('http://localhost:5000/markers/', {
+      fetch('http://localhost:5000/markers', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newMarker)

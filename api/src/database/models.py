@@ -18,6 +18,7 @@ class Marker(Base):
     description = Column(String, nullable=False)
     marker_type = Column(SmallInteger, nullable=False)
     ingested_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
+    author_id = Column(BigInteger, nullable=False)
 
 
 class User(Base):

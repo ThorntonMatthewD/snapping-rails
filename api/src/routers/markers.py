@@ -1,8 +1,9 @@
 from datetime import datetime, timezone, date
 
 from fastapi import Depends, HTTPException, status, APIRouter, Query
-from sqlalchemy.sql.expression import insert, select, update
+import opengraph_py3 as opengraph
 from pydantic import BaseModel, validator, HttpUrl
+from sqlalchemy.sql.expression import insert, select, update
 from typing import List, Optional
 
 from src.routers.auth import User, get_current_active_user
@@ -16,21 +17,22 @@ router = APIRouter()
 
 class Marker(BaseModel):
     created_at: datetime
-    lat: float
-    long: float
+    lat: str
+    long: str
     media_url: HttpUrl
     title: str
     description: str
+    marker_type: int
 
     @validator('lat')
     def validate_lat_bounds(cls, v):
-        if v < -90 or v > 90:
+        if float(v) < -90 or float(v) > 90:
             raise ValueError("Latitude value isn't valid")
         return v
 
     @validator('long')
     def validate_long_bounds(cls, v):
-        if v < -180 or v > 180:
+        if float(v) < -180 or float(v) > 180:
             raise ValueError("Longitude value isn't valid")
         return v
 
@@ -39,6 +41,18 @@ class Marker(BaseModel):
         if v > datetime.now(timezone.utc):
             raise ValueError("You are posting from the future... Curious.")
         return v
+
+
+def get_thumbnail(source_url: str) -> str:
+    media = opengraph.OpenGraph(url=source_url)
+    if media.is_valid():
+        print(media)
+        print(type(media))
+        img_url = media.get("image", None)
+        if img_url is not None:
+            return img_url
+
+    return "https://i.imgur.com/BfGDSZT.png" 
 
 
 @router.get("/markers", tags=["Map"])
@@ -74,15 +88,32 @@ async def get_railmap_markers(
 
 @router.post("/markers", status_code=status.HTTP_201_CREATED, tags=["Map"])
 async def add_railmap_markers(
-    markers: Marker,
-    current_user: User = Depends(get_current_active_user)
+    marker: Marker#,
+    #current_user: User = Depends(get_current_active_user)
 ):
-    pass
+    new_marker = {
+        #"author_id": current_user.id,
+        "author_id": 1,
+        "created_at": marker.created_at.replace(tzinfo=None),
+        "lat": marker.lat,
+        "long": marker.long,
+        "media_url": marker.media_url,
+        "title": marker.title,
+        "description": marker.description,
+        "marker_type": marker.marker_type,
+        "img_url": get_thumbnail(marker.media_url)
+    }
+
+    async with db.session() as session:
+        session.add(models.Marker(**new_marker))
+        await session.commit()
+
+    return {"message": f"Marker successfully added."}
 
 
 @router.put("/markers", tags=["Map"])
 async def update_railmap_markers(
-    markers: Marker, 
+    marker: Marker, 
     current_user: User = Depends(get_current_active_user)
 ):
     pass
@@ -90,7 +121,7 @@ async def update_railmap_markers(
 
 @router.delete("/markers", tags=["Map"])
 async def delete_railmap_markers(
-    markers: Marker, 
+    marker: Marker, 
     current_user: User = Depends(get_current_active_user)
 ):
     #Confirm user doing the deleting own the markers for now
