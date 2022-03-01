@@ -52,9 +52,9 @@ class NewUser(User):
 
     @validator('password')
     def password_strength_check(cls, v):
-        if v < 8:
+        if len(v) < 8:
             raise ValueError("Your password needs to be at least 8 characters.")
-        elif v > 32:
+        elif len(v) > 32:
             raise ValueError("Your password cannot be longer than 32 characters.")
         return v
 
