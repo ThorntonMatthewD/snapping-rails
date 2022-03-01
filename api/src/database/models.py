@@ -27,4 +27,4 @@ class User(Base):
     username = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     hashed_password = Column(Text, nullable=False)
-    disabled = Column(Boolean, server_default=text("false")
+    disabled = Column(Boolean, server_default=text("false"))
