@@ -3,7 +3,7 @@ from pydantic import BaseModel, validator, PastDate, HttpUrl
 from typing import List
 
 from src.config import oauth2_scheme
-from auth import User, get_current_active_user
+from src.routers.auth import User, get_current_active_user
 
 from src.database.database import SNAPPING_RAILS_ENGINE as db
 from src.database import models
