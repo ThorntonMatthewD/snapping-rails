@@ -11,3 +11,6 @@ class Engine():
     def __init__(self):
         self.engine = create_async_engine(DATABASE_URI, poolclass=QueuePool, pool_size=20)
         self.session = sessionmaker(class_=AsyncSession, autocommit=False, autoflush=False, bind=self.engine)
+
+
+SNAPPING_RAILS_ENGINE = Engine()
