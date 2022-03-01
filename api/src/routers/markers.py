@@ -44,7 +44,7 @@ class Marker(BaseModel):
 
 
 def get_thumbnail(source_url: str) -> str:
-    media = opengraph.OpenGraph(url=source_url)
+    media = opengraph.OpenGraph(url=source_url, features="html.parser")
     if media.is_valid():
         print(media)
         print(type(media))
@@ -88,12 +88,11 @@ async def get_railmap_markers(
 
 @router.post("/markers", status_code=status.HTTP_201_CREATED, tags=["Map"])
 async def add_railmap_markers(
-    marker: Marker#,
-    #current_user: User = Depends(get_current_active_user)
+    marker: Marker,
+    current_user: User = Depends(get_current_active_user)
 ):
     new_marker = {
-        #"author_id": current_user.id,
-        "author_id": 1,
+        "author_id": current_user.id,
         "created_at": marker.created_at.replace(tzinfo=None),
         "lat": marker.lat,
         "long": marker.long,
