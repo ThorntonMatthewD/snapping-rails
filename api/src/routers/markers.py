@@ -47,7 +47,7 @@ async def get_railmap_markers():
 
 @router.post("/markers", status_code=status.HTTP_201_CREATED, tags=["Map"])
 async def add_railmap_markers(
-    markers: List[Marker],
+    markers: Marker,
     current_user: User = Depends(get_current_active_user)
 ):
     pass
@@ -55,7 +55,7 @@ async def add_railmap_markers(
 
 @router.put("/markers", tags=["Map"])
 async def update_railmap_markers(
-    markers: List[Marker], 
+    markers: Marker, 
     current_user: User = Depends(get_current_active_user)
 ):
     pass
@@ -63,7 +63,7 @@ async def update_railmap_markers(
 
 @router.delete("/markers", tags=["Map"])
 async def delete_railmap_markers(
-    markers: List[Marker], 
+    markers: Marker, 
     current_user: User = Depends(get_current_active_user)
 ):
     #Confirm user doing the deleting own the markers for now
