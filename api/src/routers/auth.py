@@ -26,6 +26,7 @@ class TokenData(BaseModel):
 class User(BaseModel):
     username: str
     email: EmailStr
+    disabled: bool | None = False
 
 
 class UserInDB(User):
