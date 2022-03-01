@@ -1,3 +1,5 @@
+from multiprocessing.sharedctypes import Value
+import re
 from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException, status, APIRouter
@@ -56,6 +58,10 @@ class NewUser(User):
             raise ValueError("Your password needs to be at least 8 characters.")
         elif len(v) > 32:
             raise ValueError("Your password cannot be longer than 32 characters.")
+        elif re.search(r"\d", v) is None:
+            raise ValueError("You need at least one digit in your password.")
+        elif re.search(r"[ !#$%&'()*+,-./[\\\]^_`{|}~"+r'"]', v) is None:
+            raise ValueError("You need at least one special character in your password.")
         return v
 
     @validator('password2')
