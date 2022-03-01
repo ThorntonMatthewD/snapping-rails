@@ -7,6 +7,9 @@ from pydantic import BaseModel
 
 from src.config import oauth2_scheme, pwd_context
 from src.config import AUTH_SECRET_KEY, AUTH_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from src.database import database as db
+from src.database import models
+
 
 
 router = APIRouter()
