@@ -49,8 +49,7 @@ class NewUser(User):
 
         assert u.isalnum(), "No special characters are allowed in username"
 
-        return u   
-
+        return u
 
     @validator('password2')
     def passwords_match(cls, v, values, **kwargs):
