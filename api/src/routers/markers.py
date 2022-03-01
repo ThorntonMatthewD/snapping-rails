@@ -1,6 +1,7 @@
 from datetime import datetime, timezone, date
 
 from fastapi import Depends, HTTPException, status, APIRouter, Query
+from sqlalchemy.sql.expression import insert, select, update
 from pydantic import BaseModel, validator, HttpUrl
 from typing import List, Optional
 
@@ -47,7 +48,28 @@ async def get_railmap_markers(
     older_than:     Optional[date] = None,
     limit:          Optional[int] = Query(None, ge=1, le=1000)
 ):
-    pass
+    sql = select(models.Marker)
+
+    if not marker_type is None:
+        sql = sql.where(models.Marker.marker_type == marker_type)
+    
+    if not newer_than is None:
+        sql = sql.where(models.Marker.created_at > newer_than)
+
+    if not older_than is None:
+        sql = sql.where(models.Marker.created_at < older_than)
+
+    if not limit is None:
+        sql = sql.limit(limit)
+    else:
+        sql = sql.limit(1000)
+
+    async with db.session() as session:
+        data = await session.execute(sql)
+
+    data = SqlalchemyResult(data)
+
+    return data.rows2dict()
 
 
 @router.post("/markers", status_code=status.HTTP_201_CREATED, tags=["Map"])

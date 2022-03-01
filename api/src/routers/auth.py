@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.sql.expression import insert, select, update
+from sqlalchemy.sql.expression import select
 from jose import JWTError, jwt
 from pydantic import BaseModel, validator, EmailStr
 from typing import Optional

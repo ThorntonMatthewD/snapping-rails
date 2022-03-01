@@ -16,6 +16,7 @@ class Marker(Base):
     img_url = Column(String, nullable=False)
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
+    marker_type = Column(SmallInteger, nullable=False)
     ingested_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
 
 
