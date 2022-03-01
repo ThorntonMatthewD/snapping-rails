@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError, validator, EmailStr
 
 from src.config import oauth2_scheme, pwd_context
 from src.config import AUTH_SECRET_KEY, AUTH_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
@@ -25,13 +25,32 @@ class TokenData(BaseModel):
 
 class User(BaseModel):
     username: str
-    email: str | None = None
-    full_name: str | None = None
-    disabled: bool | None = None
+    email: EmailStr
 
 
 class UserInDB(User):
     hashed_password: str
+
+
+class NewUser(User):
+    password: str
+    password2: str #for confirmation
+
+    @validator('username')
+    def user_validation(cls, u):
+        if len(u) <= 0 or len(u) > 16:
+            raise ValueError('Username must be between 1-16 characters')
+
+        assert u.isalnum(), "No special characters are allowed in username"
+
+        return u   
+
+
+    @validator('password2')
+    def passwords_match(cls, v, values, **kwargs):
+        if 'password' in values and v != values['password']:
+            raise ValueError("Passwords don't match")
+        return v
 
 
 def verify_password(plain_password, hashed_password):
@@ -122,6 +141,10 @@ async def read_own_items(current_user: User = Depends(get_current_active_user)):
 
 
 @router.post("/register")
-async def register_new_user():
-    return {"message": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG"}
+async def register_new_user(new_user: NewUser):
+    #validate input
+
+    print(new_user)
+
+    return {"message": f"hello, {new_user.username}"}
 
