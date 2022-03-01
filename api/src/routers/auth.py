@@ -73,7 +73,12 @@ async def get_user(username: str):
     async with db.session() as session:
         data = await session.execute(sql)
 
-    user_dict = SqlalchemyResult(data).rows2dict()[0]
+    result = SqlalchemyResult(data).rows2dict()
+
+    if len(result) == 0:
+        raise HTTPException(404, "User not found")
+    else:
+        user_dict = result[0]
 
     return UserInDB(**user_dict)
 
