@@ -35,6 +35,7 @@ const LoginForm = ({ handleClose }) => {
       fetch('http://localhost:5000/token', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
+        credentials: 'include',
         body: JSON.stringify(data)
       }).then(() => {
           handleClose();
@@ -61,7 +62,6 @@ const LoginForm = ({ handleClose }) => {
 
       { errors && console.log(errors) }
       </Paper>
-
   );
 }
 
