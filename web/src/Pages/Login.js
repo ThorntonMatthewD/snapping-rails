@@ -1,8 +1,4 @@
-//Icons
-import Email from '@mui/icons-material/Email'
-import Lock from '@mui/icons-material/Lock';
-
-import {Grid, CssBaseline, InputAdornment, Typography, Container} from '@mui/material';
+import {Grid, CssBaseline, Typography, Container} from '@mui/material';
 import LoginForm from '../Components/Forms/LoginForm'
 
 
