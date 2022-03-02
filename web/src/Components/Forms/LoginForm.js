@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Paper } from '@mui/material';
+import { Redirect } from "react-router-dom";
 import * as yup from "yup";
 
 import FormInputText from "./Fields/FormInputText";
@@ -39,6 +40,7 @@ const LoginForm = ({ handleClose }) => {
         body: JSON.stringify(data)
       }).then(() => {
           handleClose();
+          <Redirect to="/"/>;
       })
     }
 
@@ -55,10 +57,10 @@ const LoginForm = ({ handleClose }) => {
         <FormInputText name="username" control={control} label="Username" />
         <FormInputText name="password" control={control} label="Password" password={true}/>
 
-      <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
-        {" "}
-        Submit{" "}
-      </Button>
+        <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
+            {" "}
+            Submit{" "}
+        </Button>
 
       { errors && console.log(errors) }
       </Paper>
