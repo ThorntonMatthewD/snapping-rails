@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Paper } from "@mui/material";
+import { Button, Paper, Typography } from "@mui/material";
 import * as yup from "yup";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { login, getToken } from "../../Utils/auth";
@@ -80,6 +80,17 @@ const LoginForm = () => {
 
         <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
             Submit
+        </Button>
+
+        <Typography variant="p">
+          Don't have any account?
+        </Typography>
+
+        <Button
+            fullWidth
+            variant="outlined"
+        >
+            CREATE ACCOUNT
         </Button>
 
       { errors && console.log(errors) }

@@ -28,7 +28,7 @@ const AvatarButton = () => {
     const handleMenuSelect = (e) => {
       const { setting } = e.currentTarget.dataset;
       if (setting === "Sign Out") {
-        setAuth(null);
+        setAuth({});
       }
       setAnchorElUser(null);
     }

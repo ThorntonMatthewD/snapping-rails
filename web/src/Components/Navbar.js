@@ -121,7 +121,7 @@ const Navbar = () => {
               ))}
             </Box>
             
-            {auth ? <AvatarButton /> : <Button href="/login">Log In</Button>}
+            {!(Object.keys(auth).length === 0) ? <AvatarButton /> : <Button href="/login">Log In</Button>}
 
           </Toolbar>
         </Container>

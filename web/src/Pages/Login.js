@@ -10,7 +10,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import InputAdornment from '@mui/material/InputAdornment'
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Alert, Collapse, Container } from '@mui/material';
+import { Alert, Collapse, Paper, Container } from '@mui/material';
 
 import LoginForm from '../Components/Forms/LoginForm'
 
@@ -30,7 +30,6 @@ const Login = () => {
 
     return (
         <div>
-            <ThemeProvider theme={theme}>
                 <Container component="main" maxWidth="xs">
                     <CssBaseline />
                     <Grid
@@ -44,19 +43,11 @@ const Login = () => {
                     <Typography component="h1" variant="h3">
                         All Aboard!
                     </Typography>
-                    
+
                     <LoginForm />
   
                     </Grid>
-                    <Button
-                        fullWidth
-                        variant="outlined"
-                        sx={{ mt: 1, mb: 0 }}
-                    >
-                        CREATE ACCOUNT
-                    </Button>
                 </Container>
-            </ThemeProvider>
         </div>
     );
 }
