@@ -3,20 +3,19 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Paper } from "@mui/material";
 import * as yup from "yup";
 import { login } from "../../Utils/auth";
-
 import FormInputText from "./Fields/FormInputText";
 
 const LoginForm = () => { 
 
-    const schema = yup.object({
-      username: yup
-        .string()
-        .min(1)
-        .max(16)
-        .required("Please enter your username"),
-      password: yup
-        .string()
-        .required('Please Enter your password')
+  const schema = yup.object({
+    username: yup
+      .string()
+      .min(1)
+      .max(16)
+      .required("Please enter your username"),
+    password: yup
+      .string()
+      .required('Please Enter your password')
     });
 
     const defaultValues = {
