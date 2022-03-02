@@ -37,3 +37,9 @@
     transform: rotate(360deg);
   }
 }
+
+.Content-body {
+  background-color: white;
+  border-radius: 4px;
+  height: 90vh;
+}
