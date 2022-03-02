@@ -6,6 +6,7 @@ import { Theme } from './Configs/theme';
 import Navbar from './Components/Navbar';
 import Footer from './Components/Footer';
 import Home from './Pages/Home';
+import Login from './Pages/Login';
 import NotFound from './Pages/NotFound';
 
 
@@ -18,6 +19,7 @@ function App() {
           <div className="content">
             <Routes>
               <Route exact path="/" element={<Home />} /> 
+              <Route exact path="/login" element={<Login />} /> 
               <Route path="*" element={<NotFound />} /> 
             </Routes>
           </div>

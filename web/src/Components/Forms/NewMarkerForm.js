@@ -3,7 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Paper } from '@mui/material';
 import * as yup from "yup";
 import { string } from "yup";
-
+import { getToken, isJwtValid } from "../../Utils/auth";
 import FormDropdown from './Fields/FormDropdown';
 import FormInputText from "./Fields/FormInputText";
 
@@ -76,6 +76,11 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
     const onSubmit = data => {
       console.log("Submitting!")
 
+      if(!isJwtValid) {
+        console.log("You need to log in or something, bro. Bad token.")
+        return;
+      }
+
       const newMarker = { 
           "created_at": data.createdAt,
           "lat": data.latitude,
@@ -88,7 +93,10 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
   
       fetch('http://localhost:5000/markers', {
         method: 'POST',
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json", 
+          "Authorization": "Bearer " + getToken(),
+        },
         body: JSON.stringify(newMarker)
       }).then(() => {
           handleClose();
