@@ -16,7 +16,7 @@ const Login = () => {
                   style={{ minHeight: '90vh' }}
               >
               <Typography component="h1" variant="h3">
-                  All Aboard!
+                  All Aboard! 🚂
               </Typography>
 
               <LoginForm />
