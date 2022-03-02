@@ -13,8 +13,9 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import AvatarButton from './AvatarButton';
-import { isJwtValid } from '../Utils/auth';
 import logo from '../Assets/Images/logo-white.png';
+
+import useAuth from '../Hooks/useAuth';
 
 
 const pages = [
@@ -25,6 +26,8 @@ const pages = [
 
 
 const Navbar = () => {
+    const { auth } = useAuth();
+
     const [anchorElNav, setAnchorElNav] = useState(null);
 
     const handleOpenNavMenu = (event) => {
@@ -118,7 +121,7 @@ const Navbar = () => {
               ))}
             </Box>
             
-            {isJwtValid() ? <AvatarButton /> : <Button href="/login">Log In</Button>}
+            {auth ? <AvatarButton /> : <Button href="/login">Log In</Button>}
 
           </Toolbar>
         </Container>

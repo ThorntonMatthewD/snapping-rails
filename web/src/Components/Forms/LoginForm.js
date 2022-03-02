@@ -5,7 +5,7 @@ import * as yup from "yup";
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { login, getToken } from "../../Utils/auth";
 import FormInputText from "./Fields/FormInputText";
-import useAuth from "../../Hooks/usAuth";
+import useAuth from "../../Hooks/useAuth";
 
 const LoginForm = () => { 
   const { setAuth } = useAuth();
