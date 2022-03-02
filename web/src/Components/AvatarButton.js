@@ -7,21 +7,31 @@ import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import useAuth from '../Hooks/useAuth';
 
 
 const AvatarButton = () => {
+    const { setAuth } = useAuth();
     const settings = ['Profile', 'Account', 'Posts', 'Sign Out'];
 
     const [anchorElUser, setAnchorElUser] = useState(null);
 
 
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
+    const handleOpenUserMenu = (e) => {
+        setAnchorElUser(e.currentTarget);
     };
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const handleMenuSelect = (e) => {
+      const { setting } = e.currentTarget.dataset;
+      if (setting === "Sign Out") {
+        setAuth(null);
+      }
+      setAnchorElUser(null);
+    }
 
     return (
         <Box sx={{ flexGrow: 0 }}>
@@ -47,7 +57,7 @@ const AvatarButton = () => {
           onClose={handleCloseUserMenu}
         >
           {settings.map((setting) => (
-            <MenuItem key={setting} onClick={handleCloseUserMenu}>
+            <MenuItem key={setting} data-setting={setting} onClick={handleMenuSelect}>
               <Typography
                 textAlign="center"
                 sx={{ color: 'white' }}
