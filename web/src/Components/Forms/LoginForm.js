@@ -2,10 +2,17 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Paper } from "@mui/material";
 import * as yup from "yup";
-import { login } from "../../Utils/auth";
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { login, getToken } from "../../Utils/auth";
 import FormInputText from "./Fields/FormInputText";
+import useAuth from "../../Hooks/usAuth";
 
 const LoginForm = () => { 
+  const { setAuth } = useAuth();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   const schema = yup.object({
     username: yup
@@ -53,6 +60,8 @@ const LoginForm = () => {
       .then(response => response.json())
       .then(data => {
         login(data);
+        setAuth({ ...data });
+        navigate(from, { replace: true });
       });
     }
 
