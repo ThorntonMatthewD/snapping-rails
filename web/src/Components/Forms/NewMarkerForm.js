@@ -126,8 +126,7 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
       />
 
       <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
-        {" "}
-        Submit{" "}
+        Submit
       </Button>
 
       { errors && console.log(errors) }

@@ -47,8 +47,6 @@ class Marker(BaseModel):
 def get_thumbnail(source_url: str) -> str:
     media = opengraph.OpenGraph(url=source_url, features="html.parser")
     if media.is_valid():
-        print(media)
-        print(type(media))
         img_url = media.get("image", None)
         if img_url is not None:
             return img_url

@@ -79,8 +79,7 @@ const LoginForm = () => {
         <FormInputText name="password" control={control} label="Password" password={true}/>
 
         <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
-            {" "}
-            Submit{" "}
+            Submit
         </Button>
 
       { errors && console.log(errors) }
