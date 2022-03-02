@@ -3,7 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Paper } from '@mui/material';
 import * as yup from "yup";
 import { string } from "yup";
-
+import { getToken, isJwtValid } from "../../Utils/auth";
 import FormDropdown from './Fields/FormDropdown';
 import FormInputText from "./Fields/FormInputText";
 
@@ -76,21 +76,27 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
     const onSubmit = data => {
       console.log("Submitting!")
 
+      if(!isJwtValid) {
+        console.log("You need to log in or something, bro. Bad token.")
+        return;
+      }
+
       const newMarker = { 
-          "author_id": 1, //TODO Get this from auth
           "created_at": data.createdAt,
           "lat": data.latitude,
           "long": data.longitude,
           "title": data.markerTitle,
           "media_url": data.mediaURL,
-          "img_url": "https://i3.ytimg.com/vi/cNDvo4n2ZOo/hqdefault.jpg",
           "description": data.markerDescription,
           "marker_type": data.markerType
        };
   
       fetch('http://localhost:5000/markers', {
         method: 'POST',
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json", 
+          "Authorization": "Bearer " + getToken(),
+        },
         body: JSON.stringify(newMarker)
       }).then(() => {
           handleClose();
@@ -120,8 +126,7 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
       />
 
       <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
-        {" "}
-        Submit{" "}
+        Submit
       </Button>
 
       { errors && console.log(errors) }
