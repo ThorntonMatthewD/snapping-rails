@@ -20,12 +20,12 @@ export const login = (data) => {
     const decodedToken = decodeJwt(data['access_token']);
     localStorage.setItem('token', data['access_token']);
     localStorage.setItem('permissions', decodedToken.permissions);
-}
+};
 
 
 export const getToken = () => {
     return localStorage.getItem('token');
-}
+};
 
 export const isJwtValid = () => {
     let token = localStorage.getItem('token');
@@ -45,4 +45,4 @@ export const isJwtValid = () => {
         //Token is present and hasn't expired yet. Woo!
         return true;
     }
-}
+};
