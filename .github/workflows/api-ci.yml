@@ -1,0 +1,44 @@
+name: FastAPI CI
+
+on:
+  push:
+    paths:
+    - 'api/**'
+
+jobs:
+  pytest:
+    strategy:
+        matrix:
+          python-version: ["3.10.2"]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+          
+      - name: Switch to Current Branch
+        run: git checkout ${{ env.BRANCH }}
+              
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+          
+      - name: Install dependencies
+        run: |
+          cd api
+          python -m venv env
+          source env/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Create .env file
+        run: echo "${{ secrets.BACKEND_ENVS }}" > ./api/src/.env
+
+      - name: Run pytests
+        run: |
+          cd api && source env/bin/activate
+          python -m pytest --import-mode=append tests/
+
+  
