@@ -3,11 +3,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Paper } from '@mui/material';
 import * as yup from "yup";
 import { string } from "yup";
-import { getToken, isJwtValid } from "../../Utils/auth";
 import FormDropdown from './Fields/FormDropdown';
 import FormInputText from "./Fields/FormInputText";
+import useAuth from "../../Hooks/useAuth";
 
-const NewMarkerForm = ({ position, handleClose, refreshMap }) => { 
+const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
+    const { auth } = useAuth();
 
     const schema = yup.object({
       markerTitle: yup.string()
@@ -71,15 +72,10 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
 
     
     const methods = useForm({ resolver: yupResolver(schema), defaultValues: defaultValues });
-    const { register, handleSubmit, watch, control, setValue, formState: { errors } } = methods;
+    const { handleSubmit, control, formState: { errors } } = methods;
 
     const onSubmit = data => {
       console.log("Submitting!")
-
-      if(!isJwtValid) {
-        console.log("You need to log in or something, bro. Bad token.")
-        return;
-      }
 
       const newMarker = { 
           "created_at": data.createdAt,
@@ -95,7 +91,7 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
         method: 'POST',
         headers: { 
           "Content-Type": "application/json", 
-          "Authorization": "Bearer " + getToken(),
+          "Authorization": "Bearer " + auth.access_token,
         },
         body: JSON.stringify(newMarker)
       }).then(() => {
