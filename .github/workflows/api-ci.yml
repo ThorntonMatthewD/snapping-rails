@@ -33,6 +33,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Create .env file
+        run: echo "${{ secrets.BACKEND_ENVS }}" > ./api/src/.env
+
       - name: Run pytests
         run: |
           echo $(pwd)
