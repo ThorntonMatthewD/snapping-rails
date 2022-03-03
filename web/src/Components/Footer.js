@@ -1,6 +1,6 @@
 const Footer = () => {
     return (
-        <footer style={{ marginTop: 10}}>
+        <footer >
             <h3 id="footer-text" style={{ color: 'white' }}>
                 ©{new Date().getFullYear()} Matt Thornton
             </h3>

@@ -1,11 +1,11 @@
-import { Container, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const About = () => {
 
     return (
-        <Container className="Content-body" maxWidth="sm">
+        <Box className="Content-body" maxWidth="sm">
             <Typography variant="h2">About Snapping Rails</Typography>
-            <article>
+            <Box id="article" sx={{textAlign: "left", mt: 5}}>
                 Snapping Rails exists to provide a platform for those who love the history of the world's many railroads, and who are excited for their futures.
                 <br/><br/>
                 In the United States, the railroads catalyzed the expansion of our nation and the placements and layouts of our towns and cities are largely
@@ -20,8 +20,12 @@ const About = () => {
                 for trains.
                 <br/><br/>
                 I am honored to have you here as a guest, and I hope that you enjoy Snapping Rails!
-            </article>
-       </Container>
+                <br/><br/>
+                God Bless,
+                <br/><br/>
+                Matt
+            </Box>
+       </Box>
     );
 }
 
