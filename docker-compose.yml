@@ -1,6 +1,30 @@
 version: "3"
 
 services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    image: snapping-rails/snapping-rails-api:latest
+    ports:
+      - "5000:5000"
+    networks:
+      - snapping-net
+    depends_on:
+      - db
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    image: snapping-rails/snapping-rails-web:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - snapping-net
+    depends_on:
+      - api
+
   db:
     image: postgres
     container_name: snapping-rails-db
@@ -14,6 +38,7 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - snapping-net
+
 volumes: 
   pgdata:
 
