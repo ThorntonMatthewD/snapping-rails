@@ -35,8 +35,8 @@ jobs:
 
       - name: Run pytests
         run: |
-          echo pwd
-          source env/bin/activate
+          echo $(pwd)
+          cd api && source env/bin/activate
           python -m pytest --import-mode=append tests/
 
   
