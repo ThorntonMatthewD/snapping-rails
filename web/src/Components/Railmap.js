@@ -139,6 +139,12 @@ const Railmap = () => {
                             <Typography>
                                 {marker.title}
                             </Typography>
+                            <Typography>
+                                Description: {marker.description}
+                            </Typography>
+                            <Typography>
+                                Created At: {new Date(marker.created_at).toString()}
+                            </Typography>
                             <div style={{ textAlign: 'center'}}>
                             <a href={marker.media_url} target="_blank" rel="noreferrer">
                                 <Box
