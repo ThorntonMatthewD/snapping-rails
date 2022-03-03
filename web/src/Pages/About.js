@@ -3,7 +3,7 @@ import { Box, Container, Typography } from "@mui/material";
 const About = () => {
 
     return (
-        <Container className="Content-body" maxWidth="sm" sx={{display: "inline-table"}}>
+        <Container className="Content-body" sx={{display: "inline-table"}}>
             <Typography variant="h2">About Snapping Rails</Typography>
             <Box sx={{textAlign: "left", mt: 5, mb: 5}}>
                 <article>

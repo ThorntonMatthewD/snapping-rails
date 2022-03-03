@@ -23,7 +23,7 @@ const AddMarkerFab = ({ onFabClick, onFabClickNoLogin }) => {
         </Fab> 
       }
       { showExtendedFab && 
-        <Fab className="fabb" 
+        <Fab className="fab" 
           variant="extended" 
           color="primary" 
           aria-label="add"
