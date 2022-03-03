@@ -97,11 +97,11 @@ async def add_railmap_markers(
     new_marker = {
         "author_id": current_user.id,
         "created_at": marker.created_at.replace(tzinfo=None),
-        "lat": marker.lat,
-        "long": marker.long,
-        "media_url": marker.media_url,
-        "title": marker.title,
-        "description": marker.description,
+        "lat": marker.lat.strip(),
+        "long": marker.long.strip(),
+        "media_url": marker.media_url.strip(),
+        "title": marker.title.strip(),
+        "description": marker.description.strip(),
         "marker_type": marker.marker_type,
         "img_url": get_thumbnail(marker.media_url)
     }
