@@ -59,6 +59,7 @@ async def get_railmap_markers(
     marker_type:    Optional[int] = Query(None, ge=1, le=5),
     newer_than:     Optional[date] = None,
     older_than:     Optional[date] = None,
+    author_id:      Optional[int] = Query(None, ge=1),
     limit:          Optional[int] = Query(None, ge=1, le=1000)
 ):
     sql = select(models.Marker)
@@ -71,6 +72,9 @@ async def get_railmap_markers(
 
     if not older_than is None:
         sql = sql.where(models.Marker.created_at < older_than)
+
+    if not author_id is None:
+        sql = sql.where(models.Marker.author_id == author_id)
 
     if not limit is None:
         sql = sql.limit(limit)
