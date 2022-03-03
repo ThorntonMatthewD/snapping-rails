@@ -7,3 +7,5 @@ The API for Snapping Rails.
 Go to `localhost:5000/docs` for the Swagger Docs.
 
 ![The Swagger/OpenAPI docs for Snapping Rails](https://user-images.githubusercontent.com/44626690/156659456-ee35ceb7-f85c-4748-a19b-9a438be295b9.png)
+
+
