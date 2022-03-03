@@ -148,6 +148,8 @@ const Railmap = () => {
                                         width: '100%',
                                         maxHeight: { xs: 120, md: 240 },
                                         maxWidth: { xs: 120, md:  240},
+                                        minHeight: {xs: 90, md: 180},
+                                        minWidth: {xs: 90, md: 180},
                                         mr: 2,
                                         alignContent: 'center'
                                     }}
