@@ -39,11 +39,13 @@
 }
 
 .content {
-  padding-bottom: 10px;
+  padding-bottom: 40px;
 }
 
 .Content-body {
   background-color: white;
   border-radius: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
   height: 90vh;
 }
