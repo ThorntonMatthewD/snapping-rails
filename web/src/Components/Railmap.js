@@ -4,7 +4,7 @@ import * as React from 'react';
 import { MapContainer, TileLayer, Marker, Popup} from 'react-leaflet'
 import { Alert, Collapse, Box, Typography, Backdrop, CircularProgress } from '@mui/material'
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 
 import useFetch from '../Hooks/useFetch'
 import AddMarkerFab from './AddMarkerFab';
@@ -26,6 +26,8 @@ const Railmap = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const handleModalOpen = () => setModalOpen(true);
     const handleModalClose = () => setModalOpen(false);
+
+    const [addMarkerButNoLogin, setAddMarkerButNoLogin] = useState(false);
 
     const getMapCenter = () => {
         return map.getCenter();
@@ -79,6 +81,24 @@ const Railmap = () => {
                 sx={{ mb: 2 }}
                 >
                     Map markers could not be loaded. Please refresh to try again, or come back later.
+                </Alert>
+            </Collapse>
+
+            <Collapse
+                in={addMarkerButNoLogin}
+                style={{
+                    position: 'absolute',
+                    zIndex: 100,
+                    marginTop: 10,
+                    bottom: '12%',
+                    maxWidth: '80vw'
+                }}
+            >
+                <Alert
+                severity="error"
+                sx={{ mb: 2, color: "white" }}
+                >
+                    You need to login or create an account in order to add a marker. <Link to="/login">Click here to do so.</Link>
                 </Alert>
             </Collapse>
 
@@ -148,7 +168,7 @@ const Railmap = () => {
                     /> 
                 }
                 
-                <AddMarkerFab onFabClick={ () => {setDraggableMaker(true)} }/>
+                <AddMarkerFab onFabClick={ () => { setDraggableMaker(true) } } onFabClickNoLogin={ () => {setAddMarkerButNoLogin(true)} }/>
             </MapContainer>
 
             <MarkerModal open={ modalOpen } handleClose={ handleModalClose } markerLocation={ draggableMarkerLocation } refreshMap={finalizeNewMarker} />

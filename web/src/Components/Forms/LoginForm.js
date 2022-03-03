@@ -2,8 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Paper, Typography } from "@mui/material";
 import * as yup from "yup";
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { login, getToken } from "../../Utils/auth";
+import { useNavigate, useLocation } from 'react-router-dom';
 import FormInputText from "./Fields/FormInputText";
 import useAuth from "../../Hooks/useAuth";
 
@@ -32,7 +31,7 @@ const LoginForm = () => {
 
     
     const methods = useForm({ resolver: yupResolver(schema), defaultValues: defaultValues });
-    const { register, handleSubmit, watch, control, setValue, formState: { errors } } = methods;
+    const { handleSubmit,  control, formState: { errors } } = methods;
 
     const onSubmit = data => {
 
@@ -59,7 +58,6 @@ const LoginForm = () => {
       })
       .then(response => response.json())
       .then(data => {
-        login(data);
         setAuth({ ...data });
         navigate(from, { replace: true });
       });
