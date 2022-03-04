@@ -2,7 +2,7 @@ import '../assets/styles/Railmap.css';
 
 import * as React from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet'
-import { Alert, Collapse, Box, Typography, Backdrop, CircularProgress } from '@mui/material'
+import { Alert, Collapse, Backdrop, CircularProgress } from '@mui/material'
 import { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 
