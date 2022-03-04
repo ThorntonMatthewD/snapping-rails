@@ -1,4 +1,4 @@
-import '../Assets/Styles/Railmap.css';
+import '../assets/styles/Railmap.css';
 
 import * as React from 'react';
 import { MapContainer, TileLayer, Marker, Popup} from 'react-leaflet'
@@ -6,7 +6,7 @@ import { Alert, Collapse, Box, Typography, Backdrop, CircularProgress } from '@m
 import { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 
-import useFetch from '../Hooks/useFetch'
+import useFetch from '../hooks/useFetch'
 import AddMarkerFab from './AddMarkerFab';
 import DraggableMarker from './RailmapDraggableMarker';
 import MarkerModal from './MarkerModal';

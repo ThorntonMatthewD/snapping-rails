@@ -1,6 +1,6 @@
 import {Box, Modal, Typography} from '@mui/material';
 
-import NewMarkerForm from './Forms/NewMarkerForm';
+import NewMarkerForm from './forms/NewMarkerForm';
 
 const MarkerModal = ({ open, handleClose, markerLocation, refreshMap }) => {
 
