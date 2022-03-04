@@ -36,8 +36,8 @@ const DraggableMarker = ({ center, onFinalPlacement, updateLocation, setMarkerVi
       });
 
     const draggableIcon = new LeafIcon({
-        iconUrl: "https://raw.githubusercontent.com/ThorntonMatthewD/snapping-rails/master/web/src/Assets/Images/sl-icon.png",
-        shadowUrl: "https://raw.githubusercontent.com/ThorntonMatthewD/snapping-rails/master/web/src/Assets/Images/sl-icon-shadow.png",
+        iconUrl: "https://raw.githubusercontent.com/ThorntonMatthewD/snapping-rails/master/web/src/assets/images/sl-icon.png",
+        shadowUrl: "https://raw.githubusercontent.com/ThorntonMatthewD/snapping-rails/master/web/src/assets/images/sl-icon-shadow.png",
         iconSize: [64, 64],
         shadowSize: [64, 64],
         iconAnchor: [22,58],
