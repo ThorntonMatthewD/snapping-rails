@@ -28,7 +28,6 @@ origins = [
     "http://www.snappingrails.com/",
     "https://www.snappingrails.com/",
     "http://localhost:3000",
-    "http://localhost:8080",
 ]
 
 app.add_middleware(
