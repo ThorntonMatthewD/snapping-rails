@@ -1,16 +1,16 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from '@mui/material/styles';
-import { Theme } from './Configs/theme';
+import { Theme } from './configs/theme';
 
-import Navbar from './Components/Navbar';
-import Footer from './Components/Footer';
-import Home from './Pages/Home';
-import Login from './Pages/Login';
-import About from './Pages/About';
-import Contact from './Pages/Contact';
-import NotFound from './Pages/NotFound';
-import { AuthProvider } from './Contexts/AuthProvider';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import NotFound from './pages/NotFound';
+import { AuthProvider } from './contexts/AuthProvider';
 
 
 function App() {

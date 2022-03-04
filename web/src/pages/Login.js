@@ -1,5 +1,5 @@
 import {Grid, CssBaseline, Typography, Container} from '@mui/material';
-import LoginForm from '../Components/Forms/LoginForm'
+import LoginForm from '../components/forms/LoginForm'
 
 
 const Login = () => {

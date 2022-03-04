@@ -13,9 +13,9 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import AvatarButton from './AvatarButton';
-import logo from '../Assets/Images/logo-white.png';
+import logo from '../assets/images/logo-white.png';
 
-import useAuth from '../Hooks/useAuth';
+import useAuth from '../hooks/useAuth';
 
 
 const pages = [

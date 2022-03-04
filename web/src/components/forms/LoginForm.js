@@ -3,8 +3,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Paper, Typography } from "@mui/material";
 import * as yup from "yup";
 import { useNavigate, useLocation } from 'react-router-dom';
-import FormInputText from "./Fields/FormInputText";
-import useAuth from "../../Hooks/useAuth";
+import FormInputText from "./fields/FormInputText";
+import useAuth from "../../hooks/useAuth";
 
 const LoginForm = () => { 
   const { setAuth } = useAuth();

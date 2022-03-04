@@ -1,4 +1,4 @@
-import Railmap from "../Components/Railmap";
+import Railmap from "../components/Railmap";
 
 const Home = () => {
 

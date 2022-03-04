@@ -3,9 +3,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Paper } from '@mui/material';
 import * as yup from "yup";
 import { string } from "yup";
-import FormDropdown from './Fields/FormDropdown';
-import FormInputText from "./Fields/FormInputText";
-import useAuth from "../../Hooks/useAuth";
+import FormDropdown from './fields/FormDropdown';
+import FormInputText from "./fields/FormInputText";
+import useAuth from "../../hooks/useAuth";
 
 const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
     const { auth } = useAuth();
