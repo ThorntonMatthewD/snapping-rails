@@ -48,6 +48,7 @@ const DraggableMarker = ({ center, onFinalPlacement, updateLocation, setMarkerVi
     return (
       <Marker
         draggable={true}
+        autoPan={true}
         eventHandlers={eventHandlers}
         position={position.wrap()}
         icon={draggableIcon}

@@ -57,7 +57,7 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
         value: "2",
       },
       {
-        label: "Museum",
+        label: "Museum/Historical Site",
         value: "3",
       },
       {
