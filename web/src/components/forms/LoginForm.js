@@ -34,27 +34,11 @@ const LoginForm = () => {
     const { handleSubmit,  control, formState: { errors } } = methods;
 
     const onSubmit = data => {
-
-      let info = {
-        "username": data.username,
-        "password": data.password
-      }
-
-      let formBody = [];
-
-      for (var property in info) {
-        var encodedKey = encodeURIComponent(property);
-        var encodedValue = encodeURIComponent(info[property]);
-        formBody.push(encodedKey + "=" + encodedValue);
-      }
-
-      formBody = formBody.join("&");
-
       fetch('http://localhost:5000/token', {
         method: 'POST',
-        headers: {  "accept": "application/json", "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        headers: {  "accept": "application/json", "Content-Type": "application/json" },
         credentials: 'include',
-        body: formBody
+        body: JSON.stringify(data)
       })
       .then(response => response.json())
       .then(data => {

@@ -1,12 +1,12 @@
 from datetime import datetime, timezone, date
 
 from fastapi import Depends, HTTPException, status, APIRouter, Query
+from fastapi_jwt_auth import AuthJWT
 import opengraph_py3 as opengraph
 from pydantic import BaseModel, validator, HttpUrl
 from sqlalchemy.sql.expression import insert, select, update
-from typing import List, Optional
+from typing import Optional
 
-from src.routers.auth import User, get_current_active_user
 from src.database.database import SNAPPING_RAILS_ENGINE as db
 from src.database import models
 from src.database.functions import SqlalchemyResult
@@ -92,10 +92,14 @@ async def get_railmap_markers(
 @router.post("/markers", status_code=status.HTTP_201_CREATED, tags=["Map"])
 async def add_railmap_markers(
     marker: Marker,
-    current_user: User = Depends(get_current_active_user)
+    Authorize: AuthJWT = Depends()
 ):
+    Authorize.jwt_required()
+
+    current_user = Authorize.get_jwt_subject()
+
     new_marker = {
-        "author_id": current_user.id,
+        "author_id": 1,
         "created_at": marker.created_at.replace(tzinfo=None),
         "lat": marker.lat.strip(),
         "long": marker.long.strip(),
@@ -116,8 +120,12 @@ async def add_railmap_markers(
 @router.put("/markers", tags=["Map"])
 async def update_railmap_markers(
     marker: Marker, 
-    current_user: User = Depends(get_current_active_user)
+    Authorize: AuthJWT = Depends()
 ):
+    Authorize.jwt_required()
+
+    current_user = Authorize.get_jwt_subject()
+
     #TODO Allow for admins to update anything
     async with db.session() as session:
         result = session.update(models.Marker) \
@@ -135,8 +143,12 @@ async def update_railmap_markers(
 @router.delete("/markers", tags=["Map"])
 async def delete_railmap_markers(
     marker: Marker, 
-    current_user: User = Depends(get_current_active_user)
+    Authorize: AuthJWT = Depends()
 ):
+    Authorize.jwt_required()
+
+    current_user = Authorize.get_jwt_subject()
+
     #TODO Allow for admins to delete anything
     async with db.session() as session:
         result = session.delete(models.Marker) \
