@@ -25,19 +25,19 @@ class Marker(BaseModel):
     description: str
     marker_type: int
 
-    @validator('lat')
+    @validator("lat")
     def validate_lat_bounds(cls, v):
         if float(v) < -90 or float(v) > 90:
             raise ValueError("Latitude value isn't valid")
         return v
 
-    @validator('long')
+    @validator("long")
     def validate_long_bounds(cls, v):
         if float(v) < -180 or float(v) > 180:
             raise ValueError("Longitude value isn't valid")
         return v
 
-    @validator('created_at')
+    @validator("created_at")
     def validate_created_at_time(cls, v):
         if v > datetime.now(timezone.utc):
             raise ValueError("You are posting from the future... Curious.")
@@ -51,22 +51,22 @@ def get_thumbnail(source_url: str) -> str:
         if img_url is not None:
             return img_url
 
-    return "https://i.imgur.com/BfGDSZT.png" 
+    return "https://i.imgur.com/BfGDSZT.png"
 
 
 @router.get("/markers", tags=["Map"])
 async def get_railmap_markers(
-    marker_type:    Optional[int] = Query(None, ge=1, le=5),
-    newer_than:     Optional[date] = None,
-    older_than:     Optional[date] = None,
-    author_id:      Optional[int] = Query(None, ge=1),
-    limit:          Optional[int] = Query(None, ge=1, le=1000)
+    marker_type: Optional[int] = Query(None, ge=1, le=5),
+    newer_than: Optional[date] = None,
+    older_than: Optional[date] = None,
+    author_id: Optional[int] = Query(None, ge=1),
+    limit: Optional[int] = Query(None, ge=1, le=1000),
 ):
     sql = select(models.Marker)
 
     if not marker_type is None:
         sql = sql.where(models.Marker.marker_type == marker_type)
-    
+
     if not newer_than is None:
         sql = sql.where(models.Marker.created_at > newer_than)
 
@@ -90,10 +90,7 @@ async def get_railmap_markers(
 
 
 @router.post("/markers", status_code=status.HTTP_201_CREATED, tags=["Map"])
-async def add_railmap_markers(
-    marker: Marker,
-    Authorize: AuthJWT = Depends()
-):
+async def add_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
     current_user = Authorize.get_jwt_subject()
@@ -107,7 +104,7 @@ async def add_railmap_markers(
         "title": marker.title.strip(),
         "description": marker.description.strip(),
         "marker_type": marker.marker_type,
-        "img_url": get_thumbnail(marker.media_url)
+        "img_url": get_thumbnail(marker.media_url),
     }
 
     async with db.session() as session:
@@ -118,46 +115,54 @@ async def add_railmap_markers(
 
 
 @router.put("/markers", tags=["Map"])
-async def update_railmap_markers(
-    marker: Marker, 
-    Authorize: AuthJWT = Depends()
-):
+async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
     current_user = Authorize.get_jwt_subject()
 
-    #TODO Allow for admins to update anything
+    # TODO Allow for admins to update anything
     async with db.session() as session:
-        result = session.update(models.Marker) \
-            .where(models.Marker.id == marker.id and models.Marker.author_id == current_user.id) \
+        result = (
+            session.update(models.Marker)
+            .where(
+                models.Marker.id == marker.id
+                and models.Marker.author_id == current_user.id
+            )
             .values(marker)
+        )
 
         await session.commit()
 
     if result.rowcount > 0:
         return {"message": "Marker updated successfully."}
     else:
-        raise HTTPException(401, "Either this marker doesn't exist, or you do not own it.")
+        raise HTTPException(
+            401, "Either this marker doesn't exist, or you do not own it."
+        )
 
 
 @router.delete("/markers", tags=["Map"])
-async def delete_railmap_markers(
-    marker: Marker, 
-    Authorize: AuthJWT = Depends()
-):
+async def delete_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
     current_user = Authorize.get_jwt_subject()
 
-    #TODO Allow for admins to delete anything
+    # TODO Allow for admins to delete anything
     async with db.session() as session:
-        result = session.delete(models.Marker) \
-            .where(models.Marker.id == marker.id and models.Marker.author_id == current_user.id) \
+        result = (
+            session.delete(models.Marker)
+            .where(
+                models.Marker.id == marker.id
+                and models.Marker.author_id == current_user.id
+            )
             .values(marker)
+        )
 
         await session.commit()
 
     if result.rowcount > 0:
         return {"message": "Marker deleted successfully."}
     else:
-        raise HTTPException(401, "Either this marker doesn't exist, or you do not own it.")
+        raise HTTPException(
+            401, "Either this marker doesn't exist, or you do not own it."
+        )

@@ -8,20 +8,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from passlib.context import CryptContext
 
 
-#System-wide Env Vars
+# System-wide Env Vars
 load_dotenv(find_dotenv(), verbose=True)
 
-DATABASE_URI = os.environ.get('DATABASE_URI')
+DATABASE_URI = os.environ.get("DATABASE_URI")
 
-AUTH_SECRET_KEY = os.environ.get('AUTH_SECRET_KEY')
-AUTH_ALGORITHM = os.environ.get('AUTH_ALGORITHM')
-ACCESS_TOKEN_EXPIRE_MINUTES = float(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES') or 30)
+AUTH_SECRET_KEY = os.environ.get("AUTH_SECRET_KEY")
+AUTH_ALGORITHM = os.environ.get("AUTH_ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = float(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES") or 30)
 
 
 app = FastAPI()
 
 
-#CORS Setup
+# CORS Setup
 origins = [
     "http://snappingrails.com/",
     "https://snappingrails.com/",
@@ -39,6 +39,6 @@ app.add_middleware(
 )
 
 
-#Security
+# Security
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

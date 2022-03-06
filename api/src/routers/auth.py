@@ -32,9 +32,9 @@ class NewUser(BaseModel):
     email: EmailStr
     disabled: bool | None = False
     password: str
-    password2: str #for confirmation
+    password2: str  # for confirmation
 
-    @validator('username')
+    @validator("username")
     def user_validation(cls, v):
         if len(v) <= 0 or len(v) > 16:
             raise ValueError("Username must be between 1-16 characters")
@@ -42,7 +42,7 @@ class NewUser(BaseModel):
         assert v.isalnum(), "No special characters are allowed in username"
         return v
 
-    @validator('password')
+    @validator("password")
     def password_strength_check(cls, v):
         if len(v) < 8:
             raise ValueError("Your password needs to be at least 8 characters.")
@@ -50,13 +50,15 @@ class NewUser(BaseModel):
             raise ValueError("Your password cannot be longer than 32 characters.")
         elif re.search(r"\d", v) is None:
             raise ValueError("You need at least one digit in your password.")
-        elif re.search(r"[ !#$%&'()*+,-./[\\\]^_`{|}~"+r'"]', v) is None:
-            raise ValueError("You need at least one special character in your password.")
+        elif re.search(r"[ !#$%&'()*+,-./[\\\]^_`{|}~" + r'"]', v) is None:
+            raise ValueError(
+                "You need at least one special character in your password."
+            )
         return v
 
-    @validator('password2')
+    @validator("password2")
     def passwords_match(cls, v, values, **kwargs):
-        if 'password' in values and v != values['password']:
+        if "password" in values and v != values["password"]:
             raise ValueError("Passwords don't match")
 
 
@@ -77,7 +79,7 @@ async def authenticate_user(username: str, password: str):
     user = await get_user(username)
     if not user:
         return False
-    if not verify_password(password, user.get('hashed_password', '')):
+    if not verify_password(password, user.get("hashed_password", "")):
         return False
     return user
 
@@ -98,19 +100,19 @@ async def get_user(username: str):
     return user_dict
 
 
-@router.post('/token')
+@router.post("/token")
 async def login(user: UserCreds, Authorize: AuthJWT = Depends()):
     matching_user = await authenticate_user(user.username, user.password)
 
     if not matching_user:
-        raise HTTPException(status_code=401,detail="Bad username or password")
+        raise HTTPException(status_code=401, detail="Bad username or password")
 
     access_token = Authorize.create_access_token(subject=user.username)
     refresh_token = Authorize.create_refresh_token(subject=user.username)
     return {"access_token": access_token, "refresh_token": refresh_token}
 
 
-@router.post('/refresh')
+@router.post("/refresh")
 async def refresh(Authorize: AuthJWT = Depends()):
     Authorize.jwt_refresh_token_required()
 
@@ -119,7 +121,7 @@ async def refresh(Authorize: AuthJWT = Depends()):
     return {"access_token": new_access_token}
 
 
-@router.get('/protected')
+@router.get("/protected")
 async def protected(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
