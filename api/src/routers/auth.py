@@ -81,6 +81,7 @@ async def authenticate_user(username: str, password: str):
         return False
     return user
 
+
 async def get_user(username: str):
     sql = select(models.User).where(models.User.username == username)
 
