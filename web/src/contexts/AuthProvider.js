@@ -81,6 +81,7 @@ export const AuthProvider = ({ children }) => {
     refreshToken: refreshToken,
     loginUser: loginUser,
     logoutUser: logoutUser,
+    updateToken: updateToken,
   };
 
   useEffect(() => {

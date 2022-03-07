@@ -11,6 +11,7 @@
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "dayjs": "^1.10.8",
     "eslint": "^8.10.0",
     "eslint-plugin-react": "^7.29.3",
     "fetch-intercept": "^2.4.0",
