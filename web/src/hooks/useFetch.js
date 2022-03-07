@@ -32,7 +32,7 @@ const useFetch = (endpoint, refetchData, reqType, authRequired, body) => {
 
   let reqBody = body !== null ? JSON.stringify(body) : null;
 
-  useEffect(() => {
+  const performRequest = (dispatch) => {
     const abortCont = new AbortController();
     setIsPending(true);
 
@@ -68,9 +68,9 @@ const useFetch = (endpoint, refetchData, reqType, authRequired, body) => {
 
     // abort the fetch
     return () => abortCont.abort();
-  }, [endpoint, refetchData]);
+  };
 
-  return { data, isPending, error };
+  return { data, isPending, error, performRequest };
 };
 
 export default useFetch;

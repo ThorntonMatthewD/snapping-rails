@@ -3,7 +3,7 @@ import "../assets/styles/Railmap.css";
 import * as React from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { Alert, Collapse, Backdrop, CircularProgress } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 
 import useFetch from "../hooks/useFetch";
@@ -18,6 +18,7 @@ const Railmap = () => {
     data: markers,
     error,
     isPending,
+    performRequest,
   } = useFetch("/markers", refetchData, "GET", false);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,6 +33,10 @@ const Railmap = () => {
   const handleModalClose = () => setModalOpen(false);
 
   const [addMarkerButNoLogin, setAddMarkerButNoLogin] = useState(false);
+
+  useEffect(() => {
+    performRequest();
+  }, [refetchData]);
 
   const getMapCenter = () => {
     return map.getCenter();
