@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
   let navigate = useNavigate();
 
   let loginUser = async (data) => {
-    console.log(data);
     await fetch("http://localhost:5000/token", {
       method: "POST",
       headers: {
