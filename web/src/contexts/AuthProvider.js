@@ -17,12 +17,11 @@ export const AuthProvider = ({ children }) => {
 
   let navigate = useNavigate();
 
-  let loginUser = (data) => {
+  let loginUser = async (data) => {
     console.log(data);
-    fetch("http://localhost:5000/token", {
+    await fetch("http://localhost:5000/token", {
       method: "POST",
       headers: {
-        accept: "application/json",
         "Content-Type": "application/json",
       },
       credentials: "include",
@@ -30,8 +29,9 @@ export const AuthProvider = ({ children }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        setAccessToken(data.accessToken);
-        localStorage.setItem("refreshToken", data.refresh_token);
+        setAccessToken(data["access_token"]);
+        setUser(jwt_decode(accessToken));
+        localStorage.setItem("refreshToken", data["refresh_token"]);
         navigate(`/`);
       })
       .catch((error) => {
@@ -45,6 +45,29 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem("accessToken");
     navigate(`/`);
+  };
+
+  let updateToken = async () => {
+    await fetch("http://localhost:5000/refresh", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ refresh: refreshToken }),
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          let data = response.json();
+          setAccessToken(data["access_token"]);
+          setUser(jwt_decode(accessToken));
+          localStorage.setItem("refreshToken", data["refresh_token"]);
+        } else {
+          logoutUser();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   let contextData = {
