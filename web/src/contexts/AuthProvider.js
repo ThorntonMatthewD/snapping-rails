@@ -26,12 +26,15 @@ export const AuthProvider = ({ children }) => {
       credentials: "include",
       body: JSON.stringify(data),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        setAccessToken(data["access_token"]);
-        setUser(jwt_decode(data["access_token"]));
-        localStorage.setItem("refreshToken", data["refresh_token"]);
-        navigate(`/`);
+      .then((response) => {
+        if (response.status === 200) {
+          response.json().then((data) => {
+            setAccessToken(data["access_token"]);
+            setUser(jwt_decode(data["access_token"]));
+            localStorage.setItem("refreshToken", data["refresh_token"]);
+            navigate(`/`);
+          });
+        }
       })
       .catch((error) => {
         console.log(error);
