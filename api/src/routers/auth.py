@@ -100,7 +100,7 @@ async def get_user(username: str):
     return user_dict
 
 
-@router.post("/token")
+@router.post("/token", tags=["Auth"])
 async def login(user: UserCreds, Authorize: AuthJWT = Depends()):
     matching_user = await authenticate_user(user.username, user.password)
 
@@ -112,7 +112,7 @@ async def login(user: UserCreds, Authorize: AuthJWT = Depends()):
     return {"access_token": access_token, "refresh_token": refresh_token}
 
 
-@router.post("/refresh")
+@router.post("/refresh", tags=["Auth"])
 async def refresh(Authorize: AuthJWT = Depends()):
     Authorize.jwt_refresh_token_required()
 
@@ -121,7 +121,7 @@ async def refresh(Authorize: AuthJWT = Depends()):
     return {"access_token": new_access_token}
 
 
-@router.get("/protected")
+@router.get("/protected", tags=["Auth"])
 async def protected(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
@@ -129,7 +129,7 @@ async def protected(Authorize: AuthJWT = Depends()):
     return {"user": current_user}
 
 
-@router.post("/register")
+@router.post("/register", tags=["Auth"])
 async def register_new_user(new_user: NewUser):
     register_user = {
         "username": new_user.username,
