@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
       .then((response) => response.json())
       .then((data) => {
         setAccessToken(data["access_token"]);
-        setUser(jwt_decode(accessToken));
+        setUser(jwt_decode(data["access_token"]));
         localStorage.setItem("refreshToken", data["refresh_token"]);
         navigate(`/`);
       })
@@ -43,6 +43,7 @@ export const AuthProvider = ({ children }) => {
     setRefreshToken(null);
     setUser(null);
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     navigate(`/`);
   };
 
@@ -51,15 +52,17 @@ export const AuthProvider = ({ children }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + refreshToken,
       },
-      body: JSON.stringify({ refresh: refreshToken }),
+      credentials: "include",
     })
       .then((response) => {
         if (response.status === 200) {
-          let data = response.json();
-          setAccessToken(data["access_token"]);
-          setUser(jwt_decode(accessToken));
-          localStorage.setItem("refreshToken", data["refresh_token"]);
+          response.json().then((data) => {
+            setAccessToken(data["access_token"]);
+            setUser(jwt_decode(data["access_token"]));
+            localStorage.setItem("refreshToken", data["refresh_token"]);
+          });
         } else {
           logoutUser();
         }
@@ -76,6 +79,13 @@ export const AuthProvider = ({ children }) => {
     loginUser: loginUser,
     logoutUser: logoutUser,
   };
+
+  useEffect(() => {
+    if (refreshToken !== null) {
+      console.log("refreshing token");
+      updateToken();
+    }
+  }, []);
 
   return (
     <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
