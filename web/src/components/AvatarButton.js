@@ -10,7 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import useAuth from "../hooks/useAuth";
 
 const AvatarButton = () => {
-  const { logoutUser } = useAuth();
+  const { logoutUser, user } = useAuth();
   const settings = ["Profile", "Account", "Posts", "Sign Out"];
 
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -35,7 +35,10 @@ const AvatarButton = () => {
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title="Account settings">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar alt="Matt Thornton" src="/static/images/avatar/2.jpg" />
+          <Avatar
+            alt={user !== null ? user.sub : ""}
+            src="/static/images/avatar/2.jpg"
+          />
         </IconButton>
       </Tooltip>
       <Menu
