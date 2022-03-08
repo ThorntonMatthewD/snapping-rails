@@ -19,6 +19,8 @@ router = APIRouter()
 
 class Settings(BaseModel):
     authjwt_secret_key: str = AUTH_SECRET_KEY
+    authjwt_denylist_enabled: bool = True
+    authjwt_denylist_token_checks: set = {"access","refresh"}
 
 
 class UserCreds(BaseModel):
@@ -65,6 +67,14 @@ class NewUser(BaseModel):
 @AuthJWT.load_config
 def get_config():
     return Settings()
+
+
+denylist = set()
+
+@AuthJWT.token_in_denylist_loader
+def check_if_token_in_denylist(decrypted_token):
+    jti = decrypted_token['jti']
+    return jti in denylist
 
 
 def verify_password(plain_password, hashed_password):
@@ -119,6 +129,9 @@ async def refresh(Authorize: AuthJWT = Depends()):
     current_user = Authorize.get_jwt_subject()
     new_access_token = Authorize.create_access_token(subject=current_user)
     new_refresh_token = Authorize.create_refresh_token(subject=current_user)
+
+    #Revoke old refresh token to force us of new one.
+    denylist.add(Authorize.get_raw_jwt()['jti'])
     return {"access_token": new_access_token, "refresh_token": new_refresh_token}
 
 
