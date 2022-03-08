@@ -19,7 +19,7 @@ const Railmap = () => {
     error,
     isPending,
     performRequest,
-  } = useFetch("/markers", refetchData, "GET", false);
+  } = useFetch("/markers", refetchData, "GET", false, null);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -36,7 +36,7 @@ const Railmap = () => {
 
   useEffect(() => {
     performRequest();
-  }, [refetchData]);
+  }, [refetchData, performRequest]);
 
   const getMapCenter = () => {
     return map.getCenter();
