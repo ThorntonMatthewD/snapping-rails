@@ -36,7 +36,7 @@ const Railmap = () => {
 
   useEffect(() => {
     performRequest();
-  }, [refetchData, performRequest]);
+  }, [refetchData]);
 
   const getMapCenter = () => {
     return map.getCenter();
