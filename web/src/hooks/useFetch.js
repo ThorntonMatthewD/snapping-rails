@@ -17,12 +17,17 @@ const useFetch = (endpoint, refetchData, reqType, authRequired, body) => {
     };
 
     if (authRequired) {
-      const isExpired = dayjs.unix(user.exp).diff(dayjs()) < 1;
-      if (accessToken !== null && !isExpired) {
-        reqHeaders.put("Authorization", accessToken);
+      if (accessToken !== null) {
+        if (dayjs.unix(user.exp).diff(dayjs()) < 1) {
+          reqHeaders["Authorization"] = "Bearer " + accessToken;
+        } else {
+          updateToken().then(() => {
+            reqHeaders["Authorization"] = "Bearer " + accessToken;
+          });
+        }
       } else {
         updateToken().then(() => {
-          reqHeaders.put("Authorization", accessToken);
+          reqHeaders["Authorization"] = "Bearer " + accessToken;
         });
       }
     }
