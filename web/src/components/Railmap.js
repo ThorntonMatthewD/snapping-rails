@@ -18,8 +18,7 @@ const Railmap = () => {
     data: markers,
     error,
     isPending,
-    performRequest,
-  } = useFetch("/markers", refetchData, "GET", false, null);
+  } = useFetch("http://localhost:5000/markers", refetchData);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -33,10 +32,6 @@ const Railmap = () => {
   const handleModalClose = () => setModalOpen(false);
 
   const [addMarkerButNoLogin, setAddMarkerButNoLogin] = useState(false);
-
-  useEffect(() => {
-    performRequest();
-  }, [refetchData]);
 
   const getMapCenter = () => {
     return map.getCenter();

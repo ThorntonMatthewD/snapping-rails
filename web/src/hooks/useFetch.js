@@ -1,53 +1,16 @@
-import { useState } from "react";
-import dayjs from "dayjs";
-import useAuth from "../hooks/useAuth";
+import { useState, useEffect } from "react";
 
-const useFetch = (endpoint, refetchData, reqType, authRequired, body) => {
-  let { accessToken, user, updateToken } = useAuth();
-
+const useFetch = (url, refetchData) => {
   const [data, setData] = useState(null);
   const [isPending, setIsPending] = useState(true);
   const [error, setError] = useState(null);
 
-  const baseURL = "http://localhost:5000";
-
-  const generateHeaders = () => {
-    let reqHeaders = {
-      "Content-Type": "application/json",
-    };
-
-    if (authRequired) {
-      if (accessToken !== null) {
-        if (dayjs.unix(user.exp).diff(dayjs()) < 1) {
-          reqHeaders["Authorization"] = "Bearer " + accessToken;
-        } else {
-          updateToken().then(() => {
-            reqHeaders["Authorization"] = "Bearer " + accessToken;
-          });
-        }
-      } else {
-        updateToken().then(() => {
-          reqHeaders["Authorization"] = "Bearer " + accessToken;
-        });
-      }
-    }
-
-    return reqHeaders;
-  };
-
-  let reqBody = body !== null ? JSON.stringify(body) : null;
-
-  const performRequest = (dispatch) => {
+  useEffect(() => {
     const abortCont = new AbortController();
     setIsPending(true);
 
     setTimeout(() => {
-      fetch(baseURL + endpoint, {
-        signal: abortCont.signal,
-        method: reqType,
-        headers: generateHeaders(),
-        body: reqBody,
-      })
+      fetch(url, { signal: abortCont.signal })
         .then((res) => {
           if (!res.ok) {
             // error coming back from server
@@ -73,9 +36,9 @@ const useFetch = (endpoint, refetchData, reqType, authRequired, body) => {
 
     // abort the fetch
     return () => abortCont.abort();
-  };
+  }, [url, refetchData]);
 
-  return { data, isPending, error, performRequest };
+  return { data, isPending, error };
 };
 
 export default useFetch;

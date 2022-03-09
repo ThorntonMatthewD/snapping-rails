@@ -86,9 +86,17 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (refreshToken !== null) {
-      console.log("refreshing token");
       updateToken();
     }
+
+    let fiveMinutes = 1000 * 60 * 5;
+
+    let interval = setInterval(() => {
+      if (accessToken) {
+        updateToken();
+      }
+    }, fiveMinutes);
+    return () => clearInterval(interval);
   }, []);
 
   return (
