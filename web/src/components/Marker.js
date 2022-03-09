@@ -39,16 +39,3 @@ const MapMarker = ({ marker }) => {
 }
 
 export default MapMarker;
-
-
-
-
-
-
-
-
-
-
-
-
-
