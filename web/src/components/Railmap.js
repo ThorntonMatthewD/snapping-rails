@@ -18,7 +18,7 @@ const Railmap = () => {
     data: markers,
     error,
     isPending,
-  } = useFetch("http://localhost:5000/markers", refetchData);
+  } = useFetch("http://localhost:5000/markers", refetchData, null);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -63,7 +63,7 @@ const Railmap = () => {
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={isPending}
       >
-        <h1 style={{ m: 3 }}>Loading the Rail Manifest...</h1>
+        <h1 style={{ m: 3 }}>Loading the Rail Ledger...</h1>
         <CircularProgress color="inherit" />
       </Backdrop>
 
