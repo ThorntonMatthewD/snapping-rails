@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Backdrop, Container, CircularProgress, Grid } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import useFetch from "../hooks/useFetch";
+import useFetch from "use-http";
 import useAuth from "../hooks/useAuth";
 
 const columns = [
@@ -46,24 +46,20 @@ const columns = [
   },
 ];
 
-let markers = [];
-
 const Posts = () => {
-  const [refetchData, setRefetchData] = useState(false);
-  const [urlParams, setUrlParams] = useState("");
   const { user } = useAuth();
 
   let {
-    data: markers,
+    data: markers = [],
     error,
-    isPending,
-  } = useFetch("http://localhost:5000/markers", refetchData, "author_id=1");
+    loading,
+  } = useFetch("http://localhost:5000/markers?author_id=1", []);
 
   return (
     <Container>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isPending}
+        open={loading}
       >
         <h1 style={{ m: 3 }}>Loading yours posts...</h1>
         <CircularProgress color="inherit" />
