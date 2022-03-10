@@ -3,11 +3,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Paper, Typography } from "@mui/material";
 import * as yup from "yup";
 import FormInputText from "./fields/FormInputText";
-import useAuth from "../../hooks/useAuth";
 
-const LoginForm = () => {
-  const { loginUser } = useAuth();
-
+const RegistrationForm = () => {
   const schema = yup.object({
     username: yup
       .string()
@@ -102,4 +99,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegistrationForm;
