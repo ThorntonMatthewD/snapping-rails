@@ -68,7 +68,7 @@ const Railmap = () => {
       </Backdrop>
 
       <Collapse
-        in={error != null}
+        in={error}
         style={{
           position: "absolute",
           zIndex: 100,
@@ -100,7 +100,7 @@ const Railmap = () => {
       </Collapse>
 
       <Collapse
-        in={draggableMarker === true}
+        in={draggableMarker}
         style={{
           position: "absolute",
           zIndex: 100,

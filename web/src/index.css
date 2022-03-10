@@ -24,6 +24,7 @@ code {
 
 a {
   text-decoration: none;
+  cursor: pointer;
 }
 
 /* navbar */
@@ -38,6 +39,7 @@ a {
 .navbar .links {
   margin-left: auto;
 }
+
 .navbar a {
   margin-left: 16px;
   text-decoration: none;

@@ -1,30 +1,40 @@
-import {Grid, CssBaseline, Typography, Container} from '@mui/material';
-import LoginForm from '../components/forms/LoginForm'
-
+import { useState } from "react";
+import { Grid, CssBaseline, Typography, Container } from "@mui/material";
+import LoginForm from "../components/forms/LoginForm";
+import RegistrationForm from "../components/forms/RegistrationForm";
 
 const Login = () => {
-    return (
-        <div>
-          <Container component="main" maxWidth="xs">
-              <CssBaseline />
-              <Grid
-                  container
-                  spacing={0}
-                  direction="column"
-                  alignItems="center"
-                  justifyContent="center"
-                  style={{ minHeight: '90vh' }}
-              >
-              <Typography component="h1" variant="h3">
-                  All Aboard! 🚂
-              </Typography>
+  const [loginActive, setLoginActive] = useState(true);
 
-              <LoginForm />
+  const toggleLoginForm = () => {
+    setLoginActive(!loginActive);
+  };
 
-              </Grid>
-          </Container>
-        </div>
-    );
-}
+  return (
+    <div>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Grid
+          container
+          spacing={0}
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          style={{ minHeight: "90vh" }}
+        >
+          <Typography component="h1" variant="h3">
+            All Aboard! 🚂
+          </Typography>
+
+          {loginActive ? (
+            <LoginForm toggleActiveForm={toggleLoginForm} />
+          ) : (
+            <RegistrationForm toggleActiveForm={toggleLoginForm} />
+          )}
+        </Grid>
+      </Container>
+    </div>
+  );
+};
 
 export default Login;

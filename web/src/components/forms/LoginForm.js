@@ -5,7 +5,7 @@ import * as yup from "yup";
 import FormInputText from "./fields/FormInputText";
 import useAuth from "../../hooks/useAuth";
 
-const LoginForm = () => {
+const LoginForm = ({ toggleActiveForm }) => {
   const { loginUser } = useAuth();
 
   const schema = yup.object({
@@ -14,7 +14,7 @@ const LoginForm = () => {
       .min(1)
       .max(16)
       .required("Please enter your username"),
-    password: yup.string().required("Please Enter your password"),
+    password: yup.string().required("Please enter your password"),
   });
 
   const defaultValues = {
@@ -47,8 +47,14 @@ const LoginForm = () => {
         width: "90%",
       }}
     >
-      <FormInputText name="username" control={control} label="Username" />
       <FormInputText
+        required
+        name="username"
+        control={control}
+        label="Username"
+      />
+      <FormInputText
+        required
         name="password"
         control={control}
         label="Password"
@@ -59,9 +65,9 @@ const LoginForm = () => {
         Submit
       </Button>
 
-      <Typography variant="p">Don't have any account?</Typography>
+      <Typography variant="p">Don't have an account?</Typography>
 
-      <Button fullWidth variant="outlined">
+      <Button fullWidth variant="outlined" onClick={toggleActiveForm}>
         CREATE ACCOUNT
       </Button>
 
