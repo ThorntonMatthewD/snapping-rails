@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -10,7 +11,9 @@ import MenuItem from "@mui/material/MenuItem";
 import useAuth from "../hooks/useAuth";
 
 const AvatarButton = () => {
-  const { logoutUser, user } = useAuth();
+  const navigate = useNavigate();
+
+  const { logoutUser, user, acquireUserProfile } = useAuth();
   const settings = ["Profile", "Account", "Posts", "Sign Out"];
 
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -27,7 +30,14 @@ const AvatarButton = () => {
     const { setting } = e.currentTarget.dataset;
     if (setting === "Sign Out") {
       logoutUser();
+    } else if (setting === "Profile") {
+      navigate("/profile");
+    } else if (setting === "Account") {
+      navigate("/account");
+    } else if (setting === "Posts") {
+      navigate("/posts");
     }
+
     setAnchorElUser(null);
   };
 

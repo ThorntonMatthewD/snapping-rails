@@ -135,12 +135,15 @@ async def refresh(Authorize: AuthJWT = Depends()):
     return {"access_token": new_access_token, "refresh_token": new_refresh_token}
 
 
-@router.get("/protected", tags=["Auth"])
-async def protected(Authorize: AuthJWT = Depends()):
+@router.get("/user", tags=["Auth"])
+async def get_user_info(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
     current_user = Authorize.get_jwt_subject()
-    return {"user": current_user}
+
+    user_info = get_user_info(current_user)
+    user_info.pop("hashed_password")
+    return {"user_info": user_info}
 
 
 @router.post("/register", tags=["Auth"])

@@ -6,6 +6,7 @@ import opengraph_py3 as opengraph
 from pydantic import BaseModel, validator, HttpUrl
 from sqlalchemy.sql.expression import insert, select, update
 from typing import Optional
+from src.routers.auth import get_user
 
 from src.database.database import SNAPPING_RAILS_ENGINE as db
 from src.database import models
@@ -60,6 +61,7 @@ async def get_railmap_markers(
     newer_than: Optional[date] = None,
     older_than: Optional[date] = None,
     author_id: Optional[int] = Query(None, ge=1),
+    author: Optional[str] = None,
     limit: Optional[int] = Query(None, ge=1, le=1000),
 ):
     sql = select(models.Marker)
@@ -75,6 +77,13 @@ async def get_railmap_markers(
 
     if not author_id is None:
         sql = sql.where(models.Marker.author_id == author_id)
+
+    if not author is None:
+        user_info = await get_user(author)
+        id = user_info.get("id")
+
+        if not id is None:
+            sql = sql.where(models.Marker.author_id == id)
 
     if not limit is None:
         sql = sql.limit(limit)
@@ -95,8 +104,10 @@ async def add_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
 
     current_user = Authorize.get_jwt_subject()
 
+    user_info = await get_user(current_user)
+
     new_marker = {
-        "author_id": 1,
+        "author_id": user_info.get("id"),
         "created_at": marker.created_at.replace(tzinfo=None),
         "lat": marker.lat.strip(),
         "long": marker.long.strip(),

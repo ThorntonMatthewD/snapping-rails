@@ -2,11 +2,11 @@ import "../assets/styles/Railmap.css";
 
 import * as React from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
+import useFetch from "use-http";
 import { Alert, Collapse, Backdrop, CircularProgress } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 
-import useFetch from "../hooks/useFetch";
 import MapMarker from "./Marker";
 import AddMarkerFab from "./AddMarkerFab";
 import DraggableMarker from "./RailmapDraggableMarker";
@@ -15,10 +15,10 @@ import MarkerModal from "./MarkerModal";
 const Railmap = () => {
   const [refetchData, setRefetchData] = useState(false);
   let {
-    data: markers,
+    data: markers = [],
     error,
-    isPending,
-  } = useFetch("http://localhost:5000/markers", refetchData);
+    loading,
+  } = useFetch("http://localhost:5000/markers", {}, [refetchData]);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -61,9 +61,9 @@ const Railmap = () => {
     <div className="map-wrapper">
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isPending}
+        open={loading}
       >
-        <h1 style={{ m: 3 }}>Loading the Rail Manifest...</h1>
+        <h1 style={{ m: 3 }}>Loading the Rail Ledger...</h1>
         <CircularProgress color="inherit" />
       </Backdrop>
 

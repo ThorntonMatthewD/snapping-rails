@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Posts from "./pages/Posts";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./contexts/AuthProvider";
 
@@ -25,6 +26,7 @@ function App() {
                 <Route exact path="/login" element={<Login />} />
                 <Route exact path="/about" element={<About />} />
                 <Route exact path="/contact" element={<Contact />} />
+                <Route exact path="/posts" element={<Posts />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
