@@ -125,8 +125,13 @@ const Railmap = () => {
       >
         <TileLayer
           noWrap={true}
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <TileLayer
+          noWrap={true}
+          attribution='Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; 
+            <a href="https://www.OpenRailwayMap.org">OpenRailwayMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+          url="https://{s}.tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png"
         />
 
         {markers &&
