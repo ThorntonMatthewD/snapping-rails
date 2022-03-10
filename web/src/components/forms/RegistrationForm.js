@@ -14,12 +14,22 @@ const LoginForm = () => {
       .min(1)
       .max(16)
       .required("Please enter your username"),
+    email: yup
+      .string()
+      .email("Please enter a valid email address")
+      .required("Please enter an email address"),
     password: yup.string().required("Please enter your password"),
+    passwordConfirm: yup
+      .string()
+      .oneOf([yup.ref("password"), null], "Passwords must match")
+      .required("Confirm your password"),
   });
 
   const defaultValues = {
     username: "",
+    email: "",
     password: "",
+    passwordConfirm: "",
   };
 
   const methods = useForm({
@@ -34,7 +44,7 @@ const LoginForm = () => {
   } = methods;
 
   const onSubmit = (data) => {
-    loginUser(data);
+    //TODO register user
   };
 
   return (
@@ -53,6 +63,14 @@ const LoginForm = () => {
         control={control}
         label="Username"
       />
+
+      <FormInputText
+        required
+        name="email"
+        control={control}
+        label="E-Mail Address"
+      />
+
       <FormInputText
         required
         name="password"
@@ -61,14 +79,22 @@ const LoginForm = () => {
         password={true}
       />
 
+      <FormInputText
+        required
+        name="passwordConfirm"
+        control={control}
+        label="Confirm Password"
+        password={true}
+      />
+
       <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
         Submit
       </Button>
 
-      <Typography variant="p">Don't have any account?</Typography>
+      <Typography variant="p">Already have an account?</Typography>
 
       <Button fullWidth variant="outlined">
-        CREATE ACCOUNT
+        SIGN IN
       </Button>
 
       {errors && console.log(errors)}
