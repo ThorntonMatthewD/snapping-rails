@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Backdrop, Container, CircularProgress, Grid } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import useFetch from "use-http";
@@ -53,7 +52,10 @@ const Posts = () => {
     data: markers = [],
     error,
     loading,
-  } = useFetch("http://localhost:5000/markers?author_id=1", []);
+  } = useFetch(
+    "http://localhost:5000/markers?author=" + (user ? user.sub : ""),
+    [user]
+  );
 
   return (
     <Container>
