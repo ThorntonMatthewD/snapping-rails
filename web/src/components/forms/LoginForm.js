@@ -5,7 +5,7 @@ import * as yup from "yup";
 import FormInputText from "./fields/FormInputText";
 import useAuth from "../../hooks/useAuth";
 
-const LoginForm = () => {
+const LoginForm = ({ toggleActiveForm }) => {
   const { loginUser } = useAuth();
 
   const schema = yup.object({
@@ -67,7 +67,7 @@ const LoginForm = () => {
 
       <Typography variant="p">Don't have any account?</Typography>
 
-      <Button fullWidth variant="outlined">
+      <Button fullWidth variant="outlined" onClick={toggleActiveForm}>
         CREATE ACCOUNT
       </Button>
 

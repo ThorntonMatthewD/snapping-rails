@@ -4,7 +4,7 @@ import { Button, Paper, Typography } from "@mui/material";
 import * as yup from "yup";
 import FormInputText from "./fields/FormInputText";
 
-const RegistrationForm = () => {
+const RegistrationForm = ({ toggleActiveForm }) => {
   const schema = yup.object({
     username: yup
       .string()
@@ -90,7 +90,7 @@ const RegistrationForm = () => {
 
       <Typography variant="p">Already have an account?</Typography>
 
-      <Button fullWidth variant="outlined">
+      <Button fullWidth variant="outlined" onClick={toggleActiveForm}>
         SIGN IN
       </Button>
 
