@@ -8,8 +8,6 @@ services:
     image: snapping-rails/snapping-rails-api:latest
     ports:
       - "5000:5000"
-    networks:
-      - snapping-net
     depends_on:
       - db
 
@@ -20,8 +18,6 @@ services:
     image: snapping-rails/snapping-rails-web:latest
     ports:
       - "3000:3000"
-    networks:
-      - snapping-net
     depends_on:
       - api
 
@@ -36,12 +32,6 @@ services:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    networks:
-      - snapping-net
 
 volumes: 
   pgdata:
-
-networks:
-  snapping-net:
-    external: true
