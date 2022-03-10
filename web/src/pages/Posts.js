@@ -1,4 +1,11 @@
-import { Backdrop, Container, CircularProgress, Grid } from "@mui/material";
+import {
+  Backdrop,
+  Container,
+  CircularProgress,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import useFetch from "use-http";
 import useAuth from "../hooks/useAuth";
@@ -59,32 +66,53 @@ const Posts = () => {
 
   return (
     <Container>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
-        <h1 style={{ m: 3 }}>Loading yours posts...</h1>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      {user ? (
+        <Container>
+          <Backdrop
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={loading}
+          >
+            <h1 style={{ m: 3 }}>Loading yours posts...</h1>
+            <CircularProgress color="inherit" />
+          </Backdrop>
 
-      <Grid
-        container
-        spacing={0}
-        direction="column"
-        alignItems="center"
-        justifyContent="center"
-        style={{ minHeight: "90vh", width: "100%" }}
-      >
-        <DataGrid
-          sx={{ width: "100%", mt: 3 }}
-          rows={markers || []}
-          columns={columns}
-          pageSize={10}
-          rowsPerPageOptions={[10]}
-          checkboxSelection
-          disableSelectionOnClick
-        />
-      </Grid>
+          <Grid
+            container
+            spacing={0}
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            style={{ minHeight: "90vh", width: "100%" }}
+          >
+            <DataGrid
+              sx={{ width: "100%", mt: 3 }}
+              rows={markers || []}
+              columns={columns}
+              pageSize={10}
+              rowsPerPageOptions={[10]}
+              checkboxSelection
+              disableSelectionOnClick
+            />
+          </Grid>
+        </Container>
+      ) : (
+        <Container sx={{ minHeight: "90vh" }}>
+          {" "}
+          <Grid
+            container
+            spacing={0}
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            style={{ minHeight: "90vh", width: "100%" }}
+          >
+            <Paper sx={{ padding: 3 }}>
+              <Typography variant="h3">Sign in to see your posts!</Typography>
+              <Typography variant="h5">Or don't.. that's okay too..</Typography>
+            </Paper>
+          </Grid>
+        </Container>
+      )}
     </Container>
   );
 };
