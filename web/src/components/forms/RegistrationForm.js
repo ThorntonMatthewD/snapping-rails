@@ -89,6 +89,13 @@ const RegistrationForm = ({ toggleActiveForm }) => {
         </Alert>
       </Collapse>
 
+      <Collapse in={error}>
+        <Alert severity="error">
+          <AlertTitle>Registration Failed</AlertTitle>
+          An error occurred when processing your registration information.
+        </Alert>
+      </Collapse>
+
       <FormInputText
         required
         name="username"

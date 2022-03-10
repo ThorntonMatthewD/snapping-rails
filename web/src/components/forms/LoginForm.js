@@ -65,7 +65,7 @@ const LoginForm = ({ toggleActiveForm }) => {
         Submit
       </Button>
 
-      <Typography variant="p">Don't have any account?</Typography>
+      <Typography variant="p">Don't have an account?</Typography>
 
       <Button fullWidth variant="outlined" onClick={toggleActiveForm}>
         CREATE ACCOUNT
