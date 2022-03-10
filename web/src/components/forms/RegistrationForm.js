@@ -1,10 +1,24 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Paper, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Collapse,
+  Paper,
+  Typography,
+} from "@mui/material";
 import * as yup from "yup";
 import FormInputText from "./fields/FormInputText";
+import useFetch from "use-http";
 
 const RegistrationForm = ({ toggleActiveForm }) => {
+  const { post, loading, error, response } = useFetch("http://localhost:5000");
+
+  const [successful, setSuccessful] = useState(false);
+
   const schema = yup.object({
     username: yup
       .string()
@@ -19,10 +33,10 @@ const RegistrationForm = ({ toggleActiveForm }) => {
       .string()
       .required("Please enter your password")
       .matches(
-        "^(?=.*[A-Za-z])(?=.*d)(?=.*[@$!%*#?&])[A-Za-zd@$!%*#?&]{8,}$/",
+        /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
         "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
       ),
-    passwordConfirm: yup
+    password2: yup
       .string()
       .oneOf([yup.ref("password"), null], "Passwords must match")
       .required("Confirm your password"),
@@ -32,7 +46,7 @@ const RegistrationForm = ({ toggleActiveForm }) => {
     username: "",
     email: "",
     password: "",
-    passwordConfirm: "",
+    password2: "",
   };
 
   const methods = useForm({
@@ -46,8 +60,12 @@ const RegistrationForm = ({ toggleActiveForm }) => {
     formState: { errors },
   } = methods;
 
-  const onSubmit = (data) => {
-    //TODO register user
+  const onSubmit = async (data) => {
+    await post("/register", data);
+
+    if (response.ok) {
+      setSuccessful(true);
+    }
   };
 
   return (
@@ -60,6 +78,17 @@ const RegistrationForm = ({ toggleActiveForm }) => {
         width: "90%",
       }}
     >
+      <Collapse in={successful}>
+        <Alert severity="success">
+          <AlertTitle>Registration Complete!</AlertTitle>
+          Welcome aboard!{" "}
+          <a herf="" onClick={toggleActiveForm}>
+            Click here to login
+          </a>
+          .
+        </Alert>
+      </Collapse>
+
       <FormInputText
         required
         name="username"
@@ -84,13 +113,17 @@ const RegistrationForm = ({ toggleActiveForm }) => {
 
       <FormInputText
         required
-        name="passwordConfirm"
+        name="password2"
         control={control}
         label="Confirm Password"
         password={true}
       />
 
-      <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
+      <Button
+        onClick={handleSubmit(onSubmit)}
+        variant={"contained"}
+        disabled={successful}
+      >
         Submit
       </Button>
 
