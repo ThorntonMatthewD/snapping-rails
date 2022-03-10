@@ -15,7 +15,13 @@ const RegistrationForm = ({ toggleActiveForm }) => {
       .string()
       .email("Please enter a valid email address")
       .required("Please enter an email address"),
-    password: yup.string().required("Please enter your password"),
+    password: yup
+      .string()
+      .required("Please enter your password")
+      .matches(
+        "^(?=.*[A-Za-z])(?=.*d)(?=.*[@$!%*#?&])[A-Za-zd@$!%*#?&]{8,}$/",
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+      ),
     passwordConfirm: yup
       .string()
       .oneOf([yup.ref("password"), null], "Passwords must match")
