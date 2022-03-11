@@ -9,3 +9,4 @@ api/src/.env
 api/src/__pycache__
 
 
+yarn.lock
