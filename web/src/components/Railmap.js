@@ -1,11 +1,11 @@
 import "../assets/styles/Railmap.css";
 
-import * as React from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
-import useFetch from "use-http";
-import { Alert, Collapse, Backdrop, CircularProgress } from "@mui/material";
 import { useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
+import { MapContainer, TileLayer } from "react-leaflet";
+import { Alert, Collapse, Backdrop, CircularProgress } from "@mui/material";
+import { isEmpty } from "lodash";
+import useFetch from "use-http";
 
 import MapMarker from "./Marker";
 import AddMarkerFab from "./AddMarkerFab";
@@ -22,7 +22,6 @@ const Railmap = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [draggableMarker, setDraggableMaker] = useState(false);
   const [draggableMarkerLocation, setDraggableMarkerLocation] = useState([]);
 
   const [map, setMap] = useState(null);
@@ -38,7 +37,7 @@ const Railmap = () => {
   };
 
   const finalizeNewMarker = () => {
-    setDraggableMaker(false);
+    setDraggableMarkerLocation([[]]);
     setRefetchData(!refetchData);
   };
 
@@ -100,7 +99,7 @@ const Railmap = () => {
       </Collapse>
 
       <Collapse
-        in={draggableMarker}
+        in={!isEmpty(draggableMarkerLocation)}
         style={{
           position: "absolute",
           zIndex: 100,
@@ -139,18 +138,17 @@ const Railmap = () => {
             <MapMarker key={marker.id} marker={marker}></MapMarker>
           ))}
 
-        {draggableMarker && (
+        {!isEmpty(draggableMarkerLocation) && (
           <DraggableMarker
             center={getMapCenter()}
             onFinalPlacement={handleModalOpen}
             updateLocation={setDraggableMarkerLocation}
-            setMarkerVisibility={setDraggableMaker}
           />
         )}
 
         <AddMarkerFab
           onFabClick={() => {
-            setDraggableMaker(true);
+            setDraggableMarkerLocation(getMapCenter());
           }}
           onFabClickNoLogin={() => {
             setAddMarkerButNoLogin(true);
