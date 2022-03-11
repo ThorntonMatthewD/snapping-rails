@@ -23,7 +23,6 @@ const Railmap = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [draggableMarkerLocation, setDraggableMarkerLocation] = useState([]);
-
   const [map, setMap] = useState(null);
 
   const [modalOpen, setModalOpen] = useState(false);
