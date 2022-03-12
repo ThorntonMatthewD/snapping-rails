@@ -1,12 +1,10 @@
 #React
 web/node_modules
 web/data
+yarn.lock
 
 #FastAPI
 *.pyc
 api/env
 api/src/.env
 api/src/__pycache__
-
-
-yarn.lock
