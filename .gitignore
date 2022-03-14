@@ -3,10 +3,10 @@ web/node_modules
 web/data
 yarn.lock
 web/coverage
+web/coverage/*
 
 #FastAPI
 *.pyc
 api/env
 api/src/.env
 api/src/__pycache__
-
