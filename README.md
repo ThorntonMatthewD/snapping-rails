@@ -1,5 +1,6 @@
 # Snapping Rails
-[![FastAPI CI](https://github.com/ThorntonMatthewD/snapping-rails/actions/workflows/api-ci.yml/badge.svg)](https://github.com/ThorntonMatthewD/snapping-rails/actions/workflows/api-ci.yml)
+
+[![FastAPI (Backend) CI](https://github.com/ThorntonMatthewD/snapping-rails/actions/workflows/api-ci.yml/badge.svg)](https://github.com/ThorntonMatthewD/snapping-rails/actions/workflows/api-ci.yml) [![Jest (Frontend) CI](https://github.com/ThorntonMatthewD/snapping-rails/actions/workflows/web-ci.yml/badge.svg)](https://github.com/ThorntonMatthewD/snapping-rails/actions/workflows/web-ci.yml)
 
 ## An interactive map to share railway-related media by location.
 
