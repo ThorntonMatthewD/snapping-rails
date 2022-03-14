@@ -1,4 +1,4 @@
-name: Jest CI
+name: Jest (Web) CI
 
 on:
   push:
