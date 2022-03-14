@@ -1,0 +1,19 @@
+name: Jest CI
+
+on:
+  push:
+    paths:
+    - 'web/**'
+
+jobs:
+  jest-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Env and Run Tests
+        uses: actions/setup-node@v1
+        with:
+          node-version: '17.7.1'
+      - run: npm install
+      - run: npm test
