@@ -4,15 +4,19 @@ import jwt_decode from "jwt-decode";
 
 const AuthContext = createContext({});
 
-export const AuthProvider = ({ children }) => {
-  let [accessToken, setAccessToken] = useState(null);
+export const AuthProvider = ({
+  children,
+  initialUser = null,
+  initialAccessToken = null,
+}) => {
+  let [accessToken, setAccessToken] = useState(initialAccessToken);
   let [refreshToken, setRefreshToken] = useState(() =>
     localStorage.getItem("refreshToken")
       ? localStorage.getItem("refreshToken")
       : null
   );
   let [user, setUser] = useState(() =>
-    accessToken ? jwt_decode(accessToken) : null
+    accessToken ? jwt_decode(accessToken) : initialUser
   );
 
   let navigate = useNavigate();
