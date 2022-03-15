@@ -22,7 +22,7 @@ function renderRailmap(token) {
   );
 }
 
-test("Ensure login in alert shows on press if not logged in", () => {
+test("Ensure login alert shows on press if not logged in", () => {
   renderRailmap(null);
 
   const fab = screen.getByLabelText("add-marker");
