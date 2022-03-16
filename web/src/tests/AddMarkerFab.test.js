@@ -3,6 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
+import { STRINGS } from "../constants";
 import Railmap from "../components/Railmap";
 import { ThemeProvider } from "@mui/material/styles";
 import { Theme } from "../configs/theme";
@@ -51,9 +52,7 @@ test("Ensure login alert shows on press if not logged in", () => {
 });
 
 test("Ensure draggable markers appears on press if logged in", () => {
-  renderRailmap(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1NjcxMjM0MzIxIiwibmFtZSI6Ikp1c3QgVGVzdGluISIsImlhdCI6MTUxNjIzOTAyMn0.hWZq8sf3JlYyiL8wASryClQZT5VNiln8_a2jIR9GwZs"
-  );
+  renderRailmap(STRINGS.TEST_TOKEN);
 
   const fab = screen.getByLabelText("add-marker");
 
