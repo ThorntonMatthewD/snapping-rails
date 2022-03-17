@@ -7,7 +7,7 @@ import { Alert, Collapse, Backdrop, CircularProgress } from "@mui/material";
 import { isEmpty } from "lodash";
 import useFetch from "use-http";
 
-import MapMarker from "./Marker";
+import MapMarker from "./MapMarker";
 import AddMarkerFab from "./AddMarkerFab";
 import DraggableMarker from "./RailmapDraggableMarker";
 import MarkerModal from "./MarkerModal";
