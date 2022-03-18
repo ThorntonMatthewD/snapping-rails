@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Marker, Popup } from "react-leaflet";
-import * as L from "leaflet";
+import { Icon } from "leaflet";
 import { Button } from "@mui/material";
 
 const DraggableMarker = ({ center, onFinalPlacement, updateLocation }) => {
@@ -31,7 +31,7 @@ const DraggableMarker = ({ center, onFinalPlacement, updateLocation }) => {
     updateLocation([]);
   };
 
-  const LeafIcon = L.Icon.extend({
+  const LeafIcon = Icon.extend({
     options: {},
   });
 
