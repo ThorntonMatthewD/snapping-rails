@@ -36,7 +36,7 @@ const Railmap = () => {
   };
 
   const finalizeNewMarker = () => {
-    setDraggableMarkerLocation([[]]);
+    setDraggableMarkerLocation([]);
     setRefetchData(!refetchData);
   };
 

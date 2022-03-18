@@ -1,9 +1,29 @@
 import { Box, Typography } from "@mui/material";
 import { Marker, Popup } from "react-leaflet";
+import { Icon } from "leaflet";
 
 const MapMarker = ({ marker }) => {
+  const markerIconURLs = {
+    1: require("../assets/images/marker-icons/photo.png"),
+    2: require("../assets/images/marker-icons/video.png"),
+    3: require("../assets/images/marker-icons/history.png"),
+    4: require("../assets/images/marker-icons/calendar.png"),
+    5: require("../assets/images/marker-icons/community.png"),
+  };
+
+  const LeafIcon = Icon.extend({
+    options: {},
+  });
+
+  const markerIcon = new LeafIcon({
+    iconUrl: markerIconURLs[marker["marker_type"]],
+    iconSize: [40, 48],
+    iconAnchor: [10, 48],
+    popupAnchor: [10, -48],
+  });
+
   return (
-    <Marker position={[marker.lat, marker.long]}>
+    <Marker position={[marker.lat, marker.long]} icon={markerIcon}>
       <Popup>
         <Typography>{marker.title}</Typography>
         <Typography>Description: {marker.description}</Typography>
