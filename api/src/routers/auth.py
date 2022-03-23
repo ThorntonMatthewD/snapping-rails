@@ -21,6 +21,10 @@ class Settings(BaseModel):
     authjwt_secret_key: str = AUTH_SECRET_KEY
     authjwt_denylist_enabled: bool = True
     authjwt_denylist_token_checks: set = {"access","refresh"}
+    # Configure application to store and get JWT from cookies
+    authjwt_token_location: set = {"cookies"}
+    # Disable CSRF Protection for this example. default is True
+    authjwt_cookie_csrf_protect: bool = False
 
 
 class UserCreds(BaseModel):
@@ -119,7 +123,11 @@ async def login(user: UserCreds, Authorize: AuthJWT = Depends()):
 
     access_token = Authorize.create_access_token(subject=user.username)
     refresh_token = Authorize.create_refresh_token(subject=user.username)
-    return {"access_token": access_token, "refresh_token": refresh_token}
+
+    Authorize.set_access_cookies(access_token)
+    Authorize.set_refresh_cookies(refresh_token)
+
+    return {"detail": f"{user.username} was logged in successfully."}
 
 
 @router.post("/refresh", tags=["Auth"])
@@ -130,9 +138,22 @@ async def refresh(Authorize: AuthJWT = Depends()):
     new_access_token = Authorize.create_access_token(subject=current_user)
     new_refresh_token = Authorize.create_refresh_token(subject=current_user)
 
-    #Revoke old refresh token to force us of new one.
+    #Revoke old refresh token to force use of new one.
     denylist.add(Authorize.get_raw_jwt()['jti'])
-    return {"access_token": new_access_token, "refresh_token": new_refresh_token}
+
+    Authorize.set_access_cookies(access_token)
+    Authorize.set_refresh_cookies(refresh_token)
+
+    return {"detail": "Access token successfully refreshed."}
+
+
+@router.delete("/logout", tags=["Auth"])
+async def logout(Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+
+    Authorize.unset_jwt_cookies()
+
+    return {"detail": "See ya later! User was successfully logged out."}
 
 
 @router.get("/user", tags=["Auth"])
