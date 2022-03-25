@@ -1,10 +1,11 @@
+import aioredis
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.pool import QueuePool
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-from src.config import DATABASE_URI
+from src.config import DATABASE_URI, REDIS_URL
 
 
 class Engine:
@@ -18,3 +19,5 @@ class Engine:
 
 
 SNAPPING_RAILS_ENGINE = Engine()
+
+REDIS = aioredis.from_url(REDIS_URL, decode_responses=True)

@@ -7,7 +7,7 @@ import useAuth from "../hooks/useAuth";
 
 const AddMarkerFab = ({ onFabClick, onFabClickNoLogin }) => {
   const theme = useTheme();
-  const { accessToken } = useAuth();
+  const { user } = useAuth();
   const showExtendedFab = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
@@ -21,7 +21,7 @@ const AddMarkerFab = ({ onFabClick, onFabClickNoLogin }) => {
           size="medium"
           color="primary"
           aria-label="add-marker"
-          onClick={accessToken !== null ? onFabClick : onFabClickNoLogin}
+          onClick={user !== null ? onFabClick : onFabClickNoLogin}
         >
           <AddLocationIcon />
         </Fab>
@@ -32,7 +32,7 @@ const AddMarkerFab = ({ onFabClick, onFabClickNoLogin }) => {
           variant="extended"
           color="primary"
           aria-label="add"
-          onClick={accessToken !== null ? onFabClick : onFabClickNoLogin}
+          onClick={user !== null ? onFabClick : onFabClickNoLogin}
         >
           <AddLocationIcon sx={{ mr: 1 }} />
           Add Rail Marker

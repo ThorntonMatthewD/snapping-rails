@@ -12,22 +12,20 @@ from passlib.context import CryptContext
 load_dotenv(find_dotenv(), verbose=True)
 
 DATABASE_URI = os.environ.get("DATABASE_URI")
+REDIS_URL = os.environ.get("REDIS_URL")
 
 AUTH_SECRET_KEY = os.environ.get("AUTH_SECRET_KEY")
 AUTH_ALGORITHM = os.environ.get("AUTH_ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = float(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES") or 30)
 
-
-app = FastAPI()
+log = logging.getLogger(__name__)
+app = FastAPI(title="Snapping Rails")
 
 
 # CORS Setup
 origins = [
-    "http://snappingrails.com/",
-    "https://snappingrails.com/",
-    "http://www.snappingrails.com/",
-    "https://www.snappingrails.com/",
     "http://localhost:3000",
+    "http://localhost:3000/"
 ]
 
 app.add_middleware(

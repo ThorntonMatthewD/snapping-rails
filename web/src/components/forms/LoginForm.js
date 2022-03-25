@@ -70,8 +70,6 @@ const LoginForm = ({ toggleActiveForm }) => {
       <Button fullWidth variant="outlined" onClick={toggleActiveForm}>
         CREATE ACCOUNT
       </Button>
-
-      {errors && console.log(errors)}
     </Paper>
   );
 };

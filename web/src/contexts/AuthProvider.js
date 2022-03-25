@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import jwt_decode from "jwt-decode";
 
 const AuthContext = createContext({});
 
@@ -9,15 +8,7 @@ export const AuthProvider = ({
   initialUser = null,
   initialAccessToken = null,
 }) => {
-  let [accessToken, setAccessToken] = useState(initialAccessToken);
-  let [refreshToken, setRefreshToken] = useState(() =>
-    localStorage.getItem("refreshToken")
-      ? localStorage.getItem("refreshToken")
-      : null
-  );
-  let [user, setUser] = useState(() =>
-    accessToken ? jwt_decode(accessToken) : initialUser
-  );
+  let [user, setUser] = useState(() => null);
 
   let navigate = useNavigate();
 
@@ -32,11 +23,32 @@ export const AuthProvider = ({
     })
       .then((response) => {
         if (response.status === 200) {
+          setUser({ sub: "Bob" });
+          navigate(`/`);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  //We have to clear out the cookies on the backend.
+  let logoutUser = async (explicit_call) => {
+    await fetch("http://localhost:5000/logout", {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
           response.json().then((data) => {
-            setAccessToken(data["access_token"]);
-            setUser(jwt_decode(data["access_token"]));
-            localStorage.setItem("refreshToken", data["refresh_token"]);
-            navigate(`/`);
+            console.log(data);
+            setUser(null);
+            if (explicit_call) {
+              navigate("/");
+            }
           });
         }
       })
@@ -45,30 +57,18 @@ export const AuthProvider = ({
       });
   };
 
-  let logoutUser = () => {
-    setAccessToken(null);
-    setRefreshToken(null);
-    setUser(null);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    navigate(`/`);
-  };
-
   let updateToken = async () => {
     await fetch("http://localhost:5000/refresh", {
+      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + refreshToken,
       },
-      credentials: "include",
     })
       .then((response) => {
         if (response.status === 200) {
           response.json().then((data) => {
-            setAccessToken(data["access_token"]);
-            setUser(jwt_decode(data["access_token"]));
-            localStorage.setItem("refreshToken", data["refresh_token"]);
+            setUser({ sub: "Bob" });
           });
         } else {
           logoutUser();
@@ -81,24 +81,24 @@ export const AuthProvider = ({
 
   let contextData = {
     user: user,
-    accessToken: accessToken,
-    refreshToken: refreshToken,
+    accessToken: null,
+    refreshToken: null,
     loginUser: loginUser,
     logoutUser: logoutUser,
     updateToken: updateToken,
   };
 
   useEffect(() => {
-    if (refreshToken !== null) {
-      updateToken();
-    }
+    //if (refreshToken !== null) {
+    //updateToken();
+    //}
 
     let fiveMinutes = 1000 * 60 * 5;
 
     let interval = setInterval(() => {
-      if (accessToken) {
-        updateToken();
-      }
+      //if (accessToken) {
+      //updateToken();
+      // }
     }, fiveMinutes);
     return () => clearInterval(interval);
   }, []);

@@ -1,6 +1,6 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
-from fastapi_jwt_auth.exceptions import AuthJWTException
+from async_fastapi_jwt_auth.exceptions import AuthJWTException
 
 from src.config import app
 

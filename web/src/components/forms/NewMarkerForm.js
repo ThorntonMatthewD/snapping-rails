@@ -5,11 +5,8 @@ import * as yup from "yup";
 import { string } from "yup";
 import FormDropdown from "./fields/FormDropdown";
 import FormInputText from "./fields/FormInputText";
-import useAuth from "../../hooks/useAuth";
 
 const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
-  const { accessToken } = useAuth();
-
   const schema = yup.object({
     markerTitle: yup
       .string()
@@ -90,10 +87,10 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
     };
 
     fetch("http://localhost:5000/markers", {
+      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + accessToken,
       },
       body: JSON.stringify(newMarker),
     }).then(() => {

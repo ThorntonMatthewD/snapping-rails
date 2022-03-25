@@ -11,8 +11,11 @@ import MapMarker from "./MapMarker";
 import AddMarkerFab from "./AddMarkerFab";
 import DraggableMarker from "./RailmapDraggableMarker";
 import MarkerModal from "./MarkerModal";
+import useAuth from "../hooks/useAuth";
 
 const Railmap = () => {
+  const { user } = useAuth();
+
   const [refetchData, setRefetchData] = useState(false);
   let {
     data: markers = [],
@@ -20,7 +23,7 @@ const Railmap = () => {
     loading,
   } = useFetch("http://localhost:5000/markers", {}, [refetchData]);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const [draggableMarkerLocation, setDraggableMarkerLocation] = useState([]);
   const [map, setMap] = useState(null);
@@ -137,7 +140,7 @@ const Railmap = () => {
             <MapMarker key={marker.id} marker={marker}></MapMarker>
           ))}
 
-        {!isEmpty(draggableMarkerLocation) && (
+        {!isEmpty(draggableMarkerLocation) && user && (
           <DraggableMarker
             center={getMapCenter()}
             onFinalPlacement={handleModalOpen}

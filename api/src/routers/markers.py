@@ -1,7 +1,7 @@
 from datetime import datetime, timezone, date
 
 from fastapi import Depends, HTTPException, status, APIRouter, Query
-from fastapi_jwt_auth import AuthJWT
+from async_fastapi_jwt_auth import AuthJWT
 import opengraph_py3 as opengraph
 from pydantic import BaseModel, validator, HttpUrl
 from sqlalchemy.sql.expression import insert, select, update
@@ -100,9 +100,9 @@ async def get_railmap_markers(
 
 @router.post("/markers", status_code=status.HTTP_201_CREATED, tags=["Map"])
 async def add_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    await Authorize.jwt_required()
 
-    current_user = Authorize.get_jwt_subject()
+    current_user = await Authorize.get_jwt_subject()
 
     user_info = await get_user(current_user)
 
@@ -127,9 +127,9 @@ async def add_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
 
 @router.put("/markers", tags=["Map"])
 async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    await Authorize.jwt_required()
 
-    current_user = Authorize.get_jwt_subject()
+    current_user = await Authorize.get_jwt_subject()
 
     # TODO Allow for admins to update anything
     async with db.session() as session:
@@ -154,9 +154,9 @@ async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
 
 @router.delete("/markers", tags=["Map"])
 async def delete_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    await Authorize.jwt_required()
 
-    current_user = Authorize.get_jwt_subject()
+    current_user = await Authorize.get_jwt_subject()
 
     # TODO Allow for admins to delete anything
     async with db.session() as session:

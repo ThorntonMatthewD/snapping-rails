@@ -1,7 +1,7 @@
 import re
 
 from fastapi import APIRouter, HTTPException, Depends
-from fastapi_jwt_auth import AuthJWT
+from async_fastapi_jwt_auth import AuthJWT
 from pydantic import BaseModel
 from pydantic import BaseModel, validator, EmailStr
 from typing import Optional
@@ -10,6 +10,7 @@ from sqlalchemy.sql.expression import select
 from src.config import pwd_context
 from src.config import AUTH_SECRET_KEY
 from src.database.database import SNAPPING_RAILS_ENGINE as db
+from src.database.database import REDIS
 from src.database import models
 from src.database.functions import SqlalchemyResult
 
@@ -19,11 +20,11 @@ router = APIRouter()
 
 class Settings(BaseModel):
     authjwt_secret_key: str = AUTH_SECRET_KEY
+
     authjwt_denylist_enabled: bool = True
     authjwt_denylist_token_checks: set = {"access","refresh"}
-    # Configure application to store and get JWT from cookies
+
     authjwt_token_location: set = {"cookies"}
-    # Disable CSRF Protection for this example. default is True
     authjwt_cookie_csrf_protect: bool = False
 
 
@@ -73,12 +74,10 @@ def get_config():
     return Settings()
 
 
-denylist = set()
-
 @AuthJWT.token_in_denylist_loader
-def check_if_token_in_denylist(decrypted_token):
+async def check_if_token_in_denylist(decrypted_token):
     jti = decrypted_token['jti']
-    return jti in denylist
+    return await REDIS.get(jti)
 
 
 def verify_password(plain_password, hashed_password):
@@ -121,46 +120,46 @@ async def login(user: UserCreds, Authorize: AuthJWT = Depends()):
     if not matching_user:
         raise HTTPException(status_code=401, detail="Bad username or password")
 
-    access_token = Authorize.create_access_token(subject=user.username)
-    refresh_token = Authorize.create_refresh_token(subject=user.username)
+    access_token = await Authorize.create_access_token(subject=user.username)
+    refresh_token = await Authorize.create_refresh_token(subject=user.username)
 
-    Authorize.set_access_cookies(access_token)
-    Authorize.set_refresh_cookies(refresh_token)
+    await Authorize.set_access_cookies(access_token)
+    await Authorize.set_refresh_cookies(refresh_token)
 
     return {"detail": f"{user.username} was logged in successfully."}
 
 
 @router.post("/refresh", tags=["Auth"])
 async def refresh(Authorize: AuthJWT = Depends()):
-    Authorize.jwt_refresh_token_required()
+    await Authorize.jwt_refresh_token_required()
 
-    current_user = Authorize.get_jwt_subject()
-    new_access_token = Authorize.create_access_token(subject=current_user)
-    new_refresh_token = Authorize.create_refresh_token(subject=current_user)
+    current_user = await Authorize.get_jwt_subject()
+    new_access_token = await Authorize.create_access_token(subject=current_user)
+    new_refresh_token = await Authorize.create_refresh_token(subject=current_user)
 
     #Revoke old refresh token to force use of new one.
-    denylist.add(Authorize.get_raw_jwt()['jti'])
+    await REDIS.set((await Authorize.get_raw_jwt())['jti'], "true")
 
-    Authorize.set_access_cookies(access_token)
-    Authorize.set_refresh_cookies(refresh_token)
+    await Authorize.set_access_cookies(new_access_token)
+    await Authorize.set_refresh_cookies(new_refresh_token)
 
     return {"detail": "Access token successfully refreshed."}
 
 
 @router.delete("/logout", tags=["Auth"])
 async def logout(Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    await Authorize.jwt_required()
 
-    Authorize.unset_jwt_cookies()
+    await Authorize.unset_jwt_cookies()
 
     return {"detail": "See ya later! User was successfully logged out."}
 
 
 @router.get("/user", tags=["Auth"])
 async def get_user_info(Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    await Authorize.jwt_required()
 
-    current_user = Authorize.get_jwt_subject()
+    current_user = await Authorize.get_jwt_subject()
 
     user_info = get_user_info(current_user)
     user_info.pop("hashed_password")

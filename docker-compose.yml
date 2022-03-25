@@ -33,5 +33,9 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  redis:
+    image: redis
+    container_name: snapping-rails-redis
+
 volumes: 
   pgdata:
