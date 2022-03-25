@@ -15,7 +15,7 @@ function renderRailmap(token) {
   return render(
     <BrowserRouter>
       <ThemeProvider theme={Theme}>
-        <AuthProvider initialAccessToken={token}>
+        <AuthProvider initialUser={{ sub: "Bob" }}>
           <Railmap />
         </AuthProvider>
       </ThemeProvider>

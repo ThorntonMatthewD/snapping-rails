@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext({});
 
-export const AuthProvider = ({
-  children,
-  initialUser = null,
-  initialAccessToken = null,
-}) => {
-  let [user, setUser] = useState(() => null);
+export const AuthProvider = ({ children, initialUser = null }) => {
+  let [user, setUser] = useState(() =>
+    localStorage.getItem("current_user")
+      ? localStorage.getItem("current_user")
+      : initialUser
+  );
 
   let navigate = useNavigate();
 
@@ -23,7 +23,7 @@ export const AuthProvider = ({
     })
       .then((response) => {
         if (response.status === 200) {
-          setUser({ sub: "Bob" });
+          getLoggedInUser();
           navigate(`/`);
         }
       })
@@ -45,7 +45,7 @@ export const AuthProvider = ({
         if (response.status === 200) {
           response.json().then((data) => {
             console.log(data);
-            setUser(null);
+            localStorage.removeItem("accessToken");
             if (explicit_call) {
               navigate("/");
             }
@@ -54,6 +54,7 @@ export const AuthProvider = ({
       })
       .catch((error) => {
         console.log(error);
+        localStorage.removeItem("accessToken");
       });
   };
 
@@ -68,7 +69,29 @@ export const AuthProvider = ({
       .then((response) => {
         if (response.status === 200) {
           response.json().then((data) => {
-            setUser({ sub: "Bob" });
+            getLoggedInUser();
+          });
+        } else {
+          logoutUser();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  let getLoggedInUser = async () => {
+    await fetch("http://localhost:5000/user", {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          response.json().then((data) => {
+            localStorage.setItem("current_user", data);
           });
         } else {
           logoutUser();
