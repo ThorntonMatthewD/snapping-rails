@@ -178,4 +178,4 @@ async def register_new_user(new_user: NewUser):
         session.add(models.User(**register_user))
         await session.commit()
 
-    return {"message": f"Welcome, {new_user.username}!"}
+    return {"detail": f"Welcome, {new_user.username}!"}
