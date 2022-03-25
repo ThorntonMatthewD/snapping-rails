@@ -45,7 +45,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
         if (response.status === 200) {
           response.json().then((data) => {
             setUser(null);
-            localStorage.removeItem("accessToken");
+            localStorage.removeItem("current_user");
             if (explicit_call) {
               navigate("/");
             }
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
       .catch((error) => {
         console.log(error);
         setUser(null);
-        localStorage.removeItem("accessToken");
+        localStorage.removeItem("current_user");
       });
   };
 
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
   let getLoggedInUser = async () => {
     await fetch("http://localhost:5000/user", {
       credentials: "include",
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
@@ -92,7 +92,8 @@ export const AuthProvider = ({ children, initialUser = null }) => {
       .then((response) => {
         if (response.status === 200) {
           response.json().then((data) => {
-            localStorage.setItem("current_user", data);
+            setUser(data.user_info);
+            localStorage.setItem("current_user", data.user_info);
           });
         } else {
           logoutUser();
@@ -105,8 +106,6 @@ export const AuthProvider = ({ children, initialUser = null }) => {
 
   let contextData = {
     user: user,
-    accessToken: null,
-    refreshToken: null,
     loginUser: loginUser,
     logoutUser: logoutUser,
     updateToken: updateToken,

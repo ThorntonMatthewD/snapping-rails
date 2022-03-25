@@ -46,7 +46,7 @@ const AvatarButton = () => {
       <Tooltip title="Account settings">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
           <Avatar
-            alt={user !== null ? user.sub : ""}
+            alt={user !== null ? user.username : ""}
             src="/static/images/avatar/2.jpg"
           />
         </IconButton>

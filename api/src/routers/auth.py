@@ -161,7 +161,7 @@ async def get_user_info(Authorize: AuthJWT = Depends()):
 
     current_user = await Authorize.get_jwt_subject()
 
-    user_info = get_user_info(current_user)
+    user_info = await get_user(current_user)
     user_info.pop("hashed_password")
     return {"user_info": user_info}
 
