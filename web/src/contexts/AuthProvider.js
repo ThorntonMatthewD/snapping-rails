@@ -44,7 +44,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
       .then((response) => {
         if (response.status === 200) {
           response.json().then((data) => {
-            console.log(data);
+            setUser(null);
             localStorage.removeItem("accessToken");
             if (explicit_call) {
               navigate("/");
@@ -54,6 +54,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
       })
       .catch((error) => {
         console.log(error);
+        setUser(null);
         localStorage.removeItem("accessToken");
       });
   };
