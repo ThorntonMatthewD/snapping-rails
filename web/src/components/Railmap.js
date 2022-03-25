@@ -21,7 +21,7 @@ const Railmap = () => {
     data: markers = [],
     error,
     loading,
-  } = useFetch("http://localhost:5000/markers", {}, [refetchData]);
+  } = useFetch("http://localhost:8000/api/markers", {}, [refetchData]);
 
   const [searchParams] = useSearchParams();
 

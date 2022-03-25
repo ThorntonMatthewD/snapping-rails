@@ -13,7 +13,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
   let navigate = useNavigate();
 
   let loginUser = async (data) => {
-    await fetch("http://localhost:5000/token", {
+    await fetch("http://localhost:8000/api/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
 
   //We have to clear out the cookies on the backend.
   let logoutUser = async (explicit_call) => {
-    await fetch("http://localhost:5000/logout", {
+    await fetch("http://localhost:8000/api/logout", {
       credentials: "include",
       method: "DELETE",
       headers: {
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
   };
 
   let updateToken = async () => {
-    await fetch("http://localhost:5000/refresh", {
+    await fetch("http://localhost:8000/api/refresh", {
       credentials: "include",
       method: "POST",
       headers: {
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
   };
 
   let getLoggedInUser = async () => {
-    await fetch("http://localhost:5000/user", {
+    await fetch("http://localhost:8000/api/user", {
       credentials: "include",
       method: "GET",
       headers: {
