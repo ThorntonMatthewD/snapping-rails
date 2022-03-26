@@ -3,7 +3,7 @@ export const getCookie = (cookie_name) => {
 };
 
 export const getCookieValue = (cookie_name) => {
-  return getCookie(cookie_name).toString().match("=(.+?),")[1];
+  return getCookie(cookie_name)?.toString().match("=(.+?),")[1];
 };
 
 export const deleteCookie = (cookie_name) => {
