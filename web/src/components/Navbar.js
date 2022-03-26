@@ -24,7 +24,7 @@ const pages = [
 ];
 
 const Navbar = () => {
-  const { accessToken } = useAuth();
+  const { user } = useAuth();
 
   const [anchorElNav, setAnchorElNav] = useState(null);
 
@@ -118,7 +118,7 @@ const Navbar = () => {
             ))}
           </Box>
 
-          {accessToken !== null ? (
+          {user !== null ? (
             <AvatarButton />
           ) : (
             <Button href="/login">Log In</Button>

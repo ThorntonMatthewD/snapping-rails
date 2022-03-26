@@ -1,28 +1,20 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import jwt_decode from "jwt-decode";
+import { getCookieValue, deleteCookie } from "../util/cookies";
 
 const AuthContext = createContext({});
 
-export const AuthProvider = ({
-  children,
-  initialUser = null,
-  initialAccessToken = null,
-}) => {
-  let [accessToken, setAccessToken] = useState(initialAccessToken);
-  let [refreshToken, setRefreshToken] = useState(() =>
-    localStorage.getItem("refreshToken")
-      ? localStorage.getItem("refreshToken")
-      : null
-  );
+export const AuthProvider = ({ children, initialUser = null }) => {
   let [user, setUser] = useState(() =>
-    accessToken ? jwt_decode(accessToken) : initialUser
+    localStorage.getItem("current_user")
+      ? localStorage.getItem("current_user")
+      : initialUser
   );
 
   let navigate = useNavigate();
 
   let loginUser = async (data) => {
-    await fetch("http://localhost:5000/token", {
+    await fetch("http://localhost:8000/api/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,12 +24,8 @@ export const AuthProvider = ({
     })
       .then((response) => {
         if (response.status === 200) {
-          response.json().then((data) => {
-            setAccessToken(data["access_token"]);
-            setUser(jwt_decode(data["access_token"]));
-            localStorage.setItem("refreshToken", data["refresh_token"]);
-            navigate(`/`);
-          });
+          getLoggedInUser();
+          navigate(`/`);
         }
       })
       .catch((error) => {
@@ -45,30 +33,68 @@ export const AuthProvider = ({
       });
   };
 
-  let logoutUser = () => {
-    setAccessToken(null);
-    setRefreshToken(null);
-    setUser(null);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    navigate(`/`);
+  //We have to clear out the cookies on the backend.
+  let logoutUser = async (explicit_call) => {
+    await fetch("http://localhost:8000/api/logout", {
+      credentials: "include",
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": getCookieValue("csrf_access_token"),
+      },
+    })
+      .then(() => {
+        removeUser();
+
+        if (explicit_call) {
+          navigate("/");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        // Go ahead and remove user anyways upon error.
+        removeUser();
+      });
   };
 
   let updateToken = async () => {
-    await fetch("http://localhost:5000/refresh", {
+    await fetch("http://localhost:8000/api/refresh", {
+      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + refreshToken,
+        "X-CSRF-TOKEN": getCookieValue("csrf_access_token"),
       },
-      credentials: "include",
     })
       .then((response) => {
         if (response.status === 200) {
           response.json().then((data) => {
-            setAccessToken(data["access_token"]);
-            setUser(jwt_decode(data["access_token"]));
-            localStorage.setItem("refreshToken", data["refresh_token"]);
+            getLoggedInUser();
+          });
+        } else {
+          logoutUser();
+        }
+      })
+      .catch((error) => {
+        logoutUser();
+        console.log(error);
+      });
+  };
+
+  let getLoggedInUser = async () => {
+    await fetch("http://localhost:8000/api/user", {
+      credentials: "include",
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": getCookieValue("csrf_access_token"),
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          response.json().then((data) => {
+            setUser(data.user_info);
+            localStorage.setItem("current_user", data.user_info);
           });
         } else {
           logoutUser();
@@ -79,24 +105,33 @@ export const AuthProvider = ({
       });
   };
 
+  const removeUser = () => {
+    deleteCookie("csrf_access_token");
+    deleteCookie("access_token_cookie");
+
+    deleteCookie("refresh_token_cookie");
+    deleteCookie("csrf_refresh_token");
+
+    setUser(null);
+    localStorage.removeItem("current_user");
+  };
+
   let contextData = {
     user: user,
-    accessToken: accessToken,
-    refreshToken: refreshToken,
     loginUser: loginUser,
     logoutUser: logoutUser,
     updateToken: updateToken,
   };
 
   useEffect(() => {
-    if (refreshToken !== null) {
+    if (user) {
       updateToken();
     }
 
     let fiveMinutes = 1000 * 60 * 5;
 
     let interval = setInterval(() => {
-      if (accessToken) {
+      if (user) {
         updateToken();
       }
     }, fiveMinutes);

@@ -3,13 +3,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Paper } from "@mui/material";
 import * as yup from "yup";
 import { string } from "yup";
+import { getCookieValue } from "../../util/cookies";
 import FormDropdown from "./fields/FormDropdown";
 import FormInputText from "./fields/FormInputText";
-import useAuth from "../../hooks/useAuth";
 
 const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
-  const { accessToken } = useAuth();
-
   const schema = yup.object({
     markerTitle: yup
       .string()
@@ -89,11 +87,12 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
       marker_type: data.markerType,
     };
 
-    fetch("http://localhost:5000/markers", {
+    fetch("http://localhost:8000/api/markers", {
+      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + accessToken,
+        "X-CSRF-TOKEN": getCookieValue("csrf_access_token"),
       },
       body: JSON.stringify(newMarker),
     }).then(() => {

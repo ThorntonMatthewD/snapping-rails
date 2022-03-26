@@ -60,7 +60,7 @@ const Posts = () => {
     error,
     loading,
   } = useFetch(
-    "http://localhost:5000/markers?author=" + (user ? user.sub : ""),
+    "http://localhost:8000/api/markers?author=" + (user ? user.username : ""),
     [user]
   );
 

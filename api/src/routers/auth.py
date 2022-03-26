@@ -1,7 +1,7 @@
 import re
 
 from fastapi import APIRouter, HTTPException, Depends
-from fastapi_jwt_auth import AuthJWT
+from async_fastapi_jwt_auth import AuthJWT
 from pydantic import BaseModel
 from pydantic import BaseModel, validator, EmailStr
 from typing import Optional
@@ -10,6 +10,7 @@ from sqlalchemy.sql.expression import select
 from src.config import pwd_context
 from src.config import AUTH_SECRET_KEY
 from src.database.database import SNAPPING_RAILS_ENGINE as db
+from src.database.database import REDIS
 from src.database import models
 from src.database.functions import SqlalchemyResult
 
@@ -19,9 +20,11 @@ router = APIRouter()
 
 class Settings(BaseModel):
     authjwt_secret_key: str = AUTH_SECRET_KEY
+
     authjwt_denylist_enabled: bool = True
     authjwt_denylist_token_checks: set = {"access","refresh"}
 
+    authjwt_token_location: set = {"cookies"}
 
 class UserCreds(BaseModel):
     username: str
@@ -69,12 +72,10 @@ def get_config():
     return Settings()
 
 
-denylist = set()
-
 @AuthJWT.token_in_denylist_loader
-def check_if_token_in_denylist(decrypted_token):
+async def check_if_token_in_denylist(decrypted_token):
     jti = decrypted_token['jti']
-    return jti in denylist
+    return await REDIS.get(jti)
 
 
 def verify_password(plain_password, hashed_password):
@@ -117,31 +118,48 @@ async def login(user: UserCreds, Authorize: AuthJWT = Depends()):
     if not matching_user:
         raise HTTPException(status_code=401, detail="Bad username or password")
 
-    access_token = Authorize.create_access_token(subject=user.username)
-    refresh_token = Authorize.create_refresh_token(subject=user.username)
-    return {"access_token": access_token, "refresh_token": refresh_token}
+    access_token = await Authorize.create_access_token(subject=user.username)
+    refresh_token = await Authorize.create_refresh_token(subject=user.username)
+
+    await Authorize.set_access_cookies(access_token)
+    await Authorize.set_refresh_cookies(refresh_token)
+
+    return {"detail": f"{user.username} was logged in successfully."}
 
 
 @router.post("/refresh", tags=["Auth"])
 async def refresh(Authorize: AuthJWT = Depends()):
-    Authorize.jwt_refresh_token_required()
+    await Authorize.jwt_refresh_token_required()
 
-    current_user = Authorize.get_jwt_subject()
-    new_access_token = Authorize.create_access_token(subject=current_user)
-    new_refresh_token = Authorize.create_refresh_token(subject=current_user)
+    current_user = await Authorize.get_jwt_subject()
+    new_access_token = await Authorize.create_access_token(subject=current_user)
+    new_refresh_token = await Authorize.create_refresh_token(subject=current_user)
 
-    #Revoke old refresh token to force us of new one.
-    denylist.add(Authorize.get_raw_jwt()['jti'])
-    return {"access_token": new_access_token, "refresh_token": new_refresh_token}
+    #Revoke old refresh token to force use of new one.
+    await REDIS.set((await Authorize.get_raw_jwt())['jti'], "true")
+
+    await Authorize.set_access_cookies(new_access_token)
+    await Authorize.set_refresh_cookies(new_refresh_token)
+
+    return {"detail": "Access token successfully refreshed."}
+
+
+@router.delete("/logout", tags=["Auth"])
+async def logout(Authorize: AuthJWT = Depends()):
+    await Authorize.jwt_required()
+
+    await Authorize.unset_jwt_cookies()
+
+    return {"detail": "See ya later! User was successfully logged out."}
 
 
 @router.get("/user", tags=["Auth"])
 async def get_user_info(Authorize: AuthJWT = Depends()):
-    Authorize.jwt_required()
+    await Authorize.jwt_required()
 
-    current_user = Authorize.get_jwt_subject()
+    current_user = await Authorize.get_jwt_subject()
 
-    user_info = get_user_info(current_user)
+    user_info = await get_user(current_user)
     user_info.pop("hashed_password")
     return {"user_info": user_info}
 
@@ -158,4 +176,4 @@ async def register_new_user(new_user: NewUser):
         session.add(models.User(**register_user))
         await session.commit()
 
-    return {"message": f"Welcome, {new_user.username}!"}
+    return {"detail": f"Welcome, {new_user.username}!"}

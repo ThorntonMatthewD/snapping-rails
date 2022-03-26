@@ -15,7 +15,9 @@ import FormInputText from "./fields/FormInputText";
 import useFetch from "use-http";
 
 const RegistrationForm = ({ toggleActiveForm }) => {
-  const { post, loading, error, response } = useFetch("http://localhost:5000");
+  const { post, loading, error, response } = useFetch(
+    "http://localhost:8000/api/"
+  );
 
   const [successful, setSuccessful] = useState(false);
 
