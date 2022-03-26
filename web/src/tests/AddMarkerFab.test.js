@@ -11,11 +11,11 @@ import { AuthProvider } from "../contexts/AuthProvider";
 
 window.scrollTo = jest.fn();
 
-function renderRailmap(token) {
+function renderRailmap(user) {
   return render(
     <BrowserRouter>
       <ThemeProvider theme={Theme}>
-        <AuthProvider initialUser={{ sub: "Bob" }}>
+        <AuthProvider initialUser={user}>
           <Railmap />
         </AuthProvider>
       </ThemeProvider>
@@ -52,7 +52,7 @@ test("Ensure login alert shows on press if not logged in", () => {
 });
 
 test("Ensure draggable markers appears on press if logged in", () => {
-  renderRailmap(STRINGS.TEST_TOKEN);
+  renderRailmap(STRINGS.TEST_USER);
 
   const fab = screen.getByLabelText("add-marker");
 
