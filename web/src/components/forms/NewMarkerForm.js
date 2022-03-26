@@ -3,6 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Paper } from "@mui/material";
 import * as yup from "yup";
 import { string } from "yup";
+import { getCookieValue } from "../../util/cookies";
 import FormDropdown from "./fields/FormDropdown";
 import FormInputText from "./fields/FormInputText";
 
@@ -91,6 +92,7 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": getCookieValue("csrf_access_token"),
       },
       body: JSON.stringify(newMarker),
     }).then(() => {

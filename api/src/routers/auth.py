@@ -25,8 +25,6 @@ class Settings(BaseModel):
     authjwt_denylist_token_checks: set = {"access","refresh"}
 
     authjwt_token_location: set = {"cookies"}
-    authjwt_cookie_csrf_protect: bool = False
-
 
 class UserCreds(BaseModel):
     username: str

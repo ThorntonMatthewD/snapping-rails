@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getCookieValue, deleteCookie } from "../util/cookies";
 
 const AuthContext = createContext({});
 
@@ -39,23 +40,20 @@ export const AuthProvider = ({ children, initialUser = null }) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": getCookieValue("csrf_access_token"),
       },
     })
-      .then((response) => {
-        if (response.status === 200) {
-          response.json().then((data) => {
-            setUser(null);
-            localStorage.removeItem("current_user");
-            if (explicit_call) {
-              navigate("/");
-            }
-          });
+      .then(() => {
+        removeUser();
+
+        if (explicit_call) {
+          navigate("/");
         }
       })
       .catch((error) => {
         console.log(error);
-        setUser(null);
-        localStorage.removeItem("current_user");
+        // Go ahead and remove user anyways upon error.
+        removeUser();
       });
   };
 
@@ -65,6 +63,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": getCookieValue("csrf_access_token"),
       },
     })
       .then((response) => {
@@ -77,6 +76,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
         }
       })
       .catch((error) => {
+        logoutUser();
         console.log(error);
       });
   };
@@ -87,6 +87,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-TOKEN": getCookieValue("csrf_access_token"),
       },
     })
       .then((response) => {
@@ -102,6 +103,17 @@ export const AuthProvider = ({ children, initialUser = null }) => {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const removeUser = () => {
+    deleteCookie("csrf_access_token");
+    deleteCookie("access_token_cookie");
+
+    deleteCookie("refresh_token_cookie");
+    deleteCookie("csrf_refresh_token");
+
+    setUser(null);
+    localStorage.removeItem("current_user");
   };
 
   let contextData = {
