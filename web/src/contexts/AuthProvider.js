@@ -63,7 +63,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRF-TOKEN": getCookieValue("csrf_access_token"),
+        "X-CSRF-TOKEN": getCookieValue("csrf_refresh_token"),
       },
     })
       .then((response) => {
