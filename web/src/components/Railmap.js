@@ -136,7 +136,7 @@ const Railmap = () => {
         />
 
         {markers &&
-          markers.map((marker) => (
+          markers?.map((marker) => (
             <MapMarker key={marker.id} marker={marker}></MapMarker>
           ))}
 

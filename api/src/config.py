@@ -19,7 +19,11 @@ AUTH_ALGORITHM = os.environ.get("AUTH_ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = float(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES") or 30)
 
 log = logging.getLogger(__name__)
-app = FastAPI(title="Snapping Rails")
+app = FastAPI(
+    title="Snapping Rails", 
+    redoc_url='/api/redoc',
+    openapi_url='/api/openapi.json'
+)
 
 
 # CORS Setup
