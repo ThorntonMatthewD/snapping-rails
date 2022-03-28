@@ -110,6 +110,7 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
         marginTop: "10px",
         width: "90%",
       }}
+      component="form"
     >
       <FormInputText
         name="markerTitle"
@@ -130,7 +131,11 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
         options={dropdownOptions}
       />
 
-      <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
+      <Button
+        type="submit"
+        onClick={handleSubmit(onSubmit)}
+        variant={"contained"}
+      >
         Submit
       </Button>
 

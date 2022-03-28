@@ -46,6 +46,7 @@ const LoginForm = ({ toggleActiveForm }) => {
         marginTop: "10px",
         width: "90%",
       }}
+      component="form"
     >
       <FormInputText
         required
@@ -61,7 +62,11 @@ const LoginForm = ({ toggleActiveForm }) => {
         password={true}
       />
 
-      <Button onClick={handleSubmit(onSubmit)} variant={"contained"}>
+      <Button
+        type="submit"
+        onClick={handleSubmit(onSubmit)}
+        variant={"contained"}
+      >
         Submit
       </Button>
 

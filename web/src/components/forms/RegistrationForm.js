@@ -79,15 +79,12 @@ const RegistrationForm = ({ toggleActiveForm }) => {
         marginTop: "10px",
         width: "90%",
       }}
+      component="form"
     >
       <Collapse in={successful}>
         <Alert severity="success">
           <AlertTitle>Registration Complete!</AlertTitle>
-          Welcome aboard!{" "}
-          <a herf="" onClick={toggleActiveForm}>
-            Click here to login
-          </a>
-          .
+          Welcome aboard! <p onClick={toggleActiveForm}>Click here to login</p>.
         </Alert>
       </Collapse>
 
@@ -129,6 +126,7 @@ const RegistrationForm = ({ toggleActiveForm }) => {
       />
 
       <Button
+        type="submit"
         onClick={handleSubmit(onSubmit)}
         variant={"contained"}
         disabled={successful}
