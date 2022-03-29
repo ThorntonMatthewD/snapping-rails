@@ -19,7 +19,7 @@ const MapLegend = () => {
           img: require("../../assets/images/marker-icons/video.png"),
         },
         {
-          label: "History",
+          label: "Museum/Historical Site",
           img: require("../../assets/images/marker-icons/history.png"),
         },
         {
@@ -37,15 +37,9 @@ const MapLegend = () => {
 
         let labels = [];
 
-        labels.push("<h1>Legend</h1>");
-
         for (let i = 0; i < markersTypes.length; i++) {
           labels.push(
-            '<img src="' +
-              markersTypes[i].img +
-              '"> <h4>' +
-              markersTypes[i].label +
-              "</h4>"
+            '<img src="' + markersTypes[i].img + '"> ' + markersTypes[i].label
           );
         }
 
