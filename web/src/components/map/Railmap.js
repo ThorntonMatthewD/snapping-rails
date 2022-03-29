@@ -10,6 +10,7 @@ import useFetch from "use-http";
 import MapMarker from "./MapMarker";
 import AddMarkerFab from "./AddMarkerFab";
 import DraggableMarker from "./RailmapDraggableMarker";
+import MapLegend from "./MapLegend";
 import MarkerModal from "./MarkerModal";
 import useAuth from "../../hooks/useAuth";
 
@@ -160,6 +161,8 @@ const Railmap = () => {
             setAddMarkerButNoLogin(true);
           }}
         />
+
+        <MapLegend />
       </MapContainer>
 
       <MarkerModal
