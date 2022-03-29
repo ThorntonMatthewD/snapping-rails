@@ -27,7 +27,7 @@ const MapLegend = () => {
           img: require("../../assets/images/marker-icons/calendar.png"),
         },
         {
-          label: "Club/Business",
+          label: "Venue",
           img: require("../../assets/images/marker-icons/community.png"),
         },
       ];
