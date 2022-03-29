@@ -1,12 +1,11 @@
-import Railmap from "../components/Railmap";
+import Railmap from "../components/map/Railmap";
 
 const Home = () => {
-
-    return (
-        <div className="Home">
-            <Railmap />
-        </div>
-    );
-}
+  return (
+    <div className="Home">
+      <Railmap />
+    </div>
+  );
+};
 
 export default Home;

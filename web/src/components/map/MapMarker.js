@@ -4,11 +4,11 @@ import { Icon } from "leaflet";
 
 const MapMarker = ({ marker }) => {
   const markerIconURLs = {
-    1: require("../assets/images/marker-icons/photo.png"),
-    2: require("../assets/images/marker-icons/video.png"),
-    3: require("../assets/images/marker-icons/history.png"),
-    4: require("../assets/images/marker-icons/calendar.png"),
-    5: require("../assets/images/marker-icons/community.png"),
+    1: require("../../assets/images/marker-icons/photo.png"),
+    2: require("../../assets/images/marker-icons/video.png"),
+    3: require("../../assets/images/marker-icons/history.png"),
+    4: require("../../assets/images/marker-icons/calendar.png"),
+    5: require("../../assets/images/marker-icons/community.png"),
   };
 
   const LeafIcon = Icon.extend({
