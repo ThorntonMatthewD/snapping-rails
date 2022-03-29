@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { STRINGS } from "../constants";
-import Railmap from "../components/Railmap";
+import Railmap from "../components/map/Railmap";
 import { ThemeProvider } from "@mui/material/styles";
 import { Theme } from "../configs/theme";
 import { AuthProvider } from "../contexts/AuthProvider";
