@@ -164,6 +164,11 @@ async def get_user_info(Authorize: AuthJWT = Depends()):
     return {"user_info": user_info}
 
 
+@router.get("/profile", tags=["User"])
+async def get_user_profile(username: str):
+    return {"detail": username}
+
+
 @router.post("/register", tags=["Auth"])
 async def register_new_user(new_user: NewUser):
     register_user = {
