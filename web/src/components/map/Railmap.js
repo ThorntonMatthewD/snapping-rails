@@ -1,4 +1,4 @@
-import "../assets/styles/Railmap.css";
+import "../../assets/styles/Railmap.css";
 
 import { useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
@@ -11,7 +11,7 @@ import MapMarker from "./MapMarker";
 import AddMarkerFab from "./AddMarkerFab";
 import DraggableMarker from "./RailmapDraggableMarker";
 import MarkerModal from "./MarkerModal";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 
 const Railmap = () => {
   const { user } = useAuth();
