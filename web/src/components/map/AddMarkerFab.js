@@ -3,7 +3,7 @@ import Fab from "@mui/material/Fab";
 import AddLocationIcon from "@mui/icons-material/AddLocation";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 
 const AddMarkerFab = ({ onFabClick, onFabClickNoLogin }) => {
   const theme = useTheme();
