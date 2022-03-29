@@ -19,7 +19,7 @@ const MapLegend = () => {
           img: require("../../assets/images/marker-icons/video.png"),
         },
         {
-          label: "Museum/Historical Site",
+          label: "History",
           img: require("../../assets/images/marker-icons/history.png"),
         },
         {
