@@ -16,9 +16,10 @@ import useAuth from "../hooks/useAuth";
 const AvatarButton = () => {
   const navigate = useNavigate();
   const { logoutUser, user } = useAuth();
-  const [anchorElUser, setAnchorElUser] = useState(null);
 
   const settings = ["Profile", "Account", "Sign Out"];
+
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenUserMenu = (e) => {
     setAnchorElUser(e.currentTarget);
