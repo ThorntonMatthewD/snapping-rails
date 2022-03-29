@@ -19,7 +19,7 @@ const MapLegend = () => {
           img: require("../../assets/images/marker-icons/video.png"),
         },
         {
-          label: "History",
+          label: "Museum/Historical Site",
           img: require("../../assets/images/marker-icons/history.png"),
         },
         {
@@ -27,7 +27,7 @@ const MapLegend = () => {
           img: require("../../assets/images/marker-icons/calendar.png"),
         },
         {
-          label: "Venue",
+          label: "Club/Business",
           img: require("../../assets/images/marker-icons/community.png"),
         },
       ];
