@@ -37,6 +37,8 @@ const MapLegend = () => {
 
         let labels = [];
 
+        labels.push("<h1>Legend</h1>");
+
         for (let i = 0; i < markersTypes.length; i++) {
           labels.push(
             '<img src="' +
