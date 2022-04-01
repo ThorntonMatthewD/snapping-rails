@@ -68,6 +68,7 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
     resolver: yupResolver(schema),
     defaultValues: defaultValues,
   });
+
   const {
     handleSubmit,
     control,
