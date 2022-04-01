@@ -4,6 +4,7 @@ import {
   CircularProgress,
   Grid,
   Typography,
+  Paper,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import useFetch from "use-http";
@@ -58,7 +59,7 @@ const Posts = ({ username }) => {
   );
 
   return (
-    <Container>
+    <Paper>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
@@ -77,7 +78,7 @@ const Posts = ({ username }) => {
         direction="column"
         alignItems="center"
         justifyContent="center"
-        style={{ minHeight: "90vh" }}
+        style={{ minHeight: "90vh", padding: 10 }}
       >
         <DataGrid
           sx={{ width: "100%", mt: 3 }}
@@ -89,7 +90,7 @@ const Posts = ({ username }) => {
           disableSelectionOnClick
         />
       </Grid>
-    </Container>
+    </Paper>
   );
 };
 

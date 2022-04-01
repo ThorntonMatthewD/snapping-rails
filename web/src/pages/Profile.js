@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Container, Grid } from "@mui/material";
+import { Container, Grid, Paper } from "@mui/material";
 import useAuth from "../hooks/useAuth";
 
 import Posts from "../components/profile/Posts";
@@ -29,19 +29,22 @@ const Profile = () => {
   }, []);
 
   return (
-    <Container fixed sx={{ paddingTop: "10px" }}>
-      <Grid container spacing={2}>
+    <Container fixed maxWidth="xl" sx={{ paddingTop: "10px" }}>
+      <Grid container wrap={"wrap"} spacing={2}>
         <Grid item xs={4}>
-          <Grid container rowSpacing={1} columnSpacing={1}>
-            <Grid item xs={8}>
-              <AboutUser userInfo={{ username: "MattTBoy" }} />
-              <br />
-              <SocialBar />
-            </Grid>
-            <Grid item xs={8}>
-              <UserStats />
-            </Grid>
-          </Grid>
+          <Paper sx={{ padding: 2 }}>
+            <AboutUser userInfo={{ username: "MattTBoy" }} />
+            <br />
+            <SocialBar
+              links={{
+                youtube: "https://www.youtube.com/user/railcamp09",
+                instagram: "https://www.instagram.com/tracey.c.green/",
+                facebook: "https://www.facebook.com/RailfanDanny/",
+              }}
+            />
+          </Paper>
+          <br />
+          <UserStats />
         </Grid>
         <Grid item xs={8}>
           <Posts username={"MattTBoy"} />
