@@ -2,7 +2,6 @@ import re
 
 from fastapi import APIRouter, HTTPException, Depends
 from async_fastapi_jwt_auth import AuthJWT
-from pydantic import BaseModel
 from pydantic import BaseModel, validator, EmailStr
 from typing import Optional
 from sqlalchemy.sql.expression import select
