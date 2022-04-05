@@ -27,6 +27,7 @@ idna==3.3
 inflect==5.4.0
 iniconfig==1.1.1
 mccabe==0.6.1
+mypy==0.942
 mypy-extensions==0.4.3
 opengraph-py3==0.71
 packaging==21.3
