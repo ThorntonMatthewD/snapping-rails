@@ -6,8 +6,8 @@ import opengraph_py3 as opengraph
 from pydantic import BaseModel, validator, HttpUrl
 from sqlalchemy.sql.expression import insert, select, update
 from typing import Optional
-from src.routers.auth import get_user
 
+from src.routers.auth import get_user
 from src.database.database import SNAPPING_RAILS_ENGINE as db
 from src.database import models
 from src.database.functions import SqlalchemyResult
