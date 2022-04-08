@@ -118,7 +118,7 @@ const Navbar = () => {
             ))}
           </Box>
 
-          {user !== null ? (
+          {true !== null ? (
             <AvatarButton />
           ) : (
             <Button href="/login">Log In</Button>
