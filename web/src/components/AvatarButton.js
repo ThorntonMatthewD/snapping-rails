@@ -9,7 +9,7 @@ import {
   MenuItem,
   Tooltip,
   Typography,
-} from "@mui/material/Box";
+} from "@mui/material";
 
 import useAuth from "../hooks/useAuth";
 
