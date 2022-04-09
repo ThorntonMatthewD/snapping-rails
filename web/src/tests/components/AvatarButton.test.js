@@ -35,7 +35,7 @@ describe("The button responds to the auth context", () => {
   });
 });
 
-test("Whenever 'Sign Out' is pressed then a user is signed out", async () => {
+test("Whenever 'Sign Out' is pressed then the avatar button goes back to having the default icon", async () => {
   renderAvatarButton(STRINGS.TEST_USER);
 
   //Make sure we are signed in
@@ -49,7 +49,8 @@ test("Whenever 'Sign Out' is pressed then a user is signed out", async () => {
 
   const signOutLink = screen.getByText(/sign out/i);
 
+  //TODO: get auth context to actually update here
   userEvent.click(signOutLink);
 
-  //TODO: get auth context to actually update here
+  expect(within(avatarButton).getByAltText("")).toBeTruthy();
 });
