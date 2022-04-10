@@ -15,11 +15,10 @@ import useAuth from "../hooks/useAuth";
 
 const AvatarButton = () => {
   const navigate = useNavigate();
-
   const { logoutUser, user } = useAuth();
-  const settings = ["Profile", "Account", "Sign Out"];
-
   const [anchorElUser, setAnchorElUser] = useState(null);
+
+  const settings = ["Profile", "Account", "Sign Out"];
 
   const handleOpenUserMenu = (e) => {
     setAnchorElUser(e.currentTarget);
@@ -49,7 +48,8 @@ const AvatarButton = () => {
       <Tooltip title="Account settings">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
           <Avatar
-            alt={user !== null ? user.username : ""}
+            label="user-avatar"
+            alt={user ? user.username : ""}
             src="/static/images/avatar/2.jpg"
           />
         </IconButton>

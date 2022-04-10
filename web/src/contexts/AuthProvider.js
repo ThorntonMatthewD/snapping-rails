@@ -34,7 +34,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
   };
 
   //We have to clear out the cookies on the backend.
-  let logoutUser = async (explicit_call) => {
+  let logoutUser = async (explicitCall) => {
     await fetch("http://localhost:8000/api/logout", {
       credentials: "include",
       method: "DELETE",
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
       .then(() => {
         removeUser();
 
-        if (explicit_call) {
+        if (explicitCall) {
           navigate("/");
         }
       })
@@ -124,18 +124,21 @@ export const AuthProvider = ({ children, initialUser = null }) => {
   };
 
   useEffect(() => {
-    if (user) {
-      updateToken();
-    }
-
-    let fiveMinutes = 1000 * 60 * 5;
-
-    let interval = setInterval(() => {
+    //If initialUser isn't null then we're running a test, and we don't want to update.
+    if (!initialUser) {
       if (user) {
         updateToken();
       }
-    }, fiveMinutes);
-    return () => clearInterval(interval);
+
+      let fiveMinutes = 1000 * 60 * 5;
+
+      let interval = setInterval(() => {
+        if (user) {
+          updateToken();
+        }
+      }, fiveMinutes);
+      return () => clearInterval(interval);
+    }
   }, []);
 
   return (
