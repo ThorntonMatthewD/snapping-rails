@@ -39,27 +39,54 @@ describe("The button responds to the auth context", () => {
   });
 });
 
-test("Whenever 'Sign Out' is pressed then the avatar button goes back to having the default icon", async () => {
-  fetch.mockResponseOnce(
-    JSON.stringify({ detail: "Bob was signed out successfully." }),
-    { status: 200 }
-  );
+describe("Whenever 'Sign Out' is pressed then the avatar", () => {
+  test("the avatar button goes back to having the default icon on successful response", async () => {
+    fetch.mockResponseOnce(
+      JSON.stringify({ detail: "Bob was signed out successfully." }),
+      { status: 200 }
+    );
 
-  renderAvatarButton(STRINGS.TEST_USER);
+    renderAvatarButton(STRINGS.TEST_USER);
 
-  //Make sure we are signed in
-  expect(screen.getByAltText("Bob")).toBeTruthy();
+    //Make sure we are signed in
+    expect(screen.getByAltText("Bob")).toBeTruthy();
 
-  const avatarButton = screen.getByRole("button", {
-    name: /account settings/i,
+    const avatarButton = screen.getByRole("button", {
+      name: /account settings/i,
+    });
+
+    userEvent.click(avatarButton);
+
+    const signOutLink = screen.getByText(/sign out/i);
+
+    //TODO: get auth context to actually update here
+    userEvent.click(signOutLink);
+
+    expect(await within(avatarButton).findByAltText("")).toBeTruthy();
   });
 
-  userEvent.click(avatarButton);
+  test("the avatar button goes back to having the default icon on error response", async () => {
+    fetch.mockResponseOnce(
+      JSON.stringify({ detail: "Some failure or something." }),
+      { status: 400 }
+    );
 
-  const signOutLink = screen.getByText(/sign out/i);
+    renderAvatarButton(STRINGS.TEST_USER);
 
-  //TODO: get auth context to actually update here
-  userEvent.click(signOutLink);
+    //Make sure we are signed in
+    expect(screen.getByAltText("Bob")).toBeTruthy();
 
-  expect(await within(avatarButton).findByAltText("")).toBeTruthy();
+    const avatarButton = screen.getByRole("button", {
+      name: /account settings/i,
+    });
+
+    userEvent.click(avatarButton);
+
+    const signOutLink = screen.getByText(/sign out/i);
+
+    //TODO: get auth context to actually update here
+    userEvent.click(signOutLink);
+
+    expect(await within(avatarButton).findByAltText("")).toBeTruthy();
+  });
 });
