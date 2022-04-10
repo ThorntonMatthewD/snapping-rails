@@ -3,15 +3,15 @@ import { BrowserRouter } from "react-router-dom";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import { STRINGS } from "../constants";
-import Railmap from "../components/map/Railmap";
+import { STRINGS } from "../../constants";
+import Railmap from "../../components/map/Railmap";
 import { ThemeProvider } from "@mui/material/styles";
-import { Theme } from "../configs/theme";
-import { AuthProvider } from "../contexts/AuthProvider";
+import { Theme } from "../../configs/theme";
+import { AuthProvider } from "../../contexts/AuthProvider";
 
 window.scrollTo = jest.fn();
 
-function renderRailmap(user) {
+const renderRailmap = (user) => {
   return render(
     <BrowserRouter>
       <ThemeProvider theme={Theme}>
@@ -21,9 +21,13 @@ function renderRailmap(user) {
       </ThemeProvider>
     </BrowserRouter>
   );
-}
+};
 
-test("Ensure login alert shows on press if not logged in", () => {
+beforeEach(() => {
+  fetch.resetMocks();
+});
+
+test("Ensure login alert shows on press if not logged in", async () => {
   renderRailmap(null);
 
   const fab = screen.getByLabelText("add-marker");
@@ -51,7 +55,7 @@ test("Ensure login alert shows on press if not logged in", () => {
   ).toBe(true);
 });
 
-test("Ensure draggable markers appears on press if logged in", () => {
+test("Ensure draggable markers appears on press if logged in", async () => {
   renderRailmap(STRINGS.TEST_USER);
 
   const fab = screen.getByLabelText("add-marker");

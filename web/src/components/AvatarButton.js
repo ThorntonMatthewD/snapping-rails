@@ -1,22 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import Avatar from "@mui/material/Avatar";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
+import {
+  Avatar,
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+
 import useAuth from "../hooks/useAuth";
 
 const AvatarButton = () => {
   const navigate = useNavigate();
-
   const { logoutUser, user } = useAuth();
-  const settings = ["Profile", "Account", "Posts", "Sign Out"];
-
   const [anchorElUser, setAnchorElUser] = useState(null);
+
+  const settings = ["Profile", "Account", "Posts", "Sign Out"];
 
   const handleOpenUserMenu = (e) => {
     setAnchorElUser(e.currentTarget);
@@ -46,7 +48,8 @@ const AvatarButton = () => {
       <Tooltip title="Account settings">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
           <Avatar
-            alt={user !== null ? user.username : ""}
+            label="user-avatar"
+            alt={user ? user.username : ""}
             src="/static/images/avatar/2.jpg"
           />
         </IconButton>
