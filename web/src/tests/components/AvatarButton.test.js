@@ -40,7 +40,7 @@ describe("The button responds to the auth context", () => {
 });
 
 test("Whenever 'Sign Out' is pressed then the avatar button goes back to having the default icon", async () => {
-  fetch.mockResponse(
+  fetch.mockResponseOnce(
     JSON.stringify({ detail: "Bob was signed out successfully." }),
     { status: 200 }
   );
