@@ -124,18 +124,21 @@ export const AuthProvider = ({ children, initialUser = null }) => {
   };
 
   useEffect(() => {
-    if (user) {
-      updateToken();
-    }
-
-    let fiveMinutes = 1000 * 60 * 5;
-
-    let interval = setInterval(() => {
+    //If initialUser isn't null then we're running a test, and we don't want to update.
+    if (!initialUser) {
       if (user) {
         updateToken();
       }
-    }, fiveMinutes);
-    return () => clearInterval(interval);
+
+      let fiveMinutes = 1000 * 60 * 5;
+
+      let interval = setInterval(() => {
+        if (user) {
+          updateToken();
+        }
+      }, fiveMinutes);
+      return () => clearInterval(interval);
+    }
   }, []);
 
   return (

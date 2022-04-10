@@ -23,7 +23,7 @@ const renderRailmap = (user) => {
   );
 };
 
-test("Ensure login alert shows on press if not logged in", () => {
+test("Ensure login alert shows on press if not logged in", async () => {
   renderRailmap(null);
 
   const fab = screen.getByLabelText("add-marker");
@@ -51,7 +51,7 @@ test("Ensure login alert shows on press if not logged in", () => {
   ).toBe(true);
 });
 
-test("Ensure draggable markers appears on press if logged in", () => {
+test("Ensure draggable markers appears on press if logged in", async () => {
   renderRailmap(STRINGS.TEST_USER);
 
   const fab = screen.getByLabelText("add-marker");

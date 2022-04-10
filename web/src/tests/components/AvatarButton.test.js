@@ -17,6 +17,10 @@ const renderAvatarButton = (user) => {
   );
 };
 
+beforeEach(() => {
+  fetch.resetMocks();
+});
+
 describe("The button responds to the auth context", () => {
   test("by display the user's first initial if they are logged in", async () => {
     renderAvatarButton(STRINGS.TEST_USER);
@@ -36,6 +40,11 @@ describe("The button responds to the auth context", () => {
 });
 
 test("Whenever 'Sign Out' is pressed then the avatar button goes back to having the default icon", async () => {
+  fetch.mockResponse(
+    JSON.stringify({ detail: "Bob was signed out successfully." }),
+    { status: 200 }
+  );
+
   renderAvatarButton(STRINGS.TEST_USER);
 
   //Make sure we are signed in
@@ -52,5 +61,5 @@ test("Whenever 'Sign Out' is pressed then the avatar button goes back to having 
   //TODO: get auth context to actually update here
   userEvent.click(signOutLink);
 
-  expect(within(avatarButton).getByAltText("")).toBeTruthy();
+  expect(await within(avatarButton).findByAltText("")).toBeTruthy();
 });

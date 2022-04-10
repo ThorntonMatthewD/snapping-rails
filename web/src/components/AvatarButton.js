@@ -49,7 +49,7 @@ const AvatarButton = () => {
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
           <Avatar
             label="user-avatar"
-            alt={user !== null ? user.username : ""}
+            alt={user ? user.username : ""}
             src="/static/images/avatar/2.jpg"
           />
         </IconButton>
