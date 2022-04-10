@@ -1,9 +1,7 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, cleanup } from "@testing-library/react";
 
-import { STRINGS } from "../../../constants";
 import Railmap from "../../../components/map/Railmap";
 import { ThemeProvider } from "@mui/material/styles";
 import { Theme } from "../../../configs/theme";
@@ -22,6 +20,15 @@ const renderRailmap = (user) => {
     </BrowserRouter>
   );
 };
+
+beforeEach(() => {
+  fetch.resetMocks();
+});
+
+afterEach(() => {
+  fetch.resetMocks();
+  cleanup();
+});
 
 test("When I run this test then Jest stops complaining at me", () => {
   expect(true).toBe(true);

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { within } from "@testing-library/dom";
 import { BrowserRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
@@ -19,6 +19,11 @@ const renderAvatarButton = (user) => {
 
 beforeEach(() => {
   fetch.resetMocks();
+});
+
+afterEach(() => {
+  fetch.resetMocks();
+  cleanup();
 });
 
 describe("The button responds to the auth context", () => {
