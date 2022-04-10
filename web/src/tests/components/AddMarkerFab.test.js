@@ -23,6 +23,10 @@ const renderRailmap = (user) => {
   );
 };
 
+beforeEach(() => {
+  fetch.resetMocks();
+});
+
 test("Ensure login alert shows on press if not logged in", async () => {
   renderRailmap(null);
 

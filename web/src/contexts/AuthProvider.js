@@ -34,7 +34,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
   };
 
   //We have to clear out the cookies on the backend.
-  let logoutUser = async (explicit_call) => {
+  let logoutUser = async (explicitCall) => {
     await fetch("http://localhost:8000/api/logout", {
       credentials: "include",
       method: "DELETE",
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
       .then(() => {
         removeUser();
 
-        if (explicit_call) {
+        if (explicitCall) {
           navigate("/");
         }
       })
