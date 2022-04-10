@@ -16,7 +16,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 
 import AvatarButton from "./AvatarButton";
-import logo from "../assets/images/logo-white.png";
+import { ReactComponent as Logo } from "../assets/images/logo-white.svg";
 
 import useAuth from "../hooks/useAuth";
 
@@ -44,7 +44,7 @@ const Navbar = () => {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box
-            component="img"
+            component="div"
             sx={{
               height: 70,
               width: 125,
@@ -53,9 +53,9 @@ const Navbar = () => {
               mr: 2,
               display: { xs: "none", md: "flex" },
             }}
-            alt="Snapping Rails logo"
-            src={logo}
-          />
+          >
+            <Logo width={"100%"} height={"auto"} />
+          </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
