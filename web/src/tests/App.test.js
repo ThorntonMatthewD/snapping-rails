@@ -1,8 +1,13 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, cleanup } from "@testing-library/react";
 import App from "../App";
 
 beforeEach(() => {
   fetch.resetMocks();
+});
+
+afterEach(() => {
+  fetch.resetMocks();
+  cleanup();
 });
 
 test("renders learn react link", async () => {

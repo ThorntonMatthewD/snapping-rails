@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import { render, screen } from "@testing-library/react";
+import { render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { STRINGS } from "../../constants";
@@ -25,6 +25,11 @@ const renderRailmap = (user) => {
 
 beforeEach(() => {
   fetch.resetMocks();
+});
+
+afterEach(() => {
+  fetch.resetMocks();
+  cleanup();
 });
 
 test("Ensure login alert shows on press if not logged in", async () => {
