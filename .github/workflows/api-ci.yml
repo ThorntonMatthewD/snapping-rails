@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - 'api/**'
+    - '.github/workflows/api-ci.yml'
 
 jobs:
   pytest:
