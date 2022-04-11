@@ -35,6 +35,16 @@ jobs:
       - name: Create .env file
         run: echo "${{ secrets.BACKEND_ENVS }}" > ./api/src/.env
 
+      - name: Set up psql
+        run: |
+          docker run -d \
+          --name sr-test-database \
+          -e POSTGRES_PASSWORD=postgres \
+          -e PGDATA=/var/lib/postgresql/data/pgdata \
+          postgres
+
+          cd database && cat db.sql | docker exec -i sr-test-database psql -U postgres
+
       - name: Run pytests
         run: |
           cd api && pipenv run python -m pytest --import-mode=append tests/
