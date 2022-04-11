@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - 'web/**'
+    - '.github/workflows/web-ci.yml'
 
 jobs:
   jest-tests:

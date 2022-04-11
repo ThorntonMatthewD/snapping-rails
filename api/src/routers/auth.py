@@ -100,6 +100,8 @@ async def get_user(username: str):
     async with db.session() as session:
         data = await session.execute(sql)
 
+    await db.engine.dispose()
+
     result = SqlalchemyResult(data).rows2dict()
 
     if len(result) == 0:

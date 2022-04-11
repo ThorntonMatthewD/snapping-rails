@@ -4,6 +4,7 @@ on:
   push:
     paths:
     - 'api/**'
+    - '.github/workflows/api-ci.yml'
 
 jobs:
   pytest:
@@ -30,10 +31,32 @@ jobs:
           cd api
           python -m pip install --upgrade pip
           python -m pip install pipenv
-          pipenv install
+          pipenv install --dev
 
       - name: Create .env file
-        run: echo "${{ secrets.BACKEND_ENVS }}" > ./api/src/.env
+        run: echo "${{ secrets.BACKEND_TEST_ENVS }}" > ./api/src/.env
+
+      - name: Set up psql container
+        run: |
+          docker run -d \
+          --network host \
+          -p 5432:5432 \
+          --name sr-test-database \
+          -e POSTGRES_PASSWORD=postgres \
+          -e PGDATA=/var/lib/postgresql/data/pgdata \
+          postgres
+
+      - name: Wait for db to boot
+        run: |
+          cd database && chmod +x wait-for-db.sh && ./wait-for-db.sh
+
+      - name: Create Snapping Rails database
+        run: |
+          docker exec -i sr-test-database createdb -U postgres snapping-rails
+
+      - name: Load Snapping Rails database with test data
+        run: |
+          cd database && cat db.sql | docker exec -i sr-test-database psql -U postgres -d snapping-rails
 
       - name: Run pytests
         run: |
