@@ -1,4 +1,4 @@
-until pg_isready -U postgres; do
+until docker exec -i sr-test-database pg_isready -U postgres; do
   echo >&2 "$(date +%Y%m%dt%H%M%S) Postgres is unavailable - sleeping"
   sleep 2
 done
