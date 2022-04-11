@@ -4,6 +4,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import json
+import datetime
 from src.app import app
 from fastapi.testclient import TestClient
 
@@ -45,7 +46,7 @@ def test_get_markers_limit():
 
 
 def test_post_markers_bad_latitude():
-    "Whenever we call POST /markers with bad input we should receive a 422 error"
+    "Whenever we call POST /markers with a bad latitude we should receive a 422 error"
 
     bad_long_data = {
         "created_at": "2022-04-11T00:59:44.817Z",
@@ -65,7 +66,7 @@ def test_post_markers_bad_latitude():
 
 
 def test_post_markers_bad_longitude():
-    "Whenever we call POST /markers with bad input we should receive a 422 error"
+    "Whenever we call POST /markers with a bad longitude we should receive a 422 error"
 
     bad_lat_data = {
         "created_at": "2022-04-11T00:59:44.817Z",
@@ -82,3 +83,26 @@ def test_post_markers_bad_longitude():
     assert response.status_code == 422
 
     assert response.json()['detail'][0]['msg'] == "Longitude value isn't valid"
+
+
+def test_post_markers_future_timestamp():
+    "Whenever we call POST /markers with bad input we should receive a 422 error"
+
+    future_time = datetime.datetime.now() + datetime.timedelta(days=1)
+    future_epoch_timestamp = future_time.timestamp()
+
+    future_post_data = {
+        "created_at": future_epoch_timestamp,
+        "lat": "35.321",
+        "long": "90.444",
+        "media_url": "https://github.com/ThorntonMatthewD/snapping-rails",
+        "title": "My Title",
+        "description": "A good description",
+        "marker_type": 1
+    }
+
+    response = client.post("/markers", json.dumps(future_post_data))
+
+    assert response.status_code == 422
+
+    assert response.json()['detail'][0]['msg'] == "You are posting from the future... Curious."
