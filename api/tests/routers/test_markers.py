@@ -45,6 +45,19 @@ def test_get_markers_limit():
     assert len(response.json()) <= limit
 
 
+def test_get_markers_by_user():
+    "Whenever we call GET /markers?author_id=X then we only get posts by X"
+
+    author_id = 1
+
+    response = client.get(f"/markers?author_id={author_id}")
+
+    assert response.status_code == 200
+
+    for post in response.json():
+        assert post.get("author_id") == author_id
+
+
 def test_post_markers_bad_latitude():
     "Whenever we call POST /markers with a bad latitude we should receive a 422 error"
 
