@@ -39,6 +39,7 @@ jobs:
       - name: Set up psql container
         run: |
           docker run -d \
+          -p 5432:5432 \
           --name sr-test-database \
           -e POSTGRES_PASSWORD=postgres \
           -e PGDATA=/var/lib/postgresql/data/pgdata \
