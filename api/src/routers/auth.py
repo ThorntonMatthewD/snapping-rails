@@ -25,6 +25,7 @@ class Settings(BaseModel):
 
     authjwt_token_location: set = {"cookies"}
 
+
 class UserCreds(BaseModel):
     username: str
     password: str
