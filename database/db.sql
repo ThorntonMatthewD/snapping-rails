@@ -5,8 +5,6 @@
 -- Dumped from database version 14.2 (Debian 14.2-1.pgdg110+1)
 -- Dumped by pg_dump version 14.2 (Debian 14.2-1.pgdg110+1)
 
--- Started on 2022-04-10 16:18:51 UTC
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -22,8 +20,10 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
+
+CREATE DATABASE snapping-rails;
+
 --
--- TOC entry 210 (class 1259 OID 16422)
 -- Name: markers; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -45,7 +45,6 @@ CREATE TABLE public.markers (
 ALTER TABLE public.markers OWNER TO postgres;
 
 --
--- TOC entry 209 (class 1259 OID 16421)
 -- Name: markers_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -60,8 +59,6 @@ CREATE SEQUENCE public.markers_id_seq
 ALTER TABLE public.markers_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3332 (class 0 OID 0)
--- Dependencies: 209
 -- Name: markers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -69,7 +66,6 @@ ALTER SEQUENCE public.markers_id_seq OWNED BY public.markers.id;
 
 
 --
--- TOC entry 212 (class 1259 OID 16435)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -85,7 +81,6 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO postgres;
 
 --
--- TOC entry 211 (class 1259 OID 16434)
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -100,8 +95,6 @@ CREATE SEQUENCE public.users_id_seq
 ALTER TABLE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 3333 (class 0 OID 0)
--- Dependencies: 211
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -109,7 +102,6 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- TOC entry 3172 (class 2604 OID 16425)
 -- Name: markers id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -117,7 +109,6 @@ ALTER TABLE ONLY public.markers ALTER COLUMN id SET DEFAULT nextval('public.mark
 
 
 --
--- TOC entry 3174 (class 2604 OID 16438)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -125,8 +116,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 3324 (class 0 OID 16422)
--- Dependencies: 210
 -- Data for Name: markers; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -164,8 +153,6 @@ COPY public.markers (id, created_at, lat, long, media_url, img_url, title, descr
 
 
 --
--- TOC entry 3326 (class 0 OID 16435)
--- Dependencies: 212
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -177,8 +164,6 @@ COPY public.users (id, username, email, hashed_password, disabled) FROM stdin;
 
 
 --
--- TOC entry 3334 (class 0 OID 0)
--- Dependencies: 209
 -- Name: markers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -186,8 +171,6 @@ SELECT pg_catalog.setval('public.markers_id_seq', 52, true);
 
 
 --
--- TOC entry 3335 (class 0 OID 0)
--- Dependencies: 211
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -195,7 +178,6 @@ SELECT pg_catalog.setval('public.users_id_seq', 4, true);
 
 
 --
--- TOC entry 3177 (class 2606 OID 16430)
 -- Name: markers markers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -204,7 +186,6 @@ ALTER TABLE ONLY public.markers
 
 
 --
--- TOC entry 3179 (class 2606 OID 16445)
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -213,7 +194,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3181 (class 2606 OID 16443)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -222,7 +202,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 3182 (class 2606 OID 16447)
 -- Name: markers fk_author; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -231,15 +210,12 @@ ALTER TABLE ONLY public.markers
 
 
 --
--- TOC entry 3183 (class 2606 OID 16452)
 -- Name: markers markers_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.markers
     ADD CONSTRAINT markers_fk FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE RESTRICT;
 
-
--- Completed on 2022-04-10 16:18:51 UTC
 
 --
 -- PostgreSQL database dump complete

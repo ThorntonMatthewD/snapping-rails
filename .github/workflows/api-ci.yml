@@ -53,7 +53,7 @@ jobs:
 
       - name: Load Snapping Rails database with test data
         run: |
-          cd database && cat db.sql | docker exec -i sr-test-database psql -U postgres
+          cd database && cat db.sql | docker exec -i sr-test-database psql -U postgres -d snapping-rails
 
       - name: Run pytests
         run: |
