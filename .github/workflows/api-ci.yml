@@ -50,12 +50,8 @@ jobs:
 
       - name: Wait for db to boot
         run: |
-          CHECKS = 5
-
-          until docker run --rm --net sr-net postgres psql -h postgres -U postgres || [ $CHECKS -eq 0 ];; do
-            echo "Waiting for postgres container..."
-            sleep 4
-          done
+          # Just sleep for 20 seconds until I make a script lol
+          sleep 20
 
       - name: Load up initial database
         run: |
