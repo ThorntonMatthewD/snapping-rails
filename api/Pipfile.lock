@@ -253,6 +253,14 @@
             "index": "pypi",
             "version": "==36.0.2"
         },
+        "databases": {
+            "hashes": [
+                "sha256:02c6b016c1c951c21cca281dc8e2e002c60dc44026c0084aabbd8c37514aeb37",
+                "sha256:97d9b9647216d1ab53ca61c059412b5c7b6e1f0bf8ce985477982ebcc7f278f3"
+            ],
+            "index": "pypi",
+            "version": "==0.5.5"
+        },
         "dnspython": {
             "hashes": [
                 "sha256:0f7569a4a6ff151958b64304071d370daa3243d15941a7beedf0c9fe5105603e",
