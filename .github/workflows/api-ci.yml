@@ -51,6 +51,11 @@ jobs:
           # Just sleep for 20 seconds until I make a script lol
           sleep 20
 
+      - name: Create Snapping Rails database
+        run: |
+          echo "CREATE DATABASE snapping-rails;" | \
+          docker exec -i sr-test-database psql -U postgres 
+
       - name: Load Snapping Rails database with test data
         run: |
           cd database && cat db.sql | docker exec -i sr-test-database psql -U postgres -d snapping-rails

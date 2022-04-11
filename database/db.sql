@@ -20,9 +20,6 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
-
-CREATE DATABASE snapping-rails;
-
 --
 -- Name: markers; Type: TABLE; Schema: public; Owner: postgres
 --
