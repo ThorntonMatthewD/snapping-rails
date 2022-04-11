@@ -35,7 +35,7 @@ jobs:
       - name: Create .env file
         run: echo "${{ secrets.BACKEND_ENVS }}" > ./api/src/.env
 
-      - name: Set up psql
+      - name: Set up psql container
         run: |
           docker run -d \
           --name sr-test-database \
@@ -43,6 +43,8 @@ jobs:
           -e PGDATA=/var/lib/postgresql/data/pgdata \
           postgres
 
+      - name: Load up initial database
+        run: |
           cd database && cat db.sql | docker exec -i sr-test-database psql -U postgres
 
       - name: Run pytests
