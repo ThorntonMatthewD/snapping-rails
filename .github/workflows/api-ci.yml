@@ -53,8 +53,7 @@ jobs:
 
       - name: Create Snapping Rails database
         run: |
-          echo "CREATE DATABASE 'snapping-rails';" | \
-          docker exec -i sr-test-database psql -U postgres 
+          docker exec -it sr-test-database createdb -U postgres snapping-rails
 
       - name: Load Snapping Rails database with test data
         run: |
