@@ -48,8 +48,7 @@ jobs:
 
       - name: Wait for db to boot
         run: |
-          # Just sleep for 20 seconds until I make a script lol
-          sleep 20
+          cd database && ./wait-for-db.sh
 
       - name: Create Snapping Rails database
         run: |
