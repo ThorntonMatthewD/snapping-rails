@@ -3,8 +3,9 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from fastapi.testclient import TestClient
+import json
 from src.app import app
+from fastapi.testclient import TestClient
 
 
 client = TestClient(app)
@@ -30,3 +31,54 @@ def test_get_markers():
             "author_id": 1
         }
     )
+
+def test_get_markers_limit():
+    "Whenever we call GET /markers?limit=X, then we get <=X markers"
+
+    limit = 10
+
+    response = client.get(f"/markers?limit={limit}")
+
+    assert response.status_code == 200
+
+    assert len(response.json()) <= limit
+
+
+def test_post_markers_bad_latitude():
+    "Whenever we call POST /markers with bad input we should receive a 422 error"
+
+    bad_long_data = {
+        "created_at": "2022-04-11T00:59:44.817Z",
+        "lat": "120.123", #This is too high
+        "long": "-86.321",
+        "media_url": "https://github.com/ThorntonMatthewD/snapping-rails",
+        "title": "My Title",
+        "description": "A good description",
+        "marker_type": 1
+    }
+
+    response = client.post("/markers", json.dumps(bad_long_data))
+
+    assert response.status_code == 422
+
+    assert response.json()['detail'][0]['msg'] == "Latitude value isn't valid"
+
+
+def test_post_markers_bad_longitude():
+    "Whenever we call POST /markers with bad input we should receive a 422 error"
+
+    bad_lat_data = {
+        "created_at": "2022-04-11T00:59:44.817Z",
+        "lat": "35.321",
+        "long": "-210.123", #This is too low
+        "media_url": "https://github.com/ThorntonMatthewD/snapping-rails",
+        "title": "My Title",
+        "description": "A good description",
+        "marker_type": 1
+    }
+
+    response = client.post("/markers", json.dumps(bad_lat_data))
+
+    assert response.status_code == 422
+
+    assert response.json()['detail'][0]['msg'] == "Longitude value isn't valid"
