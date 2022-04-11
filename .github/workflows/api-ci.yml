@@ -34,14 +34,12 @@ jobs:
           pipenv install --dev
 
       - name: Create .env file
-        run: echo "${{ secrets.BACKEND_ENVS }}" > ./api/src/.env
+        run: echo "${{ secrets.BACKEND_TEST_ENVS }}" > ./api/src/.env
 
       - name: Set up psql container
         run: |
-          docker network create sr-net
-
           docker run -d \
-          --net sr-net \
+          --network host \
           -p 5432:5432 \
           --name sr-test-database \
           -e POSTGRES_PASSWORD=postgres \
@@ -53,7 +51,7 @@ jobs:
           # Just sleep for 20 seconds until I make a script lol
           sleep 20
 
-      - name: Load up initial database
+      - name: Load Snapping Rails database with test data
         run: |
           cd database && cat db.sql | docker exec -i sr-test-database psql -U postgres
 
