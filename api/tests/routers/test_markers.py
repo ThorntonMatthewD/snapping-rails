@@ -6,6 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import json
 import datetime
 from src.app import app
+from src.routers.markers import get_thumbnail
 from fastapi.testclient import TestClient
 
 
@@ -119,3 +120,35 @@ def test_post_markers_future_timestamp():
     assert response.status_code == 422
 
     assert response.json()['detail'][0]['msg'] == "You are posting from the future... Curious."
+
+
+def test_get_thumbnail_good_url():
+    "Whenever we call get_thumbnail with a URL that has a valid og:image tag then extract it"
+
+    og_url = get_thumbnail("https://github.com/ThorntonMatthewD")
+
+    assert og_url == "https://avatars.githubusercontent.com/u/44626690?v=4?s=400"
+
+
+def test_get_thumbnail_bad_url():
+    "Whenever we call get_thumbnail with a URL that does not have a valid og:image tag then it returns default"
+
+    og_url = get_thumbnail("http://info.cern.ch/")
+
+    assert og_url == "https://i.imgur.com/BfGDSZT.png"
+
+
+test_marker = {
+    "created_at": "2022-04-11T00:59:44.817Z",
+    "lat": "35.321",
+    "long": "90.444",
+    "media_url": "https://github.com/ThorntonMatthewD/snapping-rails",
+    "title": "The Can I Will Kick Around",
+    "description": "This poor marker has no idea what's coming",
+    "marker_type": 1
+}
+
+
+def test_full_marker_lifecycle():
+    "POST a marker, update it, then delete it"
+    ...
