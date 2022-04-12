@@ -76,7 +76,6 @@ pytest-asyncio = "*"
 anyio = "*"
 trio = "*"
 httpx = "*"
-mockaioredis = "*"
 pytest-mock = "*"
 fakeredis = "*"
 
