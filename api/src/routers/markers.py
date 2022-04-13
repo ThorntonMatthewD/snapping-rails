@@ -131,7 +131,7 @@ async def add_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
 
     await db.engine.dispose()
 
-    return {"message": f"Marker successfully added."}
+    return {"detail": "Marker successfully added."}
 
 
 @router.put("/markers", tags=["Map"])
@@ -156,7 +156,7 @@ async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
     await db.engine.dispose()
 
     if result.rowcount > 0:
-        return {"message": "Marker updated successfully."}
+        return {"detail": "Marker updated successfully."}
     else:
         raise HTTPException(
             401, "Either this marker doesn't exist, or you do not own it."
@@ -185,7 +185,7 @@ async def delete_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
     await db.engine.dispose()
 
     if result.rowcount > 0:
-        return {"message": "Marker deleted successfully."}
+        return {"detail": "Marker deleted successfully."}
     else:
         raise HTTPException(
             401, "Either this marker doesn't exist, or you do not own it."

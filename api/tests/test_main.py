@@ -15,7 +15,7 @@ def test_root_route():
     assert (
         response.status_code == 200
     ), f"Root route could need be reached. HTTP {response.status_code}"
-    assert response.json() == {"message": "Welcome to Snapping Rails!"}
+    assert response.json() == {"detail": "Welcome to Snapping Rails!"}
 
 
 def test_favicon_route():
@@ -24,8 +24,3 @@ def test_favicon_route():
     assert (
         response.status_code == 200
     ), f"Favicon route could need be reached. HTTP {response.status_code}"
-
-
-if __name__ == "__main__":
-    test_root_route()
-    test_favicon_route()
