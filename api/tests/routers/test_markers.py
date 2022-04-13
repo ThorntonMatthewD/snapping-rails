@@ -5,6 +5,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import json
 import datetime
+from typing import List
+
 from src.app import app
 from src.routers.markers import get_thumbnail
 from fastapi.testclient import TestClient
@@ -148,6 +150,8 @@ test_marker = {
     "marker_type": 1
 }
 
+def marker_with_title_in_result(markers: List[dict], title: str) -> bool:
+    return any(m.get("title", "") == title for m in markers)
 
 def test_full_marker_lifecycle():
     "POST a marker, update it, then delete it"
