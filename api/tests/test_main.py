@@ -1,16 +1,8 @@
-import os
-import sys
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from src.app import app
-from fastapi.testclient import TestClient
-
-client = TestClient(app)
+from conftest import test_client
 
 
-def test_root_route():
-    response = client.get("/")
+def test_root_route(test_client):
+    response = test_client.get("/")
 
     assert (
         response.status_code == 200
@@ -18,8 +10,8 @@ def test_root_route():
     assert response.json() == {"detail": "Welcome to Snapping Rails!"}
 
 
-def test_favicon_route():
-    response = client.get("/favicon.ico")
+def test_favicon_route(test_client):
+    response = test_client.get("/favicon.ico")
 
     assert (
         response.status_code == 200

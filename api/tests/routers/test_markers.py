@@ -7,18 +7,14 @@ import json
 import datetime
 from typing import List
 
-from src.app import app
 from src.routers.markers import get_thumbnail
-from fastapi.testclient import TestClient
+from conftest import user_auth, test_client
 
 
-client = TestClient(app)
+def test_get_markers(test_client):
+    response = test_client.get("/markers")
 
-
-def test_get_markers():
-    response = client.get("/markers")
-
-    assert(response.status_code == 200)
+    assert response.status_code == 200
 
     assert(
         response.json()[0] == {
@@ -36,24 +32,24 @@ def test_get_markers():
         }
     )
 
-def test_get_markers_limit():
+def test_get_markers_limit(test_client):
     "Whenever we call GET /markers?limit=X, then we get <=X markers"
 
     limit = 10
 
-    response = client.get(f"/markers?limit={limit}")
+    response = test_client.get(f"/markers?limit={limit}")
 
     assert response.status_code == 200
 
     assert len(response.json()) <= limit
 
 
-def test_get_markers_by_user():
+def test_get_markers_by_user(test_client):
     "Whenever we call GET /markers?author_id=X then we only get posts by X"
 
     author_id = 1
 
-    response = client.get(f"/markers?author_id={author_id}")
+    response = test_client.get(f"/markers?author_id={author_id}")
 
     assert response.status_code == 200
 
@@ -61,7 +57,7 @@ def test_get_markers_by_user():
         assert post.get("author_id") == author_id
 
 
-def test_post_markers_bad_latitude():
+def test_post_markers_bad_latitude(test_client):
     "Whenever we call POST /markers with a bad latitude we should receive a 422 error"
 
     bad_long_data = {
@@ -74,14 +70,14 @@ def test_post_markers_bad_latitude():
         "marker_type": 1
     }
 
-    response = client.post("/markers", json.dumps(bad_long_data))
+    response = test_client.post("/markers", json.dumps(bad_long_data))
 
     assert response.status_code == 422
 
     assert response.json()['detail'][0]['msg'] == "Latitude value isn't valid"
 
 
-def test_post_markers_bad_longitude():
+def test_post_markers_bad_longitude(test_client):
     "Whenever we call POST /markers with a bad longitude we should receive a 422 error"
 
     bad_lat_data = {
@@ -94,14 +90,14 @@ def test_post_markers_bad_longitude():
         "marker_type": 1
     }
 
-    response = client.post("/markers", json.dumps(bad_lat_data))
+    response = test_client.post("/markers", json.dumps(bad_lat_data))
 
     assert response.status_code == 422
 
     assert response.json()['detail'][0]['msg'] == "Longitude value isn't valid"
 
 
-def test_post_markers_future_timestamp():
+def test_post_markers_future_timestamp(test_client):
     "Whenever we call POST /markers with bad input we should receive a 422 error"
 
     future_time = datetime.datetime.now() + datetime.timedelta(days=1)
@@ -117,7 +113,7 @@ def test_post_markers_future_timestamp():
         "marker_type": 1
     }
 
-    response = client.post("/markers", json.dumps(future_post_data))
+    response = test_client.post("/markers", json.dumps(future_post_data))
 
     assert response.status_code == 422
 
@@ -153,6 +149,29 @@ test_marker = {
 def marker_with_title_in_result(markers: List[dict], title: str) -> bool:
     return any(m.get("title", "") == title for m in markers)
 
-def test_full_marker_lifecycle():
+def test_full_marker_lifecycle(user_auth, test_client):
     "POST a marker, update it, then delete it"
+
+    #
+    # Get list of markers and make sure the test_marker isn't there
+    #
+    initial_get_resp = test_client.get("/markers")
+    assert initial_get_resp.status_code == 200
+    #The title should not be present yet.
+    assert not marker_with_title_in_result(
+        markers=initial_get_resp.json(), 
+        title="The Can I Will Kick Around"
+    )
+
+    # POST test_marker
+    #
+    post_resp = test_client.post(
+        "/markers", 
+        json.dumps(test_marker), 
+        cookies=user_auth.get("cookie_jar"),
+        headers={"X-CSRF-TOKEN": user_auth.get("csrf_access_token")}
+    )
+    assert post_resp.status_code == 201
+    assert post_resp.json()['detail'] == "Marker successfully added."
+
     ...

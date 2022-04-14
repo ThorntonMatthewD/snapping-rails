@@ -5,31 +5,33 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import json
 import pytest
-import aioredis
-import fakeredis
-import fakeredis.aioredis
-
-from src.app import app
+from fakeredis import aioredis as fakeaioredis
 from fastapi.testclient import TestClient
 
+from src.app import app
+import src.routers.auth
 
-client = TestClient(app)
-server = fakeredis.FakeServer()
 
 
 @pytest.fixture(autouse=True)
-def redis(mocker):
-    """Mock Redis store"""
-    mocker.patch.object(aioredis, 'from_url', new=fakeredis.FakeStrictRedis(server))
+def mock_redis_auth(monkeypatch):
+    """Mock Redis connections pool in Auth Router"""
+    monkeypatch.setattr(src.routers.auth, 'REDIS', fakeaioredis.FakeRedis())
 
 
 @pytest.fixture
-def login_user():
+def test_client():
+    """Returns a Starlette test API instance"""
+    return TestClient(app)
+
+
+@pytest.fixture
+def login_user(test_client):
     """"Login user with test credentials and return cookies for testing protected routes"""
 
     user_creds = {"username": "testguy", "password": "password1!"}
 
-    auth_resp = client.post("/token", json.dumps(user_creds))
+    auth_resp = test_client.post("/token", json.dumps(user_creds))
 
     assert auth_resp.status_code == 200, "Couldn't log in the test user.. uh-oh."
     assert auth_resp.json() == {'detail': 'testguy was logged in successfully.'}
