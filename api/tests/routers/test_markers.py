@@ -146,23 +146,25 @@ test_marker = {
     "marker_type": 1
 }
 
+
 def marker_with_title_in_result(markers: List[dict], title: str) -> bool:
     return any(m.get("title", "") == title for m in markers)
 
+
 def test_full_marker_lifecycle(user_auth, test_client):
     "POST a marker, update it, then delete it"
-
     #
     # Get list of markers and make sure the test_marker isn't there
     #
     initial_get_resp = test_client.get("/markers")
     assert initial_get_resp.status_code == 200
     #The title should not be present yet.
-    assert not marker_with_title_in_result(
+    assert marker_with_title_in_result(
         markers=initial_get_resp.json(), 
         title="The Can I Will Kick Around"
     )
 
+    #
     # POST test_marker
     #
     post_resp = test_client.post(
@@ -174,4 +176,63 @@ def test_full_marker_lifecycle(user_auth, test_client):
     assert post_resp.status_code == 201
     assert post_resp.json()['detail'] == "Marker successfully added."
 
-    ...
+    #
+    # Get test_marker to see if it was saved properly
+    #
+    after_post_get_resp = test_client.get("/markers")
+    assert after_post_get_resp.status_code == 200
+    #The title should now be in our response
+    assert marker_with_title_in_result(
+        markers=after_post_get_resp.json(), 
+        title="The Can I Will Kick Around"
+    )
+
+    #
+    # Update marker
+    #
+    updated_description = "Have you had enough yet?"
+    updated_marker_data = test_marker
+    updated_marker_data["id"] = after_post_get_resp.json()[-1]["id"]
+    updated_marker_data["description"] = updated_description
+
+    update_resp = test_client.put(
+        "/markers", 
+        json.dumps(updated_marker_data), 
+        cookies=user_auth.get("cookie_jar"),
+        headers={"X-CSRF-TOKEN": user_auth.get("csrf_access_token")}
+    )
+    assert update_resp.json()['detail'] == "Marker updated successfully."
+    assert update_resp.status_code == 200
+    
+    #
+    # Make sure marker was updated
+    #
+    after_put_get_resp = test_client.get(f"/markers?post_id={updated_marker_data['id']}")
+    assert after_put_get_resp.status_code == 200
+    assert marker_with_title_in_result(
+        markers=after_put_get_resp.json(), 
+        title="The Can I Will Kick Around"
+    )
+    assert after_put_get_resp.json()[0]["description"] == updated_description
+
+    #
+    # Delete the marker, relinquishing it from its torment (until the next CI run :^])
+    #
+    delete_resp = test_client.delete(
+        url="/markers", 
+        body=json.dumps(updated_marker_data), 
+        cookies=user_auth.get("cookie_jar"),
+        headers={"X-CSRF-TOKEN": user_auth.get("csrf_access_token")}
+    )
+    assert delete_resp.json()['detail'] == "Marker deleted successfully."
+    assert delete_resp.status_code == 200
+
+    #
+    # RIP test_marker 🌹🪦🌹  He lived a hard, but short life.
+    #
+    after_delete_get_resp = test_client.get(f"/markers")
+    assert after_delete_get_resp.status_code == 200
+    assert not marker_with_title_in_result(
+        markers=after_put_get_resp.json(), 
+        title="The Can I Will Kick Around"
+    )
