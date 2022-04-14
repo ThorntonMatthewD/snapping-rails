@@ -159,7 +159,7 @@ def test_full_marker_lifecycle(user_auth, test_client):
     initial_get_resp = test_client.get("/markers")
     assert initial_get_resp.status_code == 200
     #The title should not be present yet.
-    assert marker_with_title_in_result(
+    assert not marker_with_title_in_result(
         markers=initial_get_resp.json(), 
         title="The Can I Will Kick Around"
     )
