@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status, APIRouter, Query
 from async_fastapi_jwt_auth import AuthJWT
 import opengraph_py3 as opengraph
 from pydantic import BaseModel, validator, HttpUrl
-from sqlalchemy.sql.expression import insert, select, update
+from sqlalchemy.sql.expression import select, update, delete
 from typing import Optional
 
 from src.routers.auth import get_user
@@ -138,24 +138,25 @@ async def add_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
 async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
     await Authorize.jwt_required()
 
-    current_user = await Authorize.get_jwt_subject()
+    current_user_name = await Authorize.get_jwt_subject()
+    current_user = await get_user(current_user_name)
+
+    #Reformat time to be offset-naive
+    marker.created_at = marker.created_at.replace(tzinfo=None)
 
     # TODO Allow for admins to update anything
     async with db.session() as session:
-        result = (
-            session.update(models.Marker)
-            .where(
-                models.Marker.id == marker.id
-                and models.Marker.author_id == current_user.id
-            )
-            .values(marker)
-        )
+        sql = update(models.Marker)
+        sql = sql.values(**marker.dict())
+        sql = sql.where(models.Marker.id == marker.id)
+        sql = sql.where(models.Marker.author_id == current_user.get("id"))
 
+        result = await session.execute(sql)
         await session.commit()
 
     await db.engine.dispose()
 
-    if result.rowcount > 0:
+    if result.rowcount > 0 if result is not None else None:
         return {"detail": "Marker updated successfully."}
     else:
         raise HTTPException(
@@ -171,15 +172,11 @@ async def delete_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
 
     # TODO Allow for admins to delete anything
     async with db.session() as session:
-        result = (
-            session.delete(models.Marker)
-            .where(
-                models.Marker.id == marker.id
-                and models.Marker.author_id == current_user.id
-            )
-            .values(marker)
-        )
+        sql = delete(models.Marker)
+        sql = sql.where(models.Marker.id == marker.id)
+        sql = sql.where(models.Marker.author_id == current_user.get("id"))
 
+        result = await session.execute(sql)
         await session.commit()
 
     await db.engine.dispose()
