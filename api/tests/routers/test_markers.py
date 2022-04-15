@@ -267,13 +267,13 @@ def test_marker_model_longitude_validation():
     test_subject = Marker(**test_marker)
 
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         test_subject.validate_long_bounds(-190)
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         test_subject.validate_long_bounds(1000)
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         test_subject.validate_long_bounds(-223.4123)
 
 
@@ -294,7 +294,7 @@ def test_marker_model_created_at_validation():
     release_date_of_shrek = datetime.datetime.strptime('Apr 22 2001  12:00PM', '%b %d %Y %I:%M%p')
 
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         test_subject.validate_created_at_time(future_time)
 
 
