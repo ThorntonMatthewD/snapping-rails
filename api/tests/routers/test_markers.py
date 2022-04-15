@@ -295,7 +295,7 @@ def test_marker_model_created_at_validation():
 
 
     with pytest.raises(Exception):
-        test_subject.validate_created_at_time(release_date_of_shrek)
+        test_subject.validate_created_at_time(future_time)
 
 
     assert test_subject.validate_created_at_time(current_time) == current_time
