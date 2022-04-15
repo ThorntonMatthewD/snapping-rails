@@ -282,3 +282,21 @@ def test_marker_model_longitude_validation():
     assert test_subject.validate_long_bounds(0) == 0
     assert test_subject.validate_long_bounds(45.12) == 45.12
     assert test_subject.validate_long_bounds(-29.41) == -29.41
+
+
+def test_marker_model_created_at_validation():
+
+    test_subject = Marker(**test_marker)
+
+
+    future_time = datetime.datetime.now() + datetime.timedelta(days=1)
+    current_time = datetime.datetime.now()
+    release_date_of_shrek = datetime.datetime.strptime('Apr 22 2001  12:00PM', '%b %d %Y %I:%M%p')
+
+
+    with pytest.raises(Exception):
+        test_subject.validate_created_at_time(release_date_of_shrek_timestamp)
+
+
+    assert test_subject.validate_created_at_time(current_time) == current_time
+    assert test_subject.validate_created_at_time(release_date_of_shrek) == release_date_of_shrek
