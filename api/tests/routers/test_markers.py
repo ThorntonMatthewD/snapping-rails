@@ -244,7 +244,6 @@ def test_marker_model_latitude_validation():
 
     test_subject = Marker(**test_marker)
 
-
     with pytest.raises(Exception):
         test_subject.validate_lat_bounds(-100)
 
@@ -253,7 +252,6 @@ def test_marker_model_latitude_validation():
 
     with pytest.raises(Exception):
         test_subject.validate_lat_bounds(-223.4123)
-
 
     assert test_subject.validate_lat_bounds(-89.99999) == -89.99999
     assert test_subject.validate_lat_bounds(89.99999) == 89.99999
@@ -266,7 +264,6 @@ def test_marker_model_longitude_validation():
 
     test_subject = Marker(**test_marker)
 
-
     with pytest.raises(ValueError):
         test_subject.validate_long_bounds(-190)
 
@@ -275,7 +272,6 @@ def test_marker_model_longitude_validation():
 
     with pytest.raises(ValueError):
         test_subject.validate_long_bounds(-223.4123)
-
 
     assert test_subject.validate_long_bounds(-179.99999) == -179.99999
     assert test_subject.validate_long_bounds(179.99999) == 179.99999
@@ -288,15 +284,12 @@ def test_marker_model_created_at_validation():
 
     test_subject = Marker(**test_marker)
 
-
     future_time = datetime.datetime.now() + datetime.timedelta(days=1)
     current_time = datetime.datetime.now()
     release_date_of_shrek = datetime.datetime.strptime('Apr 22 2001  12:00PM', '%b %d %Y %I:%M%p')
 
-
     with pytest.raises(ValueError):
         test_subject.validate_created_at_time(future_time)
-
 
     assert test_subject.validate_created_at_time(current_time) == current_time
     assert test_subject.validate_created_at_time(release_date_of_shrek) == release_date_of_shrek
