@@ -3,6 +3,7 @@ from datetime import datetime, timezone, date
 from fastapi import Depends, HTTPException, status, APIRouter, Query
 from async_fastapi_jwt_auth import AuthJWT
 import opengraph_py3 as opengraph
+import pytz
 from pydantic import BaseModel, validator, HttpUrl
 from sqlalchemy.sql.expression import select, update, delete
 from typing import Optional
@@ -40,7 +41,8 @@ class Marker(BaseModel):
 
     @validator("created_at")
     def validate_created_at_time(cls, v):
-        if v > datetime.now(timezone.utc):
+        timestamp_as_utc = v.astimezone(pytz.utc)
+        if timestamp_as_utc > datetime.now(timezone.utc):
             raise ValueError("You are posting from the future... Curious.")
         return v
 
@@ -141,7 +143,7 @@ async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
     current_user_name = await Authorize.get_jwt_subject()
     current_user = await get_user(current_user_name)
 
-    #Reformat time to be offset-naive
+    # Reformat time to be offset-naive
     marker.created_at = marker.created_at.replace(tzinfo=None)
 
     # TODO Allow for admins to update anything
@@ -168,7 +170,8 @@ async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
 async def delete_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
     await Authorize.jwt_required()
 
-    current_user = await Authorize.get_jwt_subject()
+    current_user_name = await Authorize.get_jwt_subject()
+    current_user = await get_user(current_user_name)
 
     # TODO Allow for admins to delete anything
     async with db.session() as session:

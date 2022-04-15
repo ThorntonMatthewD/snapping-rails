@@ -165,7 +165,7 @@ def test_full_marker_lifecycle(user_auth, test_client):
     )
 
     #
-    # POST test_marker
+    # POST test_marker. Seal its fate.
     #
     post_resp = test_client.post(
         "/markers", 
@@ -192,7 +192,7 @@ def test_full_marker_lifecycle(user_auth, test_client):
     #
     updated_description = "Have you had enough yet?"
     updated_marker_data = test_marker
-    updated_marker_data["id"] = after_post_get_resp.json()[-1]["id"]
+    updated_marker_data["id"] = max([marker["id"] for marker in after_post_get_resp.json()])
     updated_marker_data["description"] = updated_description
 
     update_resp = test_client.put(
@@ -218,9 +218,10 @@ def test_full_marker_lifecycle(user_auth, test_client):
     #
     # Delete the marker, relinquishing it from its torment (until the next CI run :^])
     #
-    delete_resp = test_client.delete(
+    delete_resp = test_client.request(
+        method="DELETE",
         url="/markers", 
-        body=json.dumps(updated_marker_data), 
+        data=json.dumps(updated_marker_data), 
         cookies=user_auth.get("cookie_jar"),
         headers={"X-CSRF-TOKEN": user_auth.get("csrf_access_token")}
     )
@@ -230,9 +231,9 @@ def test_full_marker_lifecycle(user_auth, test_client):
     #
     # RIP test_marker 🌹🪦🌹  He lived a hard, but short life.
     #
-    after_delete_get_resp = test_client.get(f"/markers")
+    after_delete_get_resp = test_client.get("/markers")
     assert after_delete_get_resp.status_code == 200
     assert not marker_with_title_in_result(
-        markers=after_put_get_resp.json(), 
+        markers=after_delete_get_resp.json(), 
         title="The Can I Will Kick Around"
     )
