@@ -244,6 +244,7 @@ def test_marker_model_latitude_validation():
 
     test_subject = Marker(**test_marker)
 
+
     with pytest.raises(Exception):
         test_subject.validate_lat_bounds(-100)
 
@@ -264,6 +265,7 @@ def test_marker_model_latitude_validation():
 def test_marker_model_longitude_validation():
 
     test_subject = Marker(**test_marker)
+
 
     with pytest.raises(Exception):
         test_subject.validate_long_bounds(-190)
