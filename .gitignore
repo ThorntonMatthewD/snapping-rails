@@ -11,3 +11,4 @@ api/env
 api/src/.env
 api/src/__pycache__
 web/.devcontainer/devcontainer.json
+api/.coverage

@@ -9,7 +9,7 @@ app.include_router(markers.router)
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to Snapping Rails!"}
+    return {"detail": "Welcome to Snapping Rails!"}
 
 
 @app.get("/favicon.ico")
