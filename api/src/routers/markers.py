@@ -3,8 +3,9 @@ from datetime import datetime, timezone, date
 from fastapi import Depends, HTTPException, status, APIRouter, Query
 from async_fastapi_jwt_auth import AuthJWT
 import opengraph_py3 as opengraph
+import pytz
 from pydantic import BaseModel, validator, HttpUrl
-from sqlalchemy.sql.expression import insert, select, update
+from sqlalchemy.sql.expression import select, update, delete
 from typing import Optional
 
 from src.routers.auth import get_user
@@ -40,7 +41,8 @@ class Marker(BaseModel):
 
     @validator("created_at")
     def validate_created_at_time(cls, v):
-        if v > datetime.now(timezone.utc):
+        timestamp_as_utc = v.astimezone(pytz.utc)
+        if timestamp_as_utc > datetime.now(timezone.utc):
             raise ValueError("You are posting from the future... Curious.")
         return v
 
@@ -62,6 +64,7 @@ async def get_railmap_markers(
     older_than: Optional[date] = None,
     author_id: Optional[int] = Query(None, ge=1),
     author: Optional[str] = None,
+    post_id: Optional[int] = None,
     limit: Optional[int] = Query(None, ge=1, le=1000),
 ):
     sql = select(models.Marker)
@@ -84,6 +87,9 @@ async def get_railmap_markers(
 
         if not id is None:
             sql = sql.where(models.Marker.author_id == id)
+
+    if not post_id is None:
+        sql = sql.where(models.Marker.id == post_id)
 
     if not limit is None:
         sql = sql.limit(limit)
@@ -127,32 +133,33 @@ async def add_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
 
     await db.engine.dispose()
 
-    return {"message": f"Marker successfully added."}
+    return {"detail": "Marker successfully added."}
 
 
 @router.put("/markers", tags=["Map"])
 async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
     await Authorize.jwt_required()
 
-    current_user = await Authorize.get_jwt_subject()
+    current_user_name = await Authorize.get_jwt_subject()
+    current_user = await get_user(current_user_name)
+
+    # Reformat time to be offset-naive
+    marker.created_at = marker.created_at.replace(tzinfo=None)
 
     # TODO Allow for admins to update anything
     async with db.session() as session:
-        result = (
-            session.update(models.Marker)
-            .where(
-                models.Marker.id == marker.id
-                and models.Marker.author_id == current_user.id
-            )
-            .values(marker)
-        )
+        sql = update(models.Marker)
+        sql = sql.values(**marker.dict())
+        sql = sql.where(models.Marker.id == marker.id)
+        sql = sql.where(models.Marker.author_id == current_user.get("id"))
 
+        result = await session.execute(sql)
         await session.commit()
 
     await db.engine.dispose()
 
-    if result.rowcount > 0:
-        return {"message": "Marker updated successfully."}
+    if result.rowcount > 0 if result is not None else None:
+        return {"detail": "Marker updated successfully."}
     else:
         raise HTTPException(
             401, "Either this marker doesn't exist, or you do not own it."
@@ -163,25 +170,22 @@ async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
 async def delete_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
     await Authorize.jwt_required()
 
-    current_user = await Authorize.get_jwt_subject()
+    current_user_name = await Authorize.get_jwt_subject()
+    current_user = await get_user(current_user_name)
 
     # TODO Allow for admins to delete anything
     async with db.session() as session:
-        result = (
-            session.delete(models.Marker)
-            .where(
-                models.Marker.id == marker.id
-                and models.Marker.author_id == current_user.id
-            )
-            .values(marker)
-        )
+        sql = delete(models.Marker)
+        sql = sql.where(models.Marker.id == marker.id)
+        sql = sql.where(models.Marker.author_id == current_user.get("id"))
 
+        result = await session.execute(sql)
         await session.commit()
 
     await db.engine.dispose()
 
     if result.rowcount > 0:
-        return {"message": "Marker deleted successfully."}
+        return {"detail": "Marker deleted successfully."}
     else:
         raise HTTPException(
             401, "Either this marker doesn't exist, or you do not own it."
