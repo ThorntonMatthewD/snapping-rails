@@ -5,9 +5,10 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import json
 import datetime
+import pytest
 from typing import List
 
-from src.routers.markers import get_thumbnail
+from src.routers.markers import get_thumbnail, Marker
 from conftest import user_auth, test_client
 
 
@@ -237,3 +238,45 @@ def test_full_marker_lifecycle(user_auth, test_client):
         markers=after_delete_get_resp.json(), 
         title="The Can I Will Kick Around"
     )
+
+
+def test_marker_model_latitude_validation():
+
+    test_subject = Marker(**test_marker)
+
+    with pytest.raises(Exception):
+        test_subject.validate_lat_bounds(-100)
+
+    with pytest.raises(Exception):
+        test_subject.validate_lat_bounds(1000)
+
+    with pytest.raises(Exception):
+        test_subject.validate_lat_bounds(-223.4123)
+
+
+    assert test_subject.validate_lat_bounds(-89.99999) == -89.99999
+    assert test_subject.validate_lat_bounds(89.99999) == 89.99999
+    assert test_subject.validate_lat_bounds(0) == 0
+    assert test_subject.validate_lat_bounds(45.12) == 45.12
+    assert test_subject.validate_lat_bounds(-29.41) == -29.41
+
+
+def test_marker_model_longitude_validation():
+
+    test_subject = Marker(**test_marker)
+
+    with pytest.raises(Exception):
+        test_subject.validate_long_bounds(-190)
+
+    with pytest.raises(Exception):
+        test_subject.validate_long_bounds(1000)
+
+    with pytest.raises(Exception):
+        test_subject.validate_long_bounds(-223.4123)
+
+
+    assert test_subject.validate_long_bounds(-179.99999) == -179.99999
+    assert test_subject.validate_long_bounds(179.99999) == 179.99999
+    assert test_subject.validate_long_bounds(0) == 0
+    assert test_subject.validate_long_bounds(45.12) == 45.12
+    assert test_subject.validate_long_bounds(-29.41) == -29.41
