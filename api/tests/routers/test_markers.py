@@ -244,13 +244,13 @@ def test_marker_model_latitude_validation():
 
     test_subject = Marker(**test_marker)
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         test_subject.validate_lat_bounds(-100)
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         test_subject.validate_lat_bounds(1000)
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         test_subject.validate_lat_bounds(-223.4123)
 
     assert test_subject.validate_lat_bounds(-89.99999) == -89.99999
