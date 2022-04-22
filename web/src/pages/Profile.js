@@ -6,7 +6,6 @@ import useAuth from "../hooks/useAuth";
 import Posts from "../components/profile/Posts";
 import AboutUser from "../components/profile/AboutUser";
 import SocialBar from "../components/profile/SocialBar";
-import UserStats from "../components/profile/UserStats";
 
 const Profile = () => {
   const profile_name = useRef(null);
@@ -43,8 +42,6 @@ const Profile = () => {
               }}
             />
           </Paper>
-          <br />
-          <UserStats />
         </Grid>
         <Grid item xs={8}>
           <Posts username={"MattTBoy"} />

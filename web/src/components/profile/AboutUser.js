@@ -17,7 +17,6 @@ const AboutUser = ({ userInfo }) => {
       />
 
       <Typography variant="h3">{userInfo?.username}</Typography>
-      <Typography variant="h5">Railfan</Typography>
     </Container>
   );
 };
