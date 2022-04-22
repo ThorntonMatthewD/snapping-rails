@@ -1,9 +1,12 @@
-FROM python:3.10.2
+FROM python:3.10.4
 
 WORKDIR /code
-COPY ./requirements.txt /code/requirements.txt
+COPY ./Pipfile.lock /code/Pipfile.lock
 
-RUN pip install --no-cache-dir -r /code/requirements.txt
+RUN export PIP_NO_CACHE_DIR=false
+
+RUN pip install pipenv
+RUN pipenv install
 
 COPY . /code/
 
