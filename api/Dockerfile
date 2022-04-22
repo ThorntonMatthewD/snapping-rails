@@ -6,8 +6,8 @@ COPY ./Pipfile.lock /code/Pipfile.lock
 RUN export PIP_NO_CACHE_DIR=false
 
 RUN pip install pipenv
-RUN pipenv install
+RUN pipenv sync
 
 COPY . /code/
 
-CMD ["uvicorn", "src.app:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "5000"] 
+CMD ["pipenv", "run", "uvicorn", "src.app:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "5000"] 
