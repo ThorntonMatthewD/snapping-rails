@@ -24,7 +24,7 @@ const Profile = () => {
     }
   };
 
-  let { data: userInfo = null, error } = useFetch(
+  let { data: userInfo = null } = useFetch(
     "http://localhost:8000/api/profile?username=" + profile_name.current,
     { cachePolicy: "no-cache" },
     [profile_name.current]
