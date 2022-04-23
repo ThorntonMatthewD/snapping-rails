@@ -20,9 +20,9 @@ ACCESS_TOKEN_EXPIRE_MINUTES = float(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"
 
 log = logging.getLogger(__name__)
 app = FastAPI(
-    title="Snapping Rails", 
-    redoc_url='/api/redoc',
-    openapi_url='/api/openapi.json'
+    title="Snapping Rails",
+    redoc_prefix="/api",
+    openapi_prefix="/api"
 )
 
 
