@@ -54,7 +54,7 @@ const Posts = ({ username }) => {
   let { data: markers = [], loading } = useFetch(
     "http://localhost:8000/api/markers?author=" + username,
     { cachePolicy: "no-cache" },
-    []
+    [username]
   );
 
   return (

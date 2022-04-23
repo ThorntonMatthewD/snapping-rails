@@ -12,7 +12,10 @@ const AboutUser = ({ userInfo }) => {
     >
       <Avatar
         alt={userInfo?.username}
-        src="https://avatars.githubusercontent.com/u/44626690?v=4"
+        src={
+          userInfo?.profile_pic_url ||
+          "https://avatars.githubusercontent.com/u/44626690?v=4"
+        }
         sx={{ width: 120, height: 120, marginBottom: "0.5em" }}
       />
 

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Container, Grid, Paper } from "@mui/material";
+import { Container, Grid, Paper, Typography } from "@mui/material";
 import useAuth from "../hooks/useAuth";
+import useFetch from "use-http";
 
 import Posts from "../components/profile/Posts";
 import AboutUser from "../components/profile/AboutUser";
@@ -23,30 +24,43 @@ const Profile = () => {
     }
   };
 
+  let { data: userInfo = null, error } = useFetch(
+    "http://localhost:8000/api/profile?username=" + profile_name.current,
+    { cachePolicy: "no-cache" },
+    [profile_name.current]
+  );
+
   useEffect(() => {
     getProfileName();
-  }, []);
+  }, [user]);
 
   return (
     <Container fixed maxWidth="xl" sx={{ paddingTop: "10px" }}>
-      <Grid container wrap={"wrap"} spacing={2}>
-        <Grid item xs={4}>
-          <Paper sx={{ padding: 2 }}>
-            <AboutUser userInfo={{ username: "MattTBoy" }} />
-            <br />
-            <SocialBar
-              links={{
-                youtube: "https://www.youtube.com/user/railcamp09",
-                instagram: "https://www.instagram.com/tracey.c.green/",
-                facebook: "https://www.facebook.com/RailfanDanny/",
-              }}
-            />
-          </Paper>
+      {(userInfo !== null && (
+        <Grid container wrap={"wrap"} spacing={2}>
+          <Grid item xs={4}>
+            <Paper sx={{ padding: 2 }}>
+              <AboutUser userInfo={userInfo} />
+              <br />
+              <SocialBar links={userInfo?.social_links} />
+            </Paper>
+          </Grid>
+          <Grid item xs={8}>
+            <Posts username={userInfo?.username} />
+          </Grid>
         </Grid>
-        <Grid item xs={8}>
-          <Posts username={"MattTBoy"} />
-        </Grid>
-      </Grid>
+      )) || (
+        <Paper sx={{ padding: 2, height: "100vh" }}>
+          <Typography variant="h1" sx={{ color: "white" }}>
+            Grabbing user info..
+          </Typography>
+          <br />
+          <Typography variant="h4" sx={{ color: "white" }}>
+            If you aren't logged in or didn't provide a username to view then
+            this is just going to sit here.
+          </Typography>
+        </Paper>
+      )}
     </Container>
   );
 };
