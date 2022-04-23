@@ -79,15 +79,19 @@ const Posts = ({ username }) => {
         justifyContent="center"
         style={{ minHeight: "90vh", padding: 10 }}
       >
-        <DataGrid
-          sx={{ width: "100%", mt: 3 }}
-          rows={markers || []}
-          columns={columns}
-          pageSize={10}
-          rowsPerPageOptions={[10]}
-          checkboxSelection
-          disableSelectionOnClick
-        />
+        {markers.length > 0 ? (
+          <DataGrid
+            sx={{ width: "100%", mt: 3 }}
+            rows={markers || []}
+            columns={columns}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            checkboxSelection
+            disableSelectionOnClick
+          />
+        ) : (
+          <h1>No posts to show</h1>
+        )}
       </Grid>
     </Paper>
   );
