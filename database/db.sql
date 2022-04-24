@@ -16,6 +16,45 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: create_user_profile(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.create_user_profile() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+	BEGIN
+		INSERT INTO public.user_profiles
+			(user_id, social_links, profile_pic_url, profile_description)
+		VALUES
+			(new.id, null, 'https://i.imgur.com/nybwm8a.jpeg'::character varying, '');
+		
+		return null;
+	END;
+$$;
+
+
+ALTER FUNCTION public.create_user_profile() OWNER TO postgres;
+
+--
+-- Name: create_user_role(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.create_user_role() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+	BEGIN
+		INSERT INTO public.user_role_assignments
+			(user_id, role_id)
+		VALUES(new.id, 1);
+	
+		return null;
+	END;
+$$;
+
+
+ALTER FUNCTION public.create_user_role() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -63,6 +102,187 @@ ALTER SEQUENCE public.markers_id_seq OWNED BY public.markers.id;
 
 
 --
+-- Name: user_profiles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_profiles (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    social_links jsonb,
+    profile_pic_url character varying DEFAULT 'https://i.imgur.com/nybwm8a.jpeg'::character varying NOT NULL,
+    profile_description character varying
+);
+
+
+ALTER TABLE public.user_profiles OWNER TO postgres;
+
+--
+-- Name: TABLE user_profiles; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TABLE public.user_profiles IS 'Contains information pertaining to user profiles.';
+
+
+--
+-- Name: COLUMN user_profiles.user_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.user_profiles.user_id IS 'User id of the profile owner';
+
+
+--
+-- Name: COLUMN user_profiles.social_links; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.user_profiles.social_links IS 'Users'' Facebook, Instagram, Tik Tok, or Youtube links. NO TWITTER!';
+
+
+--
+-- Name: COLUMN user_profiles.profile_pic_url; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.user_profiles.profile_pic_url IS 'URL s to users'' profile pictures.';
+
+
+--
+-- Name: COLUMN user_profiles.profile_description; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.user_profiles.profile_description IS 'Contains text that users enter to introduce themselves to the community.';
+
+
+--
+-- Name: newtable_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.newtable_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.newtable_id_seq OWNER TO postgres;
+
+--
+-- Name: newtable_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.newtable_id_seq OWNED BY public.user_profiles.id;
+
+
+--
+-- Name: roles_permissions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.roles_permissions (
+    id smallint NOT NULL,
+    action_name character varying NOT NULL
+);
+
+
+ALTER TABLE public.roles_permissions OWNER TO postgres;
+
+--
+-- Name: COLUMN roles_permissions.action_name; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.roles_permissions.action_name IS 'The action that, when assigned to a role, someone with that role can then perform (ex: delete someone else''s post).';
+
+
+--
+-- Name: roles_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.roles_permissions_id_seq
+    AS smallint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.roles_permissions_id_seq OWNER TO postgres;
+
+--
+-- Name: roles_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.roles_permissions_id_seq OWNED BY public.roles_permissions.id;
+
+
+--
+-- Name: user_role_assignments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_role_assignments (
+    id smallint NOT NULL,
+    user_id bigint NOT NULL,
+    role_id smallint NOT NULL
+);
+
+
+ALTER TABLE public.user_role_assignments OWNER TO postgres;
+
+--
+-- Name: user_role_assignments_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.user_role_assignments_id_seq
+    AS smallint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_role_assignments_id_seq OWNER TO postgres;
+
+--
+-- Name: user_role_assignments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.user_role_assignments_id_seq OWNED BY public.user_role_assignments.id;
+
+
+--
+-- Name: user_roles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_roles (
+    id smallint NOT NULL,
+    role_name character varying
+);
+
+
+ALTER TABLE public.user_roles OWNER TO postgres;
+
+--
+-- Name: user_roles_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.user_roles_id_seq
+    AS smallint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_roles_id_seq OWNER TO postgres;
+
+--
+-- Name: user_roles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.user_roles_id_seq OWNED BY public.user_roles.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -106,6 +326,34 @@ ALTER TABLE ONLY public.markers ALTER COLUMN id SET DEFAULT nextval('public.mark
 
 
 --
+-- Name: roles_permissions id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.roles_permissions ALTER COLUMN id SET DEFAULT nextval('public.roles_permissions_id_seq'::regclass);
+
+
+--
+-- Name: user_profiles id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_profiles ALTER COLUMN id SET DEFAULT nextval('public.newtable_id_seq'::regclass);
+
+
+--
+-- Name: user_role_assignments id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_role_assignments ALTER COLUMN id SET DEFAULT nextval('public.user_role_assignments_id_seq'::regclass);
+
+
+--
+-- Name: user_roles id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_roles ALTER COLUMN id SET DEFAULT nextval('public.user_roles_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -145,7 +393,50 @@ COPY public.markers (id, created_at, lat, long, media_url, img_url, title, descr
 27	2022-03-06 03:45:53.031	34.33911494683574	-81.0811815261841	https://www.youtube.com/watch?v=y52IfhlkBUc	https://i.ytimg.com/vi/y52IfhlkBUc/maxresdefault.jpg	South Carolina Railroad Museum	Winnsboro, SC	2022-03-06 03:46:07.7351	2	1
 28	2022-03-07 03:17:26.221	40.497226	-78.4844278	https://www.youtube.com/watch?v=uNqteMq0SmM	https://i.ytimg.com/vi/uNqteMq0SmM/maxresdefault.jpg	NKP 765 on the Mainline	Horseshoe Curve and Beyond (Pittsburgh, woo!!)	2022-03-07 03:17:42.924602	2	1
 51	2022-03-28 02:36:07.336	30.830217140950207	-82.00762867927553	https://www.facebook.com/visitfolkston/photos/a.381112905265716/5014769391900021	https://i.imgur.com/BfGDSZT.png	Railwatch 2022 - Folkston, GA	April 1-3, Presented by the Okefenokee Chamber of Commerce	2022-03-28 02:37:48.599589	4	1
-52	2022-04-01 12:42:57.14	33.99044836851287	-81.02881550788881	https://www.instagram.com/p/CbsK9DhrrxT/	https://scontent-atl3-2.cdninstagram.com/v/t51.2885-15/277446538_1341997692949565_5041865728341060627_n.jpg?stp=dst-jpg_e35&_nc_ht=scontent-atl3-2.cdninstagram.com&_nc_cat=105&_nc_ohc=XZCy91S79B8AX_kUj78&edm=AABBvjUBAAAA&ccb=7-4&oh=00_AT_QOkmf8zr_raL1CMV4ovnkkNdYzf1hT1AB9r6clm0haw&oe=624E6D67&_nc_sid=83d603	OCS Nighttime Run Through Columbia SC	Four years ago today. The OCS with the F units makes a nighttime run through Columbia SC on its way to the Masters. Here it has stopped for a few moments next to California Dreaming née Union Station. March 29, 2018.	2022-04-01 12:43:43.503141	1	1
+\.
+
+
+--
+-- Data for Name: roles_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.roles_permissions (id, action_name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: user_profiles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_profiles (id, user_id, social_links, profile_pic_url, profile_description) FROM stdin;
+2	7	\N	https://i.imgur.com/nybwm8a.jpeg	
+1	1	{"youtube": "https://www.youtube.com/user/railcamp09", "facebook": "https://www.facebook.com/RailfanDanny/", "instagram": "https://www.instagram.com/tracey.c.green/"}	https://i.kym-cdn.com/photos/images/facebook/001/046/902/f95.jpg	Hi! My name is Matt, and I should not be allowed to have unsupervised access to a computer. Otherwise, websites like this one are created as a result.
+3	2	\N	https://i.imgur.com/nybwm8a.jpeg	\N
+4	4	\N	https://i.imgur.com/nybwm8a.jpeg	\N
+\.
+
+
+--
+-- Data for Name: user_role_assignments; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_role_assignments (id, user_id, role_id) FROM stdin;
+2	7	1
+1	1	4
+4	4	1
+5	2	1
+\.
+
+
+--
+-- Data for Name: user_roles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_roles (id, role_name) FROM stdin;
+1	normal
+2	moderator
+3	administrator
+4	owner
 \.
 
 
@@ -157,6 +448,7 @@ COPY public.users (id, username, email, hashed_password, disabled) FROM stdin;
 1	MattTBoy	matt@admin.com	$2b$12$a3/hjH8/pnHYl0WaPri0L.PuJdtxG0FL.yJGlxawl2B8uHIS/soaO	f
 2	testguy	test@guysdomain.com	$2b$12$p/FFxgERUkMo26lwx9Jsze3VIDpcyaO0YlVNzqndLQxTacJIJHsuG	f
 4	disableduser	disabled@true.com	$2b$12$cQZQFlSurjvnhtCEQkd5Oep19xMdPrjNOvEAjBbYvhPv5cT25NPT.	t
+7	MyNewAccount	mynewaccount@hello.com	$2b$12$TA1mTEVtCNE63/XJTubMGeOEhdbaViFVJ96WZOSQoh.TwcfYu19IK	f
 \.
 
 
@@ -164,14 +456,42 @@ COPY public.users (id, username, email, hashed_password, disabled) FROM stdin;
 -- Name: markers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.markers_id_seq', 52, true);
+SELECT pg_catalog.setval('public.markers_id_seq', 118, true);
+
+
+--
+-- Name: newtable_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.newtable_id_seq', 4, true);
+
+
+--
+-- Name: roles_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.roles_permissions_id_seq', 1, false);
+
+
+--
+-- Name: user_role_assignments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.user_role_assignments_id_seq', 5, true);
+
+
+--
+-- Name: user_roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.user_roles_id_seq', 4, true);
 
 
 --
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 4, true);
+SELECT pg_catalog.setval('public.users_id_seq', 7, true);
 
 
 --
@@ -180,6 +500,38 @@ SELECT pg_catalog.setval('public.users_id_seq', 4, true);
 
 ALTER TABLE ONLY public.markers
     ADD CONSTRAINT markers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: roles_permissions roles_permissions_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.roles_permissions
+    ADD CONSTRAINT roles_permissions_pk PRIMARY KEY (id);
+
+
+--
+-- Name: user_profiles user_profiles_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_profiles
+    ADD CONSTRAINT user_profiles_pk PRIMARY KEY (id);
+
+
+--
+-- Name: user_role_assignments user_role_assignments_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_role_assignments
+    ADD CONSTRAINT user_role_assignments_pk PRIMARY KEY (id);
+
+
+--
+-- Name: user_roles user_roles_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_roles
+    ADD CONSTRAINT user_roles_pk PRIMARY KEY (id);
 
 
 --
@@ -199,11 +551,31 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: markers fk_author; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users user_registered_create_profile; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.markers
-    ADD CONSTRAINT fk_author FOREIGN KEY (author_id) REFERENCES public.users(id);
+CREATE TRIGGER user_registered_create_profile AFTER INSERT ON public.users FOR EACH ROW EXECUTE FUNCTION public.create_user_profile();
+
+
+--
+-- Name: TRIGGER user_registered_create_profile ON users; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TRIGGER user_registered_create_profile ON public.users IS 'After a new user registers, this trigger creates for them a row in user_profiles.';
+
+
+--
+-- Name: users user_registered_create_role; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER user_registered_create_role AFTER INSERT ON public.users FOR EACH ROW EXECUTE FUNCTION public.create_user_role();
+
+
+--
+-- Name: TRIGGER user_registered_create_role ON users; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON TRIGGER user_registered_create_role ON public.users IS 'After a user registers an account, this triggers creates for them a row in user_role_assignments and sets them as a "normal user".';
 
 
 --
@@ -212,6 +584,30 @@ ALTER TABLE ONLY public.markers
 
 ALTER TABLE ONLY public.markers
     ADD CONSTRAINT markers_fk FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE RESTRICT;
+
+
+--
+-- Name: user_role_assignments user_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_role_assignments
+    ADD CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE RESTRICT;
+
+
+--
+-- Name: user_profiles user_profiles_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_profiles
+    ADD CONSTRAINT user_profiles_fk FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE RESTRICT;
+
+
+--
+-- Name: user_role_assignments user_roles_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_role_assignments
+    ADD CONSTRAINT user_roles_id_fk FOREIGN KEY (role_id) REFERENCES public.user_roles(id) ON DELETE RESTRICT;
 
 
 --
