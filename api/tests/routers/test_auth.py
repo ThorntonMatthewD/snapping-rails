@@ -3,7 +3,6 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
 from conftest import user_auth, test_client
 
 def test_get_profile(test_client):
@@ -23,3 +22,10 @@ def test_get_profile(test_client):
             "profile_description":"Hi! My name is Matt, and I should not be allowed to have unsupervised access to a computer. Otherwise, websites like this one are created as a result."
         }
     )
+
+def test_get_profile_of_nonexistent_user(test_client):
+    response = test_client.get("/profile?=Nobody")
+
+    assert response.status_code == 404
+
+    assert response.json()[0] == {"detail": "User not found"}
