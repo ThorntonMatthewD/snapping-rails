@@ -12,7 +12,7 @@ def test_get_profile(test_client):
     assert response.status_code == 200
 
     assert(
-        response.json()[0] == {
+        response.json() == {
             "username":"MattTBoy",
             "social_links":{
                 "youtube":"https://www.youtube.com/user/railcamp09",
@@ -30,7 +30,7 @@ def test_get_profile_of_nonexistent_user(test_client):
 
     assert response.status_code == 404
 
-    assert response.json()[0] == {"detail": "User not found"}
+    assert response.json() == {"detail": "User not found"}
 
 
 def test_get_profile_no_user_provided(test_client):
