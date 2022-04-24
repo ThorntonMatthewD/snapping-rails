@@ -3,12 +3,7 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import json
-import datetime
-import pytest
-from typing import List
 
-from src.routers.auth import 
 from conftest import user_auth, test_client
 
 def test_get_profile(test_client):
