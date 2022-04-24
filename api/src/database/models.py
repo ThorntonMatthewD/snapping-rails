@@ -61,20 +61,25 @@ class Marker(Base):
     author = relationship('User')
 
 
-t_user_profiles = Table(
-    'user_profiles', metadata,
-    Column('id', BigInteger, nullable=False, server_default=text("nextval('newtable_id_seq'::regclass)")),
-    Column('user_id', ForeignKey('users.id', ondelete='RESTRICT'), nullable=False, comment='User id of the profile owner'),
-    Column('social_links', JSONB(astext_type=Text()), comment="Users' Facebook, Instagram, Tik Tok, or Youtube links. NO TWITTER!"),
-    Column('profile_pic_url', String, nullable=False, server_default=text("'https://i.imgur.com/nybwm8a.jpeg'::character varying"), comment="URL s to users' profile pictures."),
-    Column('profile_description', String, comment='Contains text that users enter to introduce themselves to the community.'),
-    comment='Contains information pertaining to user profiles.'
-)
+class UserProfile(Base):
+    __tablename__ = 'user_profiles'
+    __table_args__ = {'comment': 'Contains information pertaining to user profiles.'}
+
+    id = Column(BigInteger, primary_key=True, server_default=text("nextval('newtable_id_seq'::regclass)"))
+    user_id = Column(ForeignKey('users.id', ondelete='RESTRICT'), nullable=False, comment='User id of the profile owner')
+    social_links = Column(JSONB(astext_type=Text()), comment="Users' Facebook, Instagram, Tik Tok, or Youtube links. NO TWITTER!")
+    profile_pic_url = Column(String, nullable=False, server_default=text("'https://i.imgur.com/nybwm8a.jpeg'::character varying"), comment="URL s to users' profile pictures.")
+    profile_description = Column(String, comment='Contains text that users enter to introduce themselves to the community.')
+
+    user = relationship('User')
 
 
-t_user_role_assignments = Table(
-    'user_role_assignments', metadata,
-    Column('id', SmallInteger, nullable=False, server_default=text("nextval('user_role_assignments_id_seq'::regclass)")),
-    Column('user_id', ForeignKey('users.id', ondelete='RESTRICT'), nullable=False),
-    Column('role_id', ForeignKey('user_roles.id', ondelete='RESTRICT'), nullable=False)
-)
+class UserRoleAssignment(Base):
+    __tablename__ = 'user_role_assignments'
+
+    id = Column(SmallInteger, primary_key=True, server_default=text("nextval('user_role_assignments_id_seq'::regclass)"))
+    user_id = Column(ForeignKey('users.id', ondelete='RESTRICT'), nullable=False)
+    role_id = Column(ForeignKey('user_roles.id', ondelete='RESTRICT'), nullable=False)
+
+    role = relationship('UserRole')
+    user = relationship('User')
