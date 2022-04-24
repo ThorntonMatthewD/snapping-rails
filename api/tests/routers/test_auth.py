@@ -5,8 +5,9 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from conftest import user_auth, test_client
 
+
 def test_get_profile(test_client):
-    response = test_client.get("/profile?=MattTBoy")
+    response = test_client.get("/profile?username=MattTBoy")
 
     assert response.status_code == 200
 
@@ -23,9 +24,16 @@ def test_get_profile(test_client):
         }
     )
 
+
 def test_get_profile_of_nonexistent_user(test_client):
-    response = test_client.get("/profile?=Nobody")
+    response = test_client.get("/profile?username=Nobody")
 
     assert response.status_code == 404
 
     assert response.json()[0] == {"detail": "User not found"}
+
+
+def test_get_profile_no_user_provided(test_client):
+    response = test_client.get("/profile")
+
+    assert response.status_code == 422
