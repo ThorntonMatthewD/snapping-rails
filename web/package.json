@@ -11,6 +11,7 @@
     "@mui/x-data-grid": "^5.6.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/user-event": "^13.5.0",
+    "cypress": "^9.5.4",
     "dayjs": "^1.10.8",
     "eslint": "^8.10.0",
     "eslint-plugin-react": "^7.29.3",
