@@ -35,9 +35,6 @@ const Profile = () => {
     if (profile_name.current.length > 0) {
       const data = await get("/profile?username=" + profile_name.current);
       if (response.ok) setUserInfo(data);
-
-      console.log("fuck");
-      console.log(response.json());
     }
   };
 
