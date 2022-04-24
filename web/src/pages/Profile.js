@@ -9,7 +9,7 @@ import AboutUser from "../components/profile/AboutUser";
 import SocialBar from "../components/profile/SocialBar";
 
 const Profile = () => {
-  const profile_name = useRef(null);
+  const profile_name = useRef("");
 
   const { user } = useAuth();
 
@@ -24,7 +24,7 @@ const Profile = () => {
     }
   };
 
-  let { data: userInfo = null } = useFetch(
+  let { data: userInfo = {} } = useFetch(
     "http://localhost:8000/api/profile?username=" + profile_name.current,
     { cachePolicy: "no-cache" },
     [profile_name.current]
@@ -36,7 +36,7 @@ const Profile = () => {
 
   return (
     <Container fixed maxWidth="xl" sx={{ paddingTop: "10px" }}>
-      {(userInfo !== null && (
+      {(Object.keys(userInfo).length > 0 && (
         <Grid container wrap={"wrap"} spacing={2}>
           <Grid item xs={4}>
             <Paper sx={{ padding: 2 }}>
