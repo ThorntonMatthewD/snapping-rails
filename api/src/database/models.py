@@ -63,8 +63,8 @@ class Marker(Base):
 
 t_user_profiles = Table(
     'user_profiles', metadata,
-    Column('id', ForeignKey('users.id', ondelete='RESTRICT'), nullable=False, server_default=text("nextval('newtable_id_seq'::regclass)")),
-    Column('user_id', BigInteger, nullable=False, comment='User id of the profile owner'),
+    Column('id', BigInteger, nullable=False, server_default=text("nextval('newtable_id_seq'::regclass)")),
+    Column('user_id', ForeignKey('users.id', ondelete='RESTRICT'), nullable=False, comment='User id of the profile owner'),
     Column('social_links', JSONB(astext_type=Text()), comment="Users' Facebook, Instagram, Tik Tok, or Youtube links. NO TWITTER!"),
     Column('profile_pic_url', String, nullable=False, server_default=text("'https://i.imgur.com/nybwm8a.jpeg'::character varying"), comment="URL s to users' profile pictures."),
     Column('profile_description', String, comment='Contains text that users enter to introduce themselves to the community.'),
