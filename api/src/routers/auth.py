@@ -97,6 +97,7 @@ async def authenticate_user(username: str, password: str):
 
 async def get_user(username: str):
     sql = select(models.User).where(models.User.username == username)
+    sql = sql.where(models.User.disabled != True)
 
     async with db.session() as session:
         data = await session.execute(sql)
