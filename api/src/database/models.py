@@ -14,6 +14,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
 
+
 Base = declarative_base()
 metadata = Base.metadata
 
@@ -55,10 +56,9 @@ class Marker(Base):
     description = Column(String, nullable=False)
     ingested_at = Column(DateTime, server_default=text("CURRENT_TIMESTAMP"))
     marker_type = Column(SmallInteger, nullable=False)
-    author_id = Column(ForeignKey('users.id', ondelete='RESTRICT'), ForeignKey('users.id'), nullable=False)
+    author_id = Column(ForeignKey('users.id', ondelete='RESTRICT'), nullable=False)
 
-    author = relationship('User', primaryjoin='Marker.author_id == User.id')
-    author1 = relationship('User', primaryjoin='Marker.author_id == User.id')
+    author = relationship('User')
 
 
 t_user_profiles = Table(
