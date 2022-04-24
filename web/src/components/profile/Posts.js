@@ -51,7 +51,11 @@ const columns = [
 ];
 
 const Posts = ({ username }) => {
-  let { data: markers = [], loading } = useFetch(
+  let {
+    data: markers = [],
+    loading,
+    error,
+  } = useFetch(
     "http://localhost:8000/api/markers?author=" + username,
     { cachePolicy: "no-cache" },
     [username]
@@ -61,7 +65,7 @@ const Posts = ({ username }) => {
     <Paper>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
+        open={loading && !error}
       >
         <h1 style={{ m: 3 }}>Loading yours posts...</h1>
         <CircularProgress color="inherit" />

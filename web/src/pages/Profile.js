@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Container, Grid, Paper, Typography } from "@mui/material";
 import useAuth from "../hooks/useAuth";
@@ -10,12 +10,17 @@ import SocialBar from "../components/profile/SocialBar";
 
 const Profile = () => {
   const profile_name = useRef("");
+  const [userInfo, setUserInfo] = useState(null);
 
   const { user } = useAuth();
 
   const [searchParams] = useSearchParams();
 
-  const getProfileName = () => {
+  const { response, get, error } = useFetch("http://localhost:8000/api", {
+    cachePolicy: "no-cache",
+  });
+
+  const getProfileName = async () => {
     const nameFromQuery = searchParams.get("username");
     if (nameFromQuery) {
       profile_name.current = nameFromQuery;
@@ -24,19 +29,25 @@ const Profile = () => {
     }
   };
 
-  let { data: userInfo = {} } = useFetch(
-    "http://localhost:8000/api/profile?username=" + profile_name.current,
-    { cachePolicy: "no-cache" },
-    [profile_name.current]
-  );
+  const getProfileData = async () => {
+    await getProfileName();
+
+    if (profile_name.current.length > 0) {
+      const data = await get("/profile?username=" + profile_name.current);
+      if (response.ok) setUserInfo(data);
+
+      console.log("fuck");
+      console.log(response.json());
+    }
+  };
 
   useEffect(() => {
-    getProfileName();
+    getProfileData();
   }, [user]);
 
   return (
     <Container fixed maxWidth="xl" sx={{ paddingTop: "10px" }}>
-      {(Object.keys(userInfo).length > 0 && (
+      {userInfo ? (
         <Grid container wrap={"wrap"} spacing={2}>
           <Grid item xs={4}>
             <Paper sx={{ padding: 2 }}>
@@ -49,16 +60,24 @@ const Profile = () => {
             <Posts username={userInfo?.username} />
           </Grid>
         </Grid>
-      )) || (
+      ) : (
         <Paper sx={{ padding: 2, height: "100vh" }}>
-          <Typography variant="h1" sx={{ color: "white" }}>
-            Grabbing user info..
-          </Typography>
-          <br />
-          <Typography variant="h4" sx={{ color: "white" }}>
-            If you aren't logged in or didn't provide a username to view then
-            this is just going to sit here.
-          </Typography>
+          {error ? (
+            <div>
+              <Typography variant="h1" sx={{ color: "white" }}>
+                An Error Has Occurred
+              </Typography>
+              <br />
+              <Typography variant="h4" sx={{ color: "white" }}>
+                Please ensure you are logged in and/or have specified a valid
+                username.
+              </Typography>
+            </div>
+          ) : (
+            <Typography variant="h1" sx={{ color: "white" }}>
+              Grabbing user info..
+            </Typography>
+          )}
         </Paper>
       )}
     </Container>
