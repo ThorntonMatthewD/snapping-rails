@@ -179,6 +179,8 @@ async def get_user_profile(username: str):
         async with db.session() as session:
             result = await session.execute(sql)
 
+        await db.engine.dispose()
+
         profile_data = SqlalchemyResult(result).rows2dict()[0]
 
         parsed_profile = {
@@ -207,5 +209,7 @@ async def register_new_user(new_user: NewUser):
     async with db.session() as session:
         session.add(models.User(**register_user))
         await session.commit()
+
+    await db.engine.dispose()
 
     return {"detail": f"Welcome, {new_user.username}!"}
