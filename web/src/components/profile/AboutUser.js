@@ -20,6 +20,8 @@ const AboutUser = ({ userInfo }) => {
       />
 
       <Typography variant="h3">{userInfo?.username}</Typography>
+
+      <p>{userInfo?.profile_description}</p>
     </Container>
   );
 };
