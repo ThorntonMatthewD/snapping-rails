@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Avatar, Container, Typography } from "@mui/material";
+import { Avatar, Container, Typography, Button } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 
 import ProfileSettingsModal from "./ProfileSettingsModal";
@@ -26,8 +26,16 @@ const AboutUser = ({ userInfo, showEdit }) => {
         sx={{ width: 120, height: 120, marginBottom: "0.5em" }}
       />
 
-      <Typography variant="h3">{userInfo?.username}</Typography>
-      {showEdit && <Edit sx={{ fill: "white" }} />}
+      <div style={{ display: "flex" }}>
+        <Typography variant="h3">{userInfo?.username}</Typography>
+        {showEdit && (
+          <Edit
+            className="hover-cursor"
+            onClick={toggleModal}
+            sx={{ fill: "white", marginLeft: "10px" }}
+          />
+        )}
+      </div>
 
       <p>{userInfo?.profile_description}</p>
 
