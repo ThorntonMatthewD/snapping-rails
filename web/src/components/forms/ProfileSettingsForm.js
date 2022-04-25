@@ -11,10 +11,10 @@ const ProfileSettingsForm = ({ toggleModal, userInfo }) => {
   const schema = yup.object({
     profile_pic_url: string(),
     profile_description: string(),
-    facebook_url: string().url().required("Facebook URL isn't a valid URL."),
-    instagram_url: string().url().required("Instagram URL isn't a valid URL."),
-    tik_tok_url: string().url().required("TikTok URL isn't a valid URL."),
-    youtube_url: string().url().required("YouTube URL isn't a valid URL."),
+    facebook_url: string().url(),
+    instagram_url: string().url(),
+    tik_tok_url: string().url(),
+    youtube_url: string().url(),
   });
 
   const defaultValues = {
