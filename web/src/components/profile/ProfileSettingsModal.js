@@ -2,7 +2,7 @@ import { Box, Modal, Typography } from "@mui/material";
 
 import ProfileSettingsForm from "../forms/ProfileSettingsForm";
 
-const ProfileSettingsModal = ({ open, handleClose }) => {
+const ProfileSettingsModal = ({ userInfo, open, setModalOpen }) => {
   const style = {
     position: "absolute",
     top: "50%",
@@ -19,7 +19,7 @@ const ProfileSettingsModal = ({ open, handleClose }) => {
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={setModalOpen(false)}
       aria-labelledby="Update Profile Settings"
       aria-describedby="Adjust the values to customize your Snapping Rails profile."
     >
@@ -33,7 +33,7 @@ const ProfileSettingsModal = ({ open, handleClose }) => {
           Update Your Profile
         </Typography>
 
-        <ProfileSettingsForm />
+        <ProfileSettingsForm setModalOpen={setModalOpen} userInfo={userInfo} />
       </Box>
     </Modal>
   );

@@ -7,7 +7,7 @@ import { string } from "yup";
 import FormInputText from "./fields/FormInputText";
 import { getCookieValue } from "../../util/cookies";
 
-const ProfileSettingsForm = ({ closeModal, userInfo }) => {
+const ProfileSettingsForm = ({ setModalOpen, userInfo }) => {
   const schema = yup.object({
     profile_pic_url: string(),
     profile_description: string(),
@@ -58,7 +58,7 @@ const ProfileSettingsForm = ({ closeModal, userInfo }) => {
       },
       body: JSON.stringify(profileUpdateData),
     }).then(() => {
-      closeModal();
+      setModalOpen(false);
     });
   };
 

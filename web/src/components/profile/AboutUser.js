@@ -1,6 +1,12 @@
+import { useState } from "react";
 import { Avatar, Container, Typography } from "@mui/material";
+import { EditIcon } from "@mui/icons-material/Edit";
 
-const AboutUser = ({ userInfo }) => {
+import ProfileSettingsModal from "./ProfileSettingsModal";
+
+const AboutUser = ({ userInfo, showEdit }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <Container
       sx={{
@@ -17,8 +23,15 @@ const AboutUser = ({ userInfo }) => {
       />
 
       <Typography variant="h3">{userInfo?.username}</Typography>
+      {showEdit && <EditIcon sx={{ fill: "white" }} />}
 
       <p>{userInfo?.profile_description}</p>
+
+      <ProfileSettingsModal
+        open={modalOpen}
+        setModalOpen={setModalOpen}
+        userInfo={userInfo}
+      />
     </Container>
   );
 };
