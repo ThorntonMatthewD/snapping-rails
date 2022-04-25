@@ -4,6 +4,7 @@ web/data
 yarn.lock
 web/coverage
 web/coverage/*
+web/.devcontainer/devcontainer.json
 
 #FastAPI
 *.pyc

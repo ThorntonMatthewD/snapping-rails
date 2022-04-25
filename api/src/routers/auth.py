@@ -97,6 +97,7 @@ async def authenticate_user(username: str, password: str):
 
 async def get_user(username: str):
     sql = select(models.User).where(models.User.username == username)
+    sql = sql.where(models.User.disabled != True)
 
     async with db.session() as session:
         data = await session.execute(sql)
@@ -166,6 +167,37 @@ async def get_user_info(Authorize: AuthJWT = Depends()):
     return {"user_info": user_info}
 
 
+@router.get("/profile", tags=["User"])
+async def get_user_profile(username: str):
+
+    user_info = user_info = await get_user(username)
+
+    if user_info:
+
+        sql = select(models.UserProfile).where(models.UserProfile.user_id == user_info.get("id", -1))
+
+        async with db.session() as session:
+            result = await session.execute(sql)
+
+        await db.engine.dispose()
+
+        profile_data = SqlalchemyResult(result).rows2dict()[0]
+
+        parsed_profile = {
+            "username": username,
+            "social_links": profile_data.get("social_links", {}),
+            "profile_pic_url": profile_data.get("profile_pic_url"),
+            "profile_description": profile_data.get("profile_description")
+        }
+
+        return parsed_profile
+
+    else:
+        raise HTTPException(
+            404, f"We have no user profile on record for {username}. Please check the name you've entered and try again."
+        )
+
+
 @router.post("/register", tags=["Auth"])
 async def register_new_user(new_user: NewUser):
     register_user = {
@@ -177,5 +209,7 @@ async def register_new_user(new_user: NewUser):
     async with db.session() as session:
         session.add(models.User(**register_user))
         await session.commit()
+
+    await db.engine.dispose()
 
     return {"detail": f"Welcome, {new_user.username}!"}
