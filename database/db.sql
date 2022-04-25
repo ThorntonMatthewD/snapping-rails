@@ -613,4 +613,3 @@ ALTER TABLE ONLY public.user_role_assignments
 --
 -- PostgreSQL database dump complete
 --
-

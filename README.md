@@ -6,4 +6,4 @@
 
 Coming soon!
 
-![Preview of the Snapping Rails Railmap](https://user-images.githubusercontent.com/44626690/156827657-77efab55-a657-4d96-8ec5-14ce6fc30559.png)
+![Preview of the Snapping Rails Railmap7](https://user-images.githubusercontent.com/44626690/164990996-b2b7b7f1-52d7-4f3a-bcf3-e3b6ce1956b3.png)

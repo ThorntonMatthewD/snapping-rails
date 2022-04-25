@@ -12,4 +12,3 @@ api/env
 api/src/.env
 api/src/__pycache__
 api/.coverage
-api/src/__pycache__
