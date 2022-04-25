@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 
-import ProfileSettingsModal from "../../components/forms/ProfileSettingsModal";
+import ProfileSettingsModal from "../../../components/forms/ProfileSettingsModal";
 
 afterEach(() => {
   cleanup();
