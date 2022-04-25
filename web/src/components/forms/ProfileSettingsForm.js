@@ -38,7 +38,7 @@ const ProfileSettingsForm = ({ closeModal, userInfo }) => {
   } = methods;
 
   const onSubmit = (data) => {
-    const newMarker = {
+    const profileUpdateData = {
       profile_pic_url: data.profile_pic_url,
       profile_description: data.profile_description,
       social_links: {
@@ -49,14 +49,14 @@ const ProfileSettingsForm = ({ closeModal, userInfo }) => {
       },
     };
 
-    fetch("http://localhost:8000/api/markers", {
+    fetch("http://localhost:8000/api/profile", {
       credentials: "include",
-      method: "POST",
+      method: "UPDATE",
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-TOKEN": getCookieValue("csrf_access_token"),
       },
-      body: JSON.stringify(newMarker),
+      body: JSON.stringify(profileUpdateData),
     }).then(() => {
       closeModal();
     });
