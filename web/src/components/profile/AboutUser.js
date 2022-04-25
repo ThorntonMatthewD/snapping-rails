@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Avatar, Container, Typography } from "@mui/material";
-import { EditIcon } from "@mui/icons-material/Edit";
+import { Edit } from "@mui/icons-material";
 
 import ProfileSettingsModal from "./ProfileSettingsModal";
 
@@ -27,7 +27,7 @@ const AboutUser = ({ userInfo, showEdit }) => {
       />
 
       <Typography variant="h3">{userInfo?.username}</Typography>
-      {showEdit && <EditIcon sx={{ fill: "white" }} />}
+      {showEdit && <Edit sx={{ fill: "white" }} />}
 
       <p>{userInfo?.profile_description}</p>
 
