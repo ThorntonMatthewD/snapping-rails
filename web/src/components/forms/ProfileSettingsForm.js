@@ -1,11 +1,13 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Paper, Typography } from "@mui/material";
+import { Button, Paper } from "@mui/material";
 import * as yup from "yup";
-import FormInputText from "./fields/FormInputText";
 import { string } from "yup";
 
-const ProfileSettingsForm = ({ toggleActiveForm, userInfo }) => {
+import FormInputText from "./fields/FormInputText";
+import { getCookieValue } from "../../util/cookies";
+
+const ProfileSettingsForm = ({ closeModal, userInfo }) => {
   const schema = yup.object({
     profile_pic_url: string(),
     profile_description: string(),
@@ -36,7 +38,28 @@ const ProfileSettingsForm = ({ toggleActiveForm, userInfo }) => {
   } = methods;
 
   const onSubmit = (data) => {
-    // send update request
+    const newMarker = {
+      profile_pic_url: data.profile_pic_url,
+      profile_description: data.profile_description,
+      social_links: {
+        facebook_url: data.facebook_url,
+        instagram_url: data.instagram_url,
+        tik_tok_url: data.tik_tok_url,
+        youtube_url: data.youtube_url,
+      },
+    };
+
+    fetch("http://localhost:8000/api/markers", {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": getCookieValue("csrf_access_token"),
+      },
+      body: JSON.stringify(newMarker),
+    }).then(() => {
+      closeModal();
+    });
   };
 
   return (
