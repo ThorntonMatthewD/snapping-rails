@@ -90,25 +90,25 @@ const ProfileSettingsForm = ({ toggleModal, userInfo }) => {
         required
         name="facebook_url"
         control={control}
-        label="Facebook"
+        label="Facebook Link"
       />
       <FormInputText
         required
         name="instagram_url"
         control={control}
-        label="Instagram"
+        label="Instagram Link"
       />
       <FormInputText
         required
         name="tik_tok_url"
         control={control}
-        label="TikTok"
+        label="TikTok Link"
       />
       <FormInputText
         required
         name="youtube_url"
         control={control}
-        label="YouTube"
+        label="YouTube Link"
       />
 
       <Button
