@@ -46,6 +46,10 @@ a {
   padding: 6px;
 }
 
+.hover-cursor:hover {
+  cursor: pointer;
+}
+
 footer {
   bottom: 0;
   height: 5vh;
