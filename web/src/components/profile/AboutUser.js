@@ -7,6 +7,10 @@ import ProfileSettingsModal from "./ProfileSettingsModal";
 const AboutUser = ({ userInfo, showEdit }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
+  const toggleModal = () => {
+    setModalOpen(!modalOpen);
+  };
+
   return (
     <Container
       sx={{
@@ -29,7 +33,7 @@ const AboutUser = ({ userInfo, showEdit }) => {
 
       <ProfileSettingsModal
         open={modalOpen}
-        setModalOpen={setModalOpen}
+        toggleModal={toggleModal}
         userInfo={userInfo}
       />
     </Container>
