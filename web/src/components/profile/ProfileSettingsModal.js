@@ -1,5 +1,7 @@
 import { Box, Modal, Typography } from "@mui/material";
 
+import ProfileSettingsForm from "../forms/ProfileSettingsForm";
+
 const ProfileSettingsModal = ({ open, handleClose }) => {
   const style = {
     position: "absolute",
@@ -30,6 +32,8 @@ const ProfileSettingsModal = ({ open, handleClose }) => {
         >
           Update Your Profile
         </Typography>
+
+        <ProfileSettingsForm />
       </Box>
     </Modal>
   );
