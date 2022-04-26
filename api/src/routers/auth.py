@@ -222,6 +222,8 @@ async def get_user_profile(username: str):
 @router.put("/profile", tags=["User"])
 async def update_user_profile(update_data: ProfileUpdate, Authorize: AuthJWT = Depends()):
     """Update a user's profile if they are logged in."""
+    await Authorize.jwt_required()
+
     current_user_name = await Authorize.get_jwt_subject()
     current_user = await get_user(current_user_name)
 

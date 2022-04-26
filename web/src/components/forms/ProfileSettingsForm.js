@@ -51,7 +51,7 @@ const ProfileSettingsForm = ({ toggleModal, userInfo }) => {
 
     fetch("http://localhost:8000/api/profile", {
       credentials: "include",
-      method: "UPDATE",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "X-CSRF-TOKEN": getCookieValue("csrf_access_token"),
