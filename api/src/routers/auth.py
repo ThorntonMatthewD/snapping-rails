@@ -245,7 +245,7 @@ async def update_user_profile(update_data: ProfileUpdate, Authorize: AuthJWT = D
         return {"detail": f"{current_user}'s profile has been successfully updated."}
     else:
         raise HTTPException(
-            401, "Profile was not able to be updated. Sorry! I hope you like it the way it is not, and if not then you better get used to it until an admin logs on!"
+            401, "Profile was not able to be updated. Sorry! I hope you like it the way it is now, and if not then you better get used to it until an admin logs on!"
         )
 
 
