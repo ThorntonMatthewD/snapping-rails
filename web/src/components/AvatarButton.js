@@ -17,10 +17,9 @@ const AvatarButton = () => {
   const navigate = useNavigate();
   const { logoutUser, user } = useAuth();
 
-  const settings = ["Profile", "Account", "Sign Out"];
+  const settings = ["Profile", "Sign Out"];
 
   const [anchorElUser, setAnchorElUser] = useState(null);
-
 
   const handleOpenUserMenu = (e) => {
     setAnchorElUser(e.currentTarget);
@@ -36,8 +35,6 @@ const AvatarButton = () => {
       logoutUser();
     } else if (setting === "Profile") {
       navigate("/profile");
-    } else if (setting === "Account") {
-      navigate("/account");
     } else {
       console.log("What the heck did you even click on lol");
     }
