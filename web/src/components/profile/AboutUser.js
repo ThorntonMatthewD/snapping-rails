@@ -23,7 +23,11 @@ const AboutUser = ({ userInfo, showEdit }) => {
       <Avatar
         alt={userInfo?.username}
         src={userInfo?.profile_pic_url}
-        sx={{ width: 120, height: 120, marginBottom: "0.5em" }}
+        sx={{
+          width: { xs: 120, sm: 160, md: 200, lg: 240, xl: 280 },
+          height: { xs: 120, sm: 160, md: 200, lg: 240, xl: 280 },
+          marginBottom: "0.5em",
+        }}
       />
 
       <div style={{ display: "flex" }}>
