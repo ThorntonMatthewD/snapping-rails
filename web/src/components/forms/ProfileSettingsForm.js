@@ -22,7 +22,7 @@ const ProfileSettingsForm = ({ toggleModal, userInfo }) => {
     profile_description: userInfo?.profile_description || "",
     facebook_url: userInfo?.social_links.facebook || "",
     instagram_url: userInfo?.social_links.instagram || "",
-    tik_tok_url: userInfo?.social_links.tik_tok || "",
+    tik_tok_url: userInfo?.social_links.tiktok || "",
     youtube_url: userInfo?.social_links.youtube || "",
   };
 
