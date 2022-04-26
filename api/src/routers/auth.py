@@ -1,9 +1,10 @@
 import re
+import validators
 
 from fastapi import APIRouter, HTTPException, Depends
 from async_fastapi_jwt_auth import AuthJWT
-from pydantic import BaseModel, validator, EmailStr
-from typing import Optional
+from pydantic import BaseModel, validator, EmailStr, HttpUrl
+from typing import Optional, Dict
 from sqlalchemy.sql.expression import select
 
 from src.config import pwd_context
@@ -65,6 +66,25 @@ class NewUser(BaseModel):
     def passwords_match(cls, v, values, **kwargs):
         if "password" in values and v != values["password"]:
             raise ValueError("Passwords don't match")
+
+
+class ProfileUpdate(BaseModel):
+    profile_pic_url: Optional[HttpUrl]
+    profile_description: Optional[str]
+    social_links: Dict
+
+    @validator("social_links", pre=True)
+    def validate_social_media_links(cls, links):
+        supported_sites = ["facebook", "instagram", "tiktok", "youtube"]
+
+        for k, v in links.items():
+            if k not in supported_sites:
+                raise ValueError(f"Unsupported site: {k}")
+            else:
+                if len(v) > 0 and not validators.url(v):
+                    raise ValueError(f"{v} is not a valid url")
+
+        return links
 
 
 @AuthJWT.load_config
