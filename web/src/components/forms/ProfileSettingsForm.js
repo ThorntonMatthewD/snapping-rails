@@ -42,10 +42,10 @@ const ProfileSettingsForm = ({ toggleModal, userInfo }) => {
       profile_pic_url: data.profile_pic_url,
       profile_description: data.profile_description,
       social_links: {
-        facebook_url: data.facebook_url,
-        instagram_url: data.instagram_url,
-        tik_tok_url: data.tik_tok_url,
-        youtube_url: data.youtube_url,
+        facebook: data.facebook_url,
+        instagram: data.instagram_url,
+        tik_tok: data.tik_tok_url,
+        youtube: data.youtube_url,
       },
     };
 
