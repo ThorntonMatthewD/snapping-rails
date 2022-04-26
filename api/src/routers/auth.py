@@ -230,7 +230,7 @@ async def update_user_profile(update_data: ProfileUpdate, Authorize: AuthJWT = D
     updated_profile = {
         "profile_description": update_data.profile_description.strip(),
         "profile_pic_url": update_data.profile_pic_url.strip(),
-        "social_links": json.dumps(update_data.social_links)
+        "social_links": update_data.social_links
     }
 
     async with db.session() as session:
