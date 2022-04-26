@@ -44,7 +44,7 @@ const ProfileSettingsForm = ({ toggleModal, userInfo }) => {
       social_links: {
         facebook: data.facebook_url,
         instagram: data.instagram_url,
-        tik_tok: data.tik_tok_url,
+        tiktok: data.tik_tok_url,
         youtube: data.youtube_url,
       },
     };
