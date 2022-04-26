@@ -4,7 +4,7 @@ import { Edit } from "@mui/icons-material";
 
 import ProfileSettingsModal from "./ProfileSettingsModal";
 
-const AboutUser = ({ userInfo, showEdit }) => {
+const AboutUser = ({ userInfo, showEdit, getProfileData }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const toggleModal = () => {
@@ -47,6 +47,7 @@ const AboutUser = ({ userInfo, showEdit }) => {
         open={modalOpen}
         toggleModal={toggleModal}
         userInfo={userInfo}
+        getProfileData={getProfileData}
       />
     </Container>
   );

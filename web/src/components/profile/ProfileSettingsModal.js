@@ -2,7 +2,12 @@ import { Box, Modal, Typography } from "@mui/material";
 
 import ProfileSettingsForm from "../forms/ProfileSettingsForm";
 
-const ProfileSettingsModal = ({ userInfo, open, toggleModal }) => {
+const ProfileSettingsModal = ({
+  userInfo,
+  open,
+  toggleModal,
+  getProfileData,
+}) => {
   const style = {
     position: "absolute",
     top: "50%",
@@ -33,7 +38,11 @@ const ProfileSettingsModal = ({ userInfo, open, toggleModal }) => {
           Update Your Profile
         </Typography>
 
-        <ProfileSettingsForm toggleModal={toggleModal} userInfo={userInfo} />
+        <ProfileSettingsForm
+          toggleModal={toggleModal}
+          userInfo={userInfo}
+          getProfileData={getProfileData}
+        />
       </Box>
     </Modal>
   );

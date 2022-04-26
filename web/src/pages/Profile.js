@@ -52,6 +52,7 @@ const Profile = () => {
               <AboutUser
                 userInfo={userInfo}
                 showEdit={user?.username === profile_name.current}
+                getProfileData={getProfileData}
               />
               <br />
               <SocialBar links={userInfo?.social_links} />
