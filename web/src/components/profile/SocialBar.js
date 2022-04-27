@@ -1,5 +1,10 @@
 import { Container, Typography } from "@mui/material";
-import { Facebook, Instagram, YouTube } from "@mui/icons-material";
+import {
+  Facebook,
+  Instagram,
+  YouTube,
+  MusicNoteRounded,
+} from "@mui/icons-material";
 
 const SocialBar = ({ links }) => {
   return links ? (
@@ -21,6 +26,12 @@ const SocialBar = ({ links }) => {
       {links.facebook && (
         <a href={links.facebook}>
           <Facebook fontSize="large" sx={{ color: "#4267B2" }} />
+        </a>
+      )}
+
+      {links.tiktok && (
+        <a href={links.tiktok}>
+          <MusicNoteRounded fontSize="large" sx={{ color: "#FE2C55" }} />
         </a>
       )}
     </Container>

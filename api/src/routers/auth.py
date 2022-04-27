@@ -1,10 +1,12 @@
 import re
+import json
+import validators
 
 from fastapi import APIRouter, HTTPException, Depends
 from async_fastapi_jwt_auth import AuthJWT
-from pydantic import BaseModel, validator, EmailStr
-from typing import Optional
-from sqlalchemy.sql.expression import select
+from pydantic import BaseModel, validator, EmailStr, HttpUrl
+from typing import Optional, Dict
+from sqlalchemy.sql.expression import select, update
 
 from src.config import pwd_context
 from src.config import AUTH_SECRET_KEY
@@ -65,6 +67,25 @@ class NewUser(BaseModel):
     def passwords_match(cls, v, values, **kwargs):
         if "password" in values and v != values["password"]:
             raise ValueError("Passwords don't match")
+
+
+class ProfileUpdate(BaseModel):
+    profile_pic_url: Optional[HttpUrl]
+    profile_description: Optional[str]
+    social_links: Dict
+
+    @validator("social_links", pre=True)
+    def validate_social_media_links(cls, links):
+        supported_sites = ["facebook", "instagram", "tiktok", "youtube"]
+
+        for k, v in links.items():
+            if k not in supported_sites:
+                raise ValueError(f"Unsupported site: {k}")
+            else:
+                if len(v) > 0 and not validators.url(v):
+                    raise ValueError(f"{v} is not a valid url")
+
+        return links
 
 
 @AuthJWT.load_config
@@ -170,7 +191,7 @@ async def get_user_info(Authorize: AuthJWT = Depends()):
 @router.get("/profile", tags=["User"])
 async def get_user_profile(username: str):
 
-    user_info = user_info = await get_user(username)
+    user_info = await get_user(username)
 
     if user_info:
 
@@ -195,6 +216,38 @@ async def get_user_profile(username: str):
     else:
         raise HTTPException(
             404, f"We have no user profile on record for {username}. Please check the name you've entered and try again."
+        )
+
+
+@router.put("/profile", tags=["User"])
+async def update_user_profile(update_data: ProfileUpdate, Authorize: AuthJWT = Depends()):
+    """Update a user's profile if they are logged in."""
+    await Authorize.jwt_required()
+
+    current_user_name = await Authorize.get_jwt_subject()
+    current_user = await get_user(current_user_name)
+
+    updated_profile = {
+        "profile_description": update_data.profile_description.strip(),
+        "profile_pic_url": update_data.profile_pic_url.strip(),
+        "social_links": update_data.social_links
+    }
+
+    async with db.session() as session:
+        sql = update(models.UserProfile)
+        sql = sql.values(updated_profile)
+        sql = sql.where(models.UserProfile.user_id == current_user.get("id"))
+
+        result = await session.execute(sql)
+        await session.commit()
+
+    await db.engine.dispose()
+
+    if result.rowcount > 0 if result is not None else None:
+        return {"detail": f"{current_user}'s profile has been successfully updated."}
+    else:
+        raise HTTPException(
+            401, "Profile was not able to be updated. Sorry! I hope you like it the way it is now, and if not then you better get used to it until an admin logs on!"
         )
 
 

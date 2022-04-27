@@ -76,8 +76,6 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
   } = methods;
 
   const onSubmit = (data) => {
-    console.log("Submitting!");
-
     const newMarker = {
       created_at: data.createdAt,
       lat: data.latitude,

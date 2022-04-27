@@ -10,6 +10,7 @@ import SocialBar from "../components/profile/SocialBar";
 
 const Profile = () => {
   const profile_name = useRef("");
+
   const [userInfo, setUserInfo] = useState(null);
 
   const { user } = useAuth();
@@ -46,14 +47,18 @@ const Profile = () => {
     <Container fixed maxWidth="xl" sx={{ paddingTop: "10px" }}>
       {userInfo ? (
         <Grid container wrap={"wrap"} spacing={2}>
-          <Grid item xs={4}>
+          <Grid item xs={16} md={4}>
             <Paper sx={{ padding: 2 }}>
-              <AboutUser userInfo={userInfo} />
+              <AboutUser
+                userInfo={userInfo}
+                showEdit={user?.username === profile_name.current}
+                getProfileData={getProfileData}
+              />
               <br />
               <SocialBar links={userInfo?.social_links} />
             </Paper>
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={16} md={8}>
             <Posts username={userInfo?.username} />
           </Grid>
         </Grid>

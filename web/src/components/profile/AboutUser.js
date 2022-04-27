@@ -1,6 +1,16 @@
-import { Avatar, Container, Typography } from "@mui/material";
+import { useState } from "react";
+import { Avatar, Container, Typography, Button } from "@mui/material";
+import { Edit } from "@mui/icons-material";
 
-const AboutUser = ({ userInfo }) => {
+import ProfileSettingsModal from "./ProfileSettingsModal";
+
+const AboutUser = ({ userInfo, showEdit, getProfileData }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setModalOpen(!modalOpen);
+  };
+
   return (
     <Container
       sx={{
@@ -13,12 +23,32 @@ const AboutUser = ({ userInfo }) => {
       <Avatar
         alt={userInfo?.username}
         src={userInfo?.profile_pic_url}
-        sx={{ width: 120, height: 120, marginBottom: "0.5em" }}
+        sx={{
+          width: { xs: 120, sm: 160, md: 200, lg: 240, xl: 280 },
+          height: { xs: 120, sm: 160, md: 200, lg: 240, xl: 280 },
+          marginBottom: "0.5em",
+        }}
       />
 
-      <Typography variant="h3">{userInfo?.username}</Typography>
+      <div style={{ display: "flex" }}>
+        <Typography variant="h3">{userInfo?.username}</Typography>
+        {showEdit && (
+          <Edit
+            className="hover-cursor"
+            onClick={toggleModal}
+            sx={{ fill: "white", marginLeft: "10px" }}
+          />
+        )}
+      </div>
 
       <p>{userInfo?.profile_description}</p>
+
+      <ProfileSettingsModal
+        open={modalOpen}
+        toggleModal={toggleModal}
+        userInfo={userInfo}
+        getProfileData={getProfileData}
+      />
     </Container>
   );
 };
