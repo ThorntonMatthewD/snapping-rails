@@ -20,6 +20,10 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd ${{ secrets.REPO_DIRECTORY_PATH }}
+
           git fetch --all
           git reset --hard origin/master
+
+          echo "${{ secrets.BACKEND_ENVS }}" > ./api/src/.env
+
           docker-compose --profile no-postgres up -d --no-deps --build
