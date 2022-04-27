@@ -26,4 +26,8 @@ jobs:
 
           echo "${{ secrets.BACKEND_ENVS }}" > ./api/src/.env
 
+          cd ${{ secrets.REPO_DIRECTORY_PATH }}/web
+          npm ci && npm run build
+
+          cd ${{ secrets.REPO_DIRECTORY_PATH }}
           docker-compose up -d --build --no-deps api web nginx

@@ -1,14 +1,8 @@
-FROM node:17-alpine3.14
+FROM nginx:alpine
 
-WORKDIR /app
+RUN rm /etc/nginx/conf.d/*
 
-ENV PATH /app/node_modules/.bin:$PATH
+COPY web/react-nginx.conf /etc/nginx/conf.d/default.conf
+COPY build /usr/share/nginx/html
 
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm ci --silent
-RUN npm install react-scripts@5.0.0 -g --silent
-
-COPY . ./
-
-CMD ["npm", "start"]
+CMD [ "nginx", "-g", "daemon off;" ]
