@@ -23,7 +23,7 @@ const Railmap = () => {
     error,
     loading,
   } = useFetch(
-    "http://localhost:8000/api/markers",
+    "https://www.snappingrails.com/api/markers",
     { cachePolicy: "no-cache" },
     [refetchData]
   );

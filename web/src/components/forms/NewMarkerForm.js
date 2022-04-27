@@ -86,7 +86,7 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
       marker_type: data.markerType,
     };
 
-    fetch("http://localhost:8000/api/markers", {
+    fetch("https://www.snappingrails.com/api/markers", {
       credentials: "include",
       method: "POST",
       headers: {

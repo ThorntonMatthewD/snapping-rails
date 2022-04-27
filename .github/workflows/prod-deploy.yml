@@ -26,4 +26,4 @@ jobs:
 
           echo "${{ secrets.BACKEND_ENVS }}" > ./api/src/.env
 
-          docker-compose --profile no-postgres up -d --no-deps --build
+          docker-compose up -d --build --no-deps api web nginx

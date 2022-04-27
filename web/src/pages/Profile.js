@@ -17,9 +17,12 @@ const Profile = () => {
 
   const [searchParams] = useSearchParams();
 
-  const { response, get, error } = useFetch("http://localhost:8000/api", {
-    cachePolicy: "no-cache",
-  });
+  const { response, get, error } = useFetch(
+    "https://www.snappingrails.com/api",
+    {
+      cachePolicy: "no-cache",
+    }
+  );
 
   const getProfileName = async () => {
     const nameFromQuery = searchParams.get("username");
