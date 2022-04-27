@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,4 +22,4 @@ jobs:
           cd ${{ secrets.REPO_DIRECTORY_PATH }}
           git fetch --all
           git reset --hard origin/master
-          docker-compose up -d --no-deps --build --profile no-postgres
+          docker-compose --profile no-postgres up -d --no-deps --build
