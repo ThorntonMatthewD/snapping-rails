@@ -2,7 +2,7 @@ FROM nginx:alpine
 
 RUN rm /etc/nginx/conf.d/*
 
-COPY web/react-nginx.conf /etc/nginx/conf.d/default.conf
+COPY react-nginx.conf /etc/nginx/conf.d/default.conf
 COPY build /usr/share/nginx/html
 
 CMD [ "nginx", "-g", "daemon off;" ]
