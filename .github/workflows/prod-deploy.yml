@@ -24,8 +24,6 @@ jobs:
           git fetch --all
           git reset --hard origin/master
 
-          echo "MEOW"
-          echo "${{ secrets.BACKEND_ENVS }}" > ./api/src/.env
-          echo "MEOW 2"
+          echo "${{ secrets.BACKEND_ENVS }}"" > ./api/src/.env
 
           docker-compose up -d --build --no-deps api web nginx
