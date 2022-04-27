@@ -124,7 +124,9 @@ const Navbar = () => {
           {user !== null ? (
             <AvatarButton />
           ) : (
-            <Button href="/login">Log In</Button>
+            <Link to={"/login"}>
+              <Button>Log In</Button>
+            </Link>
           )}
         </Toolbar>
       </Container>
