@@ -15,7 +15,7 @@ import useFetch from "use-http";
 
 const RegistrationForm = ({ toggleActiveForm }) => {
   const { post, loading, error, response } = useFetch(
-    "https://www.snappingrails.com/api/"
+    "https://www.snappingrails.com/api"
   );
 
   const [successful, setSuccessful] = useState(false);
