@@ -49,7 +49,7 @@ const ProfileSettingsForm = ({ toggleModal, userInfo, getProfileData }) => {
       },
     };
 
-    fetch("https://www.snappingrails.com/api/profile", {
+    fetch("{process.env.REACT_APP_API_URL}/api/profile", {
       credentials: "include",
       method: "PUT",
       headers: {

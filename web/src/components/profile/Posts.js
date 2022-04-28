@@ -56,7 +56,7 @@ const Posts = ({ username }) => {
     loading,
     error,
   } = useFetch(
-    "https://www.snappingrails.com/api/markers?author=" + username,
+    "{process.env.REACT_APP_API_URL}/api/markers?author=" + username,
     { cachePolicy: "no-cache" },
     [username]
   );

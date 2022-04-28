@@ -14,7 +14,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
   let navigate = useNavigate();
 
   let loginUser = async (data) => {
-    await fetch("https://www.snappingrails.com/api/token", {
+    await fetch("{process.env.REACT_APP_API_URL}/api/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
 
   //We have to clear out the cookies on the backend.
   let logoutUser = async (explicitCall) => {
-    await fetch("https://www.snappingrails.com/api/logout", {
+    await fetch("{process.env.REACT_APP_API_URL}/api/logout", {
       credentials: "include",
       method: "DELETE",
       headers: {
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
   };
 
   let updateToken = async () => {
-    await fetch("https://www.snappingrails.com/api/refresh", {
+    await fetch("{process.env.REACT_APP_API_URL}/api/refresh", {
       credentials: "include",
       method: "POST",
       headers: {
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children, initialUser = null }) => {
   };
 
   let getLoggedInUser = async () => {
-    await fetch("https://www.snappingrails.com/api/user", {
+    await fetch("{process.env.REACT_APP_API_URL}/api/user", {
       credentials: "include",
       method: "GET",
       headers: {
