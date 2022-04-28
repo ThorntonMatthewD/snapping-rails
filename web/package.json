@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "cypress": "^9.5.4",
     "dayjs": "^1.10.8",
+    "env-cmd": "^10.1.0",
     "eslint": "^8.10.0",
     "eslint-plugin-react": "^7.29.3",
     "fetch-intercept": "^2.4.0",
@@ -34,7 +35,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --coverage",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:production": "env-cmd -f .env.production react-scripts build"
   },
   "eslintConfig": {
     "extends": [

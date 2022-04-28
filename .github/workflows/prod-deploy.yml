@@ -29,7 +29,7 @@ jobs:
           cd ${{ secrets.REPO_DIRECTORY_PATH }}/web
           rm -r build
           nvm use default
-          npm ci && npm run build
+          npm ci && npm run build:production
 
           cd ${{ secrets.REPO_DIRECTORY_PATH }}
           docker-compose up -d --build --no-deps api web nginx
