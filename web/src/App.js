@@ -15,7 +15,7 @@ import { AuthProvider } from "./contexts/AuthProvider";
 
 function App() {
   return (
-    <BrowserRouter basename={process.env.REACT_APP_API_URL}>
+    <BrowserRouter>
       <div className="App">
         <ThemeProvider theme={Theme}>
           <AuthProvider>
