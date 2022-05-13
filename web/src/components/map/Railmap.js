@@ -23,7 +23,7 @@ const Railmap = () => {
     error,
     loading,
   } = useFetch(
-    "{process.env.REACT_APP_API_URL}/api/markers",
+    process.env.REACT_APP_API_URL + "/api/markers",
     { cachePolicy: "no-cache" },
     [refetchData]
   );

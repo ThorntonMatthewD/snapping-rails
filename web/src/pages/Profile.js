@@ -18,7 +18,7 @@ const Profile = () => {
   const [searchParams] = useSearchParams();
 
   const { response, get, error } = useFetch(
-    "{process.env.REACT_APP_API_URL}/api",
+    process.env.REACT_APP_API_URL + "/api",
     {
       cachePolicy: "no-cache",
     }

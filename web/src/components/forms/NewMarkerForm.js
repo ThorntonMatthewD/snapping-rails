@@ -86,7 +86,7 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
       marker_type: data.markerType,
     };
 
-    fetch("{process.env.REACT_APP_API_URL}/api/markers", {
+    fetch(process.env.REACT_APP_API_URL + "/api/markers", {
       credentials: "include",
       method: "POST",
       headers: {

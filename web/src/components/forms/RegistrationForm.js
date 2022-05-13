@@ -14,8 +14,8 @@ import FormInputText from "./fields/FormInputText";
 import useFetch from "use-http";
 
 const RegistrationForm = ({ toggleActiveForm }) => {
-  const { post, loading, error, response } = useFetch(
-    "{process.env.REACT_APP_API_URL}/api"
+  const { post, error, response } = useFetch(
+    process.env.REACT_APP_API_URL + "/api"
   );
 
   const [successful, setSuccessful] = useState(false);
