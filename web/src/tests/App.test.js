@@ -10,7 +10,7 @@ afterEach(() => {
   cleanup();
 });
 
-test("renders learn react link", async () => {
+test("renders Snapping Rails header", async () => {
   render(<App />);
   const title = await screen.findByText(/snapping rails/i);
   expect(title).toBeInTheDocument();
