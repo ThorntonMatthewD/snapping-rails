@@ -1,4 +1,4 @@
-FROM nginx:1.20-alpine
+FROM nginx:alpine
 
 RUN rm /etc/nginx/conf.d/*
 
