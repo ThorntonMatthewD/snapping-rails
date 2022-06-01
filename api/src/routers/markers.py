@@ -100,7 +100,6 @@ async def get_railmap_markers(
     async with db.session() as session:
         data = await session.execute(sql)
 
-    await db.engine.dispose()
 
     data = SqlalchemyResult(data)
 
@@ -131,7 +130,6 @@ async def add_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
         session.add(models.Marker(**new_marker))
         await session.commit()
 
-    await db.engine.dispose()
 
     return {"detail": "Marker successfully added."}
 
@@ -156,7 +154,6 @@ async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
         result = await session.execute(sql)
         await session.commit()
 
-    await db.engine.dispose()
 
     if result.rowcount > 0 if result is not None else None:
         return {"detail": "Marker updated successfully."}
@@ -182,7 +179,6 @@ async def delete_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
         result = await session.execute(sql)
         await session.commit()
 
-    await db.engine.dispose()
 
     if result.rowcount > 0:
         return {"detail": "Marker deleted successfully."}

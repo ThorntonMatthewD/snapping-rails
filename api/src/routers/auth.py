@@ -123,7 +123,6 @@ async def get_user(username: str):
     async with db.session() as session:
         data = await session.execute(sql)
 
-    await db.engine.dispose()
 
     result = SqlalchemyResult(data).rows2dict()
 
@@ -200,7 +199,7 @@ async def get_user_profile(username: str):
         async with db.session() as session:
             result = await session.execute(sql)
 
-        await db.engine.dispose()
+         
 
         profile_data = SqlalchemyResult(result).rows2dict()[0]
 
@@ -241,7 +240,6 @@ async def update_user_profile(update_data: ProfileUpdate, Authorize: AuthJWT = D
         result = await session.execute(sql)
         await session.commit()
 
-    await db.engine.dispose()
 
     if result.rowcount > 0 if result is not None else None:
         return {"detail": f"{current_user}'s profile has been successfully updated."}
@@ -263,6 +261,5 @@ async def register_new_user(new_user: NewUser):
         session.add(models.User(**register_user))
         await session.commit()
 
-    await db.engine.dispose()
 
     return {"detail": f"Welcome, {new_user.username}!"}
