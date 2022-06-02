@@ -20,7 +20,7 @@ services:
     image: snapping-rails/snapping-rails-web:latest
     profiles: ["not-postgres"]
     ports:
-      - "3000:3000"
+      - "3500:3500"
     depends_on:
       - api
 
