@@ -1,6 +1,7 @@
 import re
 import json
 import validators
+import jwt.exceptions
 
 from fastapi import APIRouter, HTTPException, Depends
 from async_fastapi_jwt_auth import AuthJWT
@@ -120,14 +121,13 @@ async def get_user(username: str):
     sql = select(models.User).where(models.User.username == username)
     sql = sql.where(models.User.disabled != True)
 
-    async with db.session() as session:
+    async with db.engine.begin() as session:
         data = await session.execute(sql)
 
-    await db.engine.dispose()
 
-    result = SqlalchemyResult(data).rows2dict()
+    result = data.cursor.fetchall()
 
-    if len(result) == 0:
+    if result.rowcount == 0:
         raise HTTPException(404, "User not found")
     else:
         user_dict = result[0]
@@ -153,7 +153,10 @@ async def login(user: UserCreds, Authorize: AuthJWT = Depends()):
 
 @router.post("/refresh", tags=["Auth"])
 async def refresh(Authorize: AuthJWT = Depends()):
-    await Authorize.jwt_refresh_token_required()
+    try:
+        await Authorize.jwt_refresh_token_required()
+    except jwt.exceptions.ExpiredSignatureError:
+        raise HTTPException(status_code=403, detail="Token has expired")
 
     current_user = await Authorize.get_jwt_subject()
     new_access_token = await Authorize.create_access_token(subject=current_user)
@@ -197,12 +200,16 @@ async def get_user_profile(username: str):
 
         sql = select(models.UserProfile).where(models.UserProfile.user_id == user_info.get("id", -1))
 
-        async with db.session() as session:
-            result = await session.execute(sql)
+        async with db.engine.begin() as session:
+            data = await session.execute(sql)
 
-        await db.engine.dispose()
+        if data.rowcount == 0:
+            raise HTTPException(
+            404, f"We have no user profile on record for {username}, but they should have one... Weird!"
+        )
 
-        profile_data = SqlalchemyResult(result).rows2dict()[0]
+
+        profile_data = data.cursor.fetchall()[0]
 
         parsed_profile = {
             "username": username,
@@ -233,15 +240,13 @@ async def update_user_profile(update_data: ProfileUpdate, Authorize: AuthJWT = D
         "social_links": update_data.social_links
     }
 
-    async with db.session() as session:
+    async with db.engine.begin() as session:
         sql = update(models.UserProfile)
         sql = sql.values(updated_profile)
         sql = sql.where(models.UserProfile.user_id == current_user.get("id"))
 
         result = await session.execute(sql)
-        await session.commit()
 
-    await db.engine.dispose()
 
     if result.rowcount > 0 if result is not None else None:
         return {"detail": f"{current_user}'s profile has been successfully updated."}
@@ -259,10 +264,9 @@ async def register_new_user(new_user: NewUser):
         "hashed_password": pwd_context.hash(new_user.password),
     }
 
-    async with db.session() as session:
+    async with db.engine.begin() as session:
         session.add(models.User(**register_user))
         await session.commit()
 
-    await db.engine.dispose()
 
     return {"detail": f"Welcome, {new_user.username}!"}
