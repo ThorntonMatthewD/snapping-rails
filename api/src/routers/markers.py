@@ -125,9 +125,11 @@ async def add_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
         "img_url": get_thumbnail(marker.media_url),
     }
 
-    async with db.engine.begin() as session:
-        sql = session.add(models.Marker(**new_marker))
-        await session.execute(sql)
+    async with db.session() as session:
+        session.add(models.Marker(**new_marker))
+        await session.commit()
+
+    await db.engine.dispose()
 
     return {"detail": "Marker successfully added."}
 
@@ -143,13 +145,16 @@ async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
     marker.created_at = marker.created_at.replace(tzinfo=None)
 
     # TODO Allow for admins to update anything
-    async with db.engine.begin() as session:
+    async with db.session() as session:
         sql = update(models.Marker)
         sql = sql.values(**marker.dict())
         sql = sql.where(models.Marker.id == marker.id)
         sql = sql.where(models.Marker.author_id == current_user.get("id"))
 
         result = await session.execute(sql)
+        await session.commit()
+
+    await db.engine.dispose()
 
     if result.rowcount > 0 if result is not None else None:
         return {"detail": "Marker updated successfully."}
@@ -167,12 +172,15 @@ async def delete_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
     current_user = await get_user(current_user_name)
 
     # TODO Allow for admins to delete anything
-    async with db.engine.begin() as session:
+    async with db.session() as session:
         sql = delete(models.Marker)
         sql = sql.where(models.Marker.id == marker.id)
         sql = sql.where(models.Marker.author_id == current_user.get("id"))
 
         result = await session.execute(sql)
+        await session.commit()
+
+    await db.engine.dispose()
 
     if result.rowcount > 0:
         return {"detail": "Marker deleted successfully."}
