@@ -1,4 +1,5 @@
 import aioredis
+import logging
 
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.pool import QueuePool
@@ -8,6 +9,8 @@ from sqlalchemy.orm import sessionmaker
 
 from src.config import DATABASE_URI, REDIS_URL
 
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
 
 class Engine:
     def __init__(self):
