@@ -97,14 +97,12 @@ async def get_railmap_markers(
         sql = sql.limit(1000)
 
 
-    async with db.session() as session:
+    async with db.engine.begin() as session:
         data = await session.execute(sql)
 
-    await db.engine.dispose()
+    results = data.cursor.fetchall()
 
-    data = SqlalchemyResult(data)
-
-    return data.rows2dict()
+    return results
 
 
 @router.post("/markers", status_code=status.HTTP_201_CREATED, tags=["Map"])
@@ -127,11 +125,9 @@ async def add_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
         "img_url": get_thumbnail(marker.media_url),
     }
 
-    async with db.session() as session:
-        session.add(models.Marker(**new_marker))
-        await session.commit()
-
-    await db.engine.dispose()
+    async with db.engine.begin() as session:
+        sql = session.add(models.Marker(**new_marker))
+        await session.execute(sql)
 
     return {"detail": "Marker successfully added."}
 
@@ -147,16 +143,13 @@ async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
     marker.created_at = marker.created_at.replace(tzinfo=None)
 
     # TODO Allow for admins to update anything
-    async with db.session() as session:
+    async with db.engine.begin() as session:
         sql = update(models.Marker)
         sql = sql.values(**marker.dict())
         sql = sql.where(models.Marker.id == marker.id)
         sql = sql.where(models.Marker.author_id == current_user.get("id"))
 
         result = await session.execute(sql)
-        await session.commit()
-
-    await db.engine.dispose()
 
     if result.rowcount > 0 if result is not None else None:
         return {"detail": "Marker updated successfully."}
@@ -174,15 +167,12 @@ async def delete_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
     current_user = await get_user(current_user_name)
 
     # TODO Allow for admins to delete anything
-    async with db.session() as session:
+    async with db.engine.begin() as session:
         sql = delete(models.Marker)
         sql = sql.where(models.Marker.id == marker.id)
         sql = sql.where(models.Marker.author_id == current_user.get("id"))
 
         result = await session.execute(sql)
-        await session.commit()
-
-    await db.engine.dispose()
 
     if result.rowcount > 0:
         return {"detail": "Marker deleted successfully."}
