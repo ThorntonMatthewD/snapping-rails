@@ -31,4 +31,4 @@ jobs:
 
           cd ${{ secrets.REPO_DIRECTORY_PATH }}/.github/workflows
           chmod +x build-react.sh
-          nohup ./build_react.sh &>/dev/null &
+          nohup ./build-react.sh &>/dev/null &
