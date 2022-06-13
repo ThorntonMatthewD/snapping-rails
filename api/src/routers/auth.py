@@ -126,7 +126,9 @@ async def get_user(
     sql = select(models.User).where(models.User.username == username)
     sql = sql.where(models.User.disabled != True)
 
-    data = await db_session.execute(sql)
+    async with db_session as session:
+        data = await session.execute(sql)
+
     try:
         user_dict = data.one()
         return user_dict
