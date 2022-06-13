@@ -6,13 +6,17 @@ from fastapi import APIRouter, HTTPException, Depends
 from async_fastapi_jwt_auth import AuthJWT
 from pydantic import BaseModel, validator, EmailStr, HttpUrl
 from typing import Optional, Dict
+
 from sqlalchemy.sql.expression import select, update
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 
 from src.config import pwd_context
 from src.config import AUTH_SECRET_KEY
 from src.database.database import SNAPPING_RAILS_ENGINE as db
 from src.database.database import REDIS
 from src.database import models
+from src.database.database import get_session
 from src.database.functions import SqlalchemyResult
 
 
@@ -23,7 +27,7 @@ class Settings(BaseModel):
     authjwt_secret_key: str = AUTH_SECRET_KEY
 
     authjwt_denylist_enabled: bool = True
-    authjwt_denylist_token_checks: set = {"access","refresh"}
+    authjwt_denylist_token_checks: set = {"access", "refresh"}
 
     authjwt_token_location: set = {"cookies"}
 
@@ -95,7 +99,7 @@ def get_config():
 
 @AuthJWT.token_in_denylist_loader
 async def check_if_token_in_denylist(decrypted_token):
-    jti = decrypted_token['jti']
+    jti = decrypted_token["jti"]
     return await REDIS.get(jti)
 
 
@@ -111,28 +115,33 @@ async def authenticate_user(username: str, password: str):
     user = await get_user(username)
     if not user:
         return False
-    if not verify_password(password, user.get("hashed_password", "")):
+    if not verify_password(password, user.hashed_password):
         return False
     return user
 
 
-async def get_user(username: str):
+async def get_user(
+    username: str,
+    db_session: AsyncSession = Depends(get_session),
+) -> models.User:
     sql = select(models.User).where(models.User.username == username)
     sql = sql.where(models.User.disabled != True)
 
-    async with db.session() as session:
+    async for session in db_session.dependency():
         data = await session.execute(sql)
 
-    await db.engine.dispose()
-
-    result = SqlalchemyResult(data).rows2dict()
-
-    if len(result) == 0:
+    try:
+        for user in data.one():
+            print(type(user))
+            print(user)
+            return user
+    except MultipleResultsFound:
+        raise HTTPException(
+            500,
+            "Against all odds, this user appears in the database more than once.",
+        )
+    except NoResultFound:
         raise HTTPException(404, "User not found")
-    else:
-        user_dict = result[0]
-
-    return user_dict
 
 
 @router.post("/token", tags=["Auth"])
@@ -159,8 +168,8 @@ async def refresh(Authorize: AuthJWT = Depends()):
     new_access_token = await Authorize.create_access_token(subject=current_user)
     new_refresh_token = await Authorize.create_refresh_token(subject=current_user)
 
-    #Revoke old refresh token to force use of new one.
-    await REDIS.set((await Authorize.get_raw_jwt())['jti'], "true")
+    # Revoke old refresh token to force use of new one.
+    await REDIS.set((await Authorize.get_raw_jwt())["jti"], "true")
 
     await Authorize.set_access_cookies(new_access_token)
     await Authorize.set_refresh_cookies(new_refresh_token)
@@ -189,38 +198,44 @@ async def get_user_info(Authorize: AuthJWT = Depends()):
 
 
 @router.get("/profile", tags=["User"])
-async def get_user_profile(username: str):
+async def get_user_profile(
+    username: str, db_session: AsyncSession = Depends(get_session)
+):
 
     user_info = await get_user(username)
 
     if user_info:
 
-        sql = select(models.UserProfile).where(models.UserProfile.user_id == user_info.get("id", -1))
+        sql = select(models.UserProfile).where(
+            models.UserProfile.user_id == user_info.id
+        )
+        result = await db_session.execute(sql)
 
-        async with db.session() as session:
-            result = await session.execute(sql)
+        profile_data = result.one()
 
-        await db.engine.dispose()
+        for data in profile_data:
+            parsed_profile = {
+                "username": username,
+                "social_links": data.social_links or {},
+                "profile_pic_url": data.profile_pic_url,
+                "profile_description": data.profile_description,
+            }
 
-        profile_data = SqlalchemyResult(result).rows2dict()[0]
-
-        parsed_profile = {
-            "username": username,
-            "social_links": profile_data.get("social_links", {}),
-            "profile_pic_url": profile_data.get("profile_pic_url"),
-            "profile_description": profile_data.get("profile_description")
-        }
-
-        return parsed_profile
+            return parsed_profile
 
     else:
         raise HTTPException(
-            404, f"We have no user profile on record for {username}. Please check the name you've entered and try again."
+            404,
+            f"We have no user profile on record for {username}. Please check the name you've entered and try again.",
         )
 
 
 @router.put("/profile", tags=["User"])
-async def update_user_profile(update_data: ProfileUpdate, Authorize: AuthJWT = Depends()):
+async def update_user_profile(
+    update_data: ProfileUpdate,
+    Authorize: AuthJWT = Depends(),
+    db_session: AsyncSession = Depends(get_session),
+):
     """Update a user's profile if they are logged in."""
     await Authorize.jwt_required()
 
@@ -230,39 +245,34 @@ async def update_user_profile(update_data: ProfileUpdate, Authorize: AuthJWT = D
     updated_profile = {
         "profile_description": update_data.profile_description.strip(),
         "profile_pic_url": update_data.profile_pic_url.strip(),
-        "social_links": update_data.social_links
+        "social_links": update_data.social_links,
     }
 
-    async with db.session() as session:
-        sql = update(models.UserProfile)
-        sql = sql.values(updated_profile)
-        sql = sql.where(models.UserProfile.user_id == current_user.get("id"))
+    sql = update(models.UserProfile)
+    sql = sql.values(updated_profile)
+    sql = sql.where(models.UserProfile.user_id == current_user.id)
 
-        result = await session.execute(sql)
-        await session.commit()
-
-    await db.engine.dispose()
+    result = await db_session.execute(sql)
 
     if result.rowcount > 0 if result is not None else None:
         return {"detail": f"{current_user}'s profile has been successfully updated."}
     else:
         raise HTTPException(
-            401, "Profile was not able to be updated. Sorry! I hope you like it the way it is now, and if not then you better get used to it until an admin logs on!"
+            401,
+            "Profile was not able to be updated. Sorry! I hope you like it the way it is now, and if not then you better get used to it until an admin logs on!",
         )
 
 
 @router.post("/register", tags=["Auth"])
-async def register_new_user(new_user: NewUser):
+async def register_new_user(
+    new_user: NewUser, db_session: AsyncSession = Depends(get_session)
+):
     register_user = {
         "username": new_user.username,
         "email": new_user.email,
         "hashed_password": pwd_context.hash(new_user.password),
     }
 
-    async with db.session() as session:
-        session.add(models.User(**register_user))
-        await session.commit()
-
-    await db.engine.dispose()
+    db_session.add(models.User(**register_user))
 
     return {"detail": f"Welcome, {new_user.username}!"}
