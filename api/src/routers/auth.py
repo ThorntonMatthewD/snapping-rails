@@ -17,7 +17,6 @@ from src.database.database import SNAPPING_RAILS_ENGINE as db
 from src.database.database import REDIS
 from src.database import models
 from src.database.database import get_session
-from src.database.functions import SqlalchemyResult
 
 
 router = APIRouter()
@@ -132,9 +131,8 @@ async def get_user(
 
     try:
         for user in data.one():
-            print(type(user))
-            print(user)
             return user
+
     except MultipleResultsFound:
         raise HTTPException(
             500,
@@ -191,10 +189,12 @@ async def get_user_info(Authorize: AuthJWT = Depends()):
     await Authorize.jwt_required()
 
     current_user = await Authorize.get_jwt_subject()
-
     user_info = await get_user(current_user)
-    user_info.pop("hashed_password")
-    return {"user_info": user_info}
+
+    user_info_dict = user_info.__dict__
+    user_info_dict.pop("hashed_password")
+
+    return {"user_info": user_info_dict}
 
 
 @router.get("/profile", tags=["User"])
