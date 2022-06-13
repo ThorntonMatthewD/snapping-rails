@@ -16,9 +16,7 @@ logging.getLogger("sqlalchemy.engine").setLevel(logging.DEBUG)
 
 class Engine:
     def __init__(self):
-        self.engine = create_async_engine(
-            DATABASE_URI, poolclass=NullPool, pool_size=20
-        )
+        self.engine = create_async_engine(DATABASE_URI, poolclass=NullPool)
         self.session = sessionmaker(
             class_=AsyncSession,
             autoflush=True,
