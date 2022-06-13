@@ -126,7 +126,12 @@ async def get_user(
     sql = select(models.User).where(models.User.username == username)
     sql = sql.where(models.User.disabled != True)
 
-    data = await db_session.execute(sql)
+    print(f"dir: {dir(db_session.dependency())}")
+    print(f"type: {type(db_session.dependency())}")
+    print(f"val: {db_session.dependency()}")
+
+    async for session in db_session.dependency():
+        data = await session.execute(sql)
 
     try:
         user_dict = data.one()
