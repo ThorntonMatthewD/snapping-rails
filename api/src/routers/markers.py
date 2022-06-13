@@ -1,17 +1,18 @@
 from datetime import datetime, timezone, date
+import opengraph_py3 as opengraph
+import pytz
 
 from fastapi import Depends, HTTPException, status, APIRouter, Query
 from async_fastapi_jwt_auth import AuthJWT
-import opengraph_py3 as opengraph
-import pytz
+
 from pydantic import BaseModel, validator, HttpUrl
 from sqlalchemy.sql.expression import select, update, delete
+from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
 
 from src.routers.auth import get_user
-from src.database.database import SNAPPING_RAILS_ENGINE as db
+from src.database.database import get_session
 from src.database import models
-from src.database.functions import SqlalchemyResult
 
 
 router = APIRouter()
@@ -48,7 +49,7 @@ class Marker(BaseModel):
 
 
 def get_thumbnail(source_url: str) -> str:
-    try: 
+    try:
         media = opengraph.OpenGraph(url=source_url, features="html.parser")
         if media.is_valid():
             img_url = media.get("image", None)
@@ -69,6 +70,7 @@ async def get_railmap_markers(
     author: Optional[str] = None,
     post_id: Optional[int] = None,
     limit: Optional[int] = Query(None, ge=1, le=1000),
+    db_session: AsyncSession = Depends(get_session),
 ):
     sql = select(models.Marker)
 
@@ -99,8 +101,7 @@ async def get_railmap_markers(
     else:
         sql = sql.limit(1000)
 
-
-    async with db.session.begin() as session:
+    async with db_session as session:
         data = await session.execute(sql)
 
     results = data.cursor.fetchall()
@@ -109,7 +110,11 @@ async def get_railmap_markers(
 
 
 @router.post("/markers", status_code=status.HTTP_201_CREATED, tags=["Map"])
-async def add_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
+async def add_railmap_markers(
+    marker: Marker,
+    Authorize: AuthJWT = Depends(),
+    db_session: AsyncSession = Depends(get_session),
+):
     await Authorize.jwt_required()
 
     current_user = await Authorize.get_jwt_subject()
@@ -128,15 +133,18 @@ async def add_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
         "img_url": get_thumbnail(marker.media_url),
     }
 
-    async with db.session.begin() as session:
+    async with db_session as session:
         session.add(models.Marker(**new_marker))
-
 
     return {"detail": "Marker successfully added."}
 
 
 @router.put("/markers", tags=["Map"])
-async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
+async def update_railmap_markers(
+    marker: Marker,
+    Authorize: AuthJWT = Depends(),
+    db_session: AsyncSession = Depends(get_session),
+):
     await Authorize.jwt_required()
 
     current_user_name = await Authorize.get_jwt_subject()
@@ -146,14 +154,13 @@ async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
     marker.created_at = marker.created_at.replace(tzinfo=None)
 
     # TODO Allow for admins to update anything
-    async with db.session.begin() as session:
+    async with db_session as session:
         sql = update(models.Marker)
         sql = sql.values(**marker.dict())
         sql = sql.where(models.Marker.id == marker.id)
         sql = sql.where(models.Marker.author_id == current_user.get("id"))
 
         result = await session.execute(sql)
-
 
     if result.rowcount > 0 if result is not None else None:
         return {"detail": "Marker updated successfully."}
@@ -164,20 +171,23 @@ async def update_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends())
 
 
 @router.delete("/markers", tags=["Map"])
-async def delete_railmap_markers(marker: Marker, Authorize: AuthJWT = Depends()):
+async def delete_railmap_markers(
+    marker: Marker,
+    Authorize: AuthJWT = Depends(),
+    db_session: AsyncSession = Depends(get_session),
+):
     await Authorize.jwt_required()
 
     current_user_name = await Authorize.get_jwt_subject()
     current_user = await get_user(current_user_name)
 
     # TODO Allow for admins to delete anything
-    async with db.session.begin() as session:
+    async with db_session as session:
         sql = delete(models.Marker)
         sql = sql.where(models.Marker.id == marker.id)
         sql = sql.where(models.Marker.author_id == current_user.get("id"))
 
         result = await session.execute(sql)
-
 
     if result.rowcount > 0:
         return {"detail": "Marker deleted successfully."}
