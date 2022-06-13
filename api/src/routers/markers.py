@@ -101,11 +101,9 @@ async def get_railmap_markers(
     else:
         sql = sql.limit(1000)
 
-    data = await db_session.execute(sql)
+    results = await db_session.execute(sql)
 
-    results = data.cursor.fetchall()
-
-    return results
+    return results.scalars().all()
 
 
 @router.post("/markers", status_code=status.HTTP_201_CREATED, tags=["Map"])
