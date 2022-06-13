@@ -21,9 +21,7 @@ class Engine:
         )
         self.session = sessionmaker(
             class_=AsyncSession,
-            autocommit=True,
             autoflush=True,
-            expire_on_commit=False,
             bind=self.engine,
         )
 
