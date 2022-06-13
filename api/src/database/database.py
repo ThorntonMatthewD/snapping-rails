@@ -22,7 +22,7 @@ class Engine:
         self.session = sessionmaker(
             class_=AsyncSession,
             autocommit=False,
-            autoflush=False,
+            autoflush=True,
             expire_on_commit=False,
             bind=self.engine,
         )
