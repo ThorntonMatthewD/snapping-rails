@@ -101,8 +101,7 @@ async def get_railmap_markers(
     else:
         sql = sql.limit(1000)
 
-    async with db_session as session:
-        data = await session.execute(sql)
+    data = await db_session.execute(sql)
 
     results = data.cursor.fetchall()
 
@@ -133,8 +132,7 @@ async def add_railmap_markers(
         "img_url": get_thumbnail(marker.media_url),
     }
 
-    async with db_session as session:
-        session.add(models.Marker(**new_marker))
+    db_session.add(models.Marker(**new_marker))
 
     return {"detail": "Marker successfully added."}
 
@@ -154,13 +152,12 @@ async def update_railmap_markers(
     marker.created_at = marker.created_at.replace(tzinfo=None)
 
     # TODO Allow for admins to update anything
-    async with db_session as session:
-        sql = update(models.Marker)
-        sql = sql.values(**marker.dict())
-        sql = sql.where(models.Marker.id == marker.id)
-        sql = sql.where(models.Marker.author_id == current_user.get("id"))
+    sql = update(models.Marker)
+    sql = sql.values(**marker.dict())
+    sql = sql.where(models.Marker.id == marker.id)
+    sql = sql.where(models.Marker.author_id == current_user.get("id"))
 
-        result = await session.execute(sql)
+    result = await db_session.execute(sql)
 
     if result.rowcount > 0 if result is not None else None:
         return {"detail": "Marker updated successfully."}
@@ -182,12 +179,11 @@ async def delete_railmap_markers(
     current_user = await get_user(current_user_name)
 
     # TODO Allow for admins to delete anything
-    async with db_session as session:
-        sql = delete(models.Marker)
-        sql = sql.where(models.Marker.id == marker.id)
-        sql = sql.where(models.Marker.author_id == current_user.get("id"))
+    sql = delete(models.Marker)
+    sql = sql.where(models.Marker.id == marker.id)
+    sql = sql.where(models.Marker.author_id == current_user.get("id"))
 
-        result = await session.execute(sql)
+    result = await db_session.execute(sql)
 
     if result.rowcount > 0:
         return {"detail": "Marker deleted successfully."}

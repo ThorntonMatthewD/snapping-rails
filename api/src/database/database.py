@@ -28,12 +28,8 @@ SNAPPING_RAILS_ENGINE = Engine()
 
 
 async def get_session() -> AsyncGenerator:
-    session: AsyncSession = SNAPPING_RAILS_ENGINE.session()
-
-    try:
+    async with SNAPPING_RAILS_ENGINE.session() as session:
         yield session
-    finally:
-        await session.close()
 
 
 REDIS = aioredis.from_url(REDIS_URL, decode_responses=True)
