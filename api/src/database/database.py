@@ -18,9 +18,7 @@ class Engine:
     def __init__(self):
         self.engine = create_async_engine(DATABASE_URI, poolclass=NullPool)
         self.session = sessionmaker(
-            class_=AsyncSession,
-            autoflush=True,
-            bind=self.engine,
+            self.engine, class_=AsyncSession, expire_on_commit=False
         )
 
 
@@ -30,6 +28,7 @@ SNAPPING_RAILS_ENGINE = Engine()
 async def get_session() -> AsyncGenerator:
     async with SNAPPING_RAILS_ENGINE.session() as session:
         yield session
+        await session.commit()
 
 
 REDIS = aioredis.from_url(REDIS_URL, decode_responses=True)
