@@ -3,7 +3,7 @@ import logging
 
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.pool import QueuePool
+from sqlalchemy.pool import NullPool
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
@@ -17,7 +17,7 @@ logging.getLogger("sqlalchemy.engine").setLevel(logging.DEBUG)
 class Engine:
     def __init__(self):
         self.engine = create_async_engine(
-            DATABASE_URI, poolclass=QueuePool, pool_size=20
+            DATABASE_URI, poolclass=NullPool, pool_size=20
         )
         self.session = sessionmaker(
             class_=AsyncSession,
