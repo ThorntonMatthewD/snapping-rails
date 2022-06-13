@@ -88,7 +88,7 @@ async def get_railmap_markers(
 
     if not author is None:
         user_info = await get_user(author)
-        id = user_info.get("id")
+        id = user_info.id
 
         if not id is None:
             sql = sql.where(models.Marker.author_id == id)
@@ -119,7 +119,7 @@ async def add_railmap_markers(
     user_info = await get_user(current_user)
 
     new_marker = {
-        "author_id": user_info.get("id"),
+        "author_id": user_info.id,
         "created_at": marker.created_at.replace(tzinfo=None),
         "lat": marker.lat.strip(),
         "long": marker.long.strip(),
@@ -153,7 +153,7 @@ async def update_railmap_markers(
     sql = update(models.Marker)
     sql = sql.values(**marker.dict())
     sql = sql.where(models.Marker.id == marker.id)
-    sql = sql.where(models.Marker.author_id == current_user.get("id"))
+    sql = sql.where(models.Marker.author_id == current_user.id)
 
     result = await db_session.execute(sql)
 
@@ -179,7 +179,7 @@ async def delete_railmap_markers(
     # TODO Allow for admins to delete anything
     sql = delete(models.Marker)
     sql = sql.where(models.Marker.id == marker.id)
-    sql = sql.where(models.Marker.author_id == current_user.get("id"))
+    sql = sql.where(models.Marker.author_id == current_user.id)
 
     result = await db_session.execute(sql)
 

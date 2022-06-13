@@ -17,6 +17,7 @@ from src.database.database import SNAPPING_RAILS_ENGINE as db
 from src.database.database import REDIS
 from src.database import models
 from src.database.database import get_session
+from src.database.functions import SqlalchemyResult
 
 
 router = APIRouter()
@@ -122,20 +123,18 @@ async def authenticate_user(username: str, password: str):
 async def get_user(
     username: str,
     db_session: AsyncSession = Depends(get_session),
-):
+) -> models.User:
     sql = select(models.User).where(models.User.username == username)
     sql = sql.where(models.User.disabled != True)
-
-    print(f"dir: {dir(db_session.dependency())}")
-    print(f"type: {type(db_session.dependency())}")
-    print(f"val: {db_session.dependency()}")
 
     async for session in db_session.dependency():
         data = await session.execute(sql)
 
     try:
-        user_dict = data.one()
-        return user_dict
+        for user in data.one():
+            print(type(user))
+            print(user)
+            return user
     except MultipleResultsFound:
         raise HTTPException(
             500,
@@ -208,20 +207,21 @@ async def get_user_profile(
     if user_info:
 
         sql = select(models.UserProfile).where(
-            models.UserProfile.user_id == user_info.get("id", -1)
+            models.UserProfile.user_id == user_info.id
         )
         result = await db_session.execute(sql)
 
         profile_data = result.one()
 
-        parsed_profile = {
-            "username": username,
-            "social_links": profile_data.get("social_links", {}),
-            "profile_pic_url": profile_data.get("profile_pic_url"),
-            "profile_description": profile_data.get("profile_description"),
-        }
+        for data in profile_data:
+            parsed_profile = {
+                "username": username,
+                "social_links": data.social_links or {},
+                "profile_pic_url": data.profile_pic_url,
+                "profile_description": data.profile_description,
+            }
 
-        return parsed_profile
+            return parsed_profile
 
     else:
         raise HTTPException(
@@ -250,7 +250,7 @@ async def update_user_profile(
 
     sql = update(models.UserProfile)
     sql = sql.values(updated_profile)
-    sql = sql.where(models.UserProfile.user_id == current_user.get("id"))
+    sql = sql.where(models.UserProfile.user_id == current_user.id)
 
     result = await db_session.execute(sql)
 
