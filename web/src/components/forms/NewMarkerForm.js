@@ -59,7 +59,7 @@ const NewMarkerForm = ({ position, handleClose, refreshMap }) => {
       value: "4",
     },
     {
-      label: "Club/Business",
+      label: "Community",
       value: "5",
     },
   ];
