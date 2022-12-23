@@ -1,4 +1,4 @@
-FROM nginx:1.23.1-alpine
+FROM nginx:1.23.3-alpine
 
 RUN rm /etc/nginx/conf.d/*
 RUN rm /usr/share/nginx/html/index.html
