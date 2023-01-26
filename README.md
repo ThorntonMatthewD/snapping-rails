@@ -4,6 +4,4 @@
 
 ## An interactive map to share railway-related media by location.
 
-Coming soon!
-
 ![Preview of the Snapping Rails Railmap7](https://user-images.githubusercontent.com/44626690/164990996-b2b7b7f1-52d7-4f3a-bcf3-e3b6ce1956b3.png)
